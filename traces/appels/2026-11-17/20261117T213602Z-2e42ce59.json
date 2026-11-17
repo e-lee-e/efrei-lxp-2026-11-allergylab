@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:36:02Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel est l'âge moyen des patients sous biothérapie, en excluant ceux dont l'âge est non renseigné ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 30.22222222222222,
+    "justification": "La valeur moyene de Age est 30.22, calculée sur 27 lignes renseignées ; 0 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1134,
+    "sortie": 342
+  },
+  "cout_estime": 0.0002844,
+  "duree_s": 2.11,
+  "erreur": null
+}

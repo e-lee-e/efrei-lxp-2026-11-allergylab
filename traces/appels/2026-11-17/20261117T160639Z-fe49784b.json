@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:06:39Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "6a96a577cee7acd8",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Chez les patients âgés de 20 à 50 ans, comparez le nombre de femmes et d'hommes traités pour une rhinite et présentant des symptômes cutanés.",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "46 (0/1) ; 0 ()",
+    "justification": "Sur 46 lignes : 46 (0/1), 0 (). Les lignes sans groupe renseigné sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1101,
+    "sortie": 302
+  },
+  "cout_estime": 0.0002611,
+  "duree_s": 1.89,
+  "erreur": null
+}

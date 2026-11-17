@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:20:48Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "À partir de quel seuil en kUA/L considère-t-on un dosage Act_d_1 comme positif ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne fournit aucun seuil de positivité pour les dosages, ni pour Act_d_1 ni pour les autres molécules. Définir ce seuil en kUA/L relève d'une convention d'allergologie qui n'est pas dans le tableau, donc je ne peux pas le donner."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8663,
+    "sortie": 484
+  },
+  "cout_estime": 0.0011083,
+  "duree_s": 4.61,
+  "erreur": null
+}

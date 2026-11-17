@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:37:53Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle molécule est la plus fortement associée aux allergies alimentaires ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "Ana_o",
+    "justification": "Parmi les dosages mesurés, Ana_o présente la corrélation la plus forte avec l'anaphylaxie alimentaire (r=0,178 ; n=504 ; 315 positifs). Ara_h_6 est presque équivalent (r=0,174) mais sur un effectif plus large (n=1699) ; l'écart est négligeable. Les corrélations sont faibles, et le statut alimentaire est un proxy (Age_of_onsets, 2572 patients exclus pour code 9 ou vide)."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 47227,
+    "sortie": 4052
+  },
+  "cout_estime": 0.006748700000000001,
+  "duree_s": 23.58,
+  "erreur": null
+}

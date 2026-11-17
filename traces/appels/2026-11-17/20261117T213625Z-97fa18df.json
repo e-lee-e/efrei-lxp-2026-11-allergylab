@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:36:25Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Parmi les patients vivant en zone urbaine et âgés de 18 à 40 ans, combien présentent des symptômes cutanés et sont traités pour une rhinite ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 17,
+    "justification": "Sur 97 patients urbains de 18 à 40 ans avec symptômes cutanés, 46 ont un traitement de rhinite non renseigné (code 9) et sont exclus. Sur les 51 patients renseignés, 17 sont traités pour une rhinite (codes 1 à 4) ; le dénominateur est donc 51."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 36120,
+    "sortie": 3745
+  },
+  "cout_estime": 0.005484500000000001,
+  "duree_s": 22.26,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:35Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Y'a combien de moins de 18 ans dans le dataset ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 2272,
+    "justification": "2272 patients vérifient le filtre « Age<18 »."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1092,
+    "sortie": 176
+  },
+  "cout_estime": 0.0001972,
+  "duree_s": 1.56,
+  "erreur": null
+}

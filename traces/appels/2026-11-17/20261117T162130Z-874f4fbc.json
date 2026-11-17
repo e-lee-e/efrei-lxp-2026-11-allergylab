@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:21:30Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel traitement recommanderiez-vous à un patient présentant des symptômes cutanés et une sensibilisation positive ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Recommander un traitement à un patient relève d'une décision clinique individuelle, qui sort de ce tableau (ni efficacité, ni posologie, ni recommandation dans le fichier). Le tableau décrit seulement les traitements déjà reçus (Treatment_of_atopic_dematitis, Treatment_of_rhinitis, Treatment_of_athsma) et la sensibilisation, sans lien de résultat thérapeutique. Il faut l'avis d'un allergologue ou d'un dermatologue."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8673,
+    "sortie": 599
+  },
+  "cout_estime": 0.0011667999999999997,
+  "duree_s": 5.22,
+  "erreur": null
+}

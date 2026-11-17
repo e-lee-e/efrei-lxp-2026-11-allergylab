@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:20:41Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la concentration moyenne de Bet_v_1 en kUA/L ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 8.4079,
+    "justification": "Moyenne de Bet_v_1 calculée sur 4271 patients, sans valeur manquante ignorée. Le fichier ne précise pas l'unité : la valeur est donnée telle quelle, sans confirmer qu'elle est exprimée en kUA/L."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16559,
+    "sortie": 650
+  },
+  "cout_estime": 0.0019809000000000003,
+  "duree_s": 6.83,
+  "erreur": null
+}

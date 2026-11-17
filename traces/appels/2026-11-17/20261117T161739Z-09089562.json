@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:39Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Cb de patients prennent une biotherapie pour l'asthme ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 27,
+    "justification": "27 patients sous biothérapie (codes 6, 7 ou 8 de Treatment_of_athsma) sur 1500 patients renseignés ; 0 valeurs manquantes et 2771 patients au code 9 (non renseigné) exclus."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8635,
+    "sortie": 1820
+  },
+  "cout_estime": 0.0017735000000000001,
+  "duree_s": 10.45,
+  "erreur": null
+}

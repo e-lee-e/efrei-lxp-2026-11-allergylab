@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:36:22Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la répartition des trois types de puces chez les patients âgés de plus de 40 ans ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "ISAC_V1 : 408 ; ALEX : 277 ; ISAC_V2 : 137",
+    "justification": "Sur 822 lignes renseignées : ISAC_V1 : 408 ; ALEX : 277 ; ISAC_V2 : 137. 0 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1126,
+    "sortie": 84
+  },
+  "cout_estime": 0.00015460000000000002,
+  "duree_s": 0.87,
+  "erreur": null
+}

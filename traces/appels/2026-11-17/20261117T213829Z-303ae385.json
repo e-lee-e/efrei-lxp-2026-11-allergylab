@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:38:29Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel seuil de positivité faut-il appliquer au dosage Der_p_1 pour diagnostiquer une allergie aux acariens ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne donne aucun seuil de positivité pour les dosages, Der_p_1 compris, et les données ne contiennent pas de définition clinique de l'allergie aux acariens. Je ne peux donc pas proposer de seuil sans inventer une convention ; ce seuil doit venir d'un référentiel d'allergologie ou du fabricant de la puce."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8707,
+    "sortie": 441
+  },
+  "cout_estime": 0.0010912,
+  "duree_s": 4.7,
+  "erreur": null
+}

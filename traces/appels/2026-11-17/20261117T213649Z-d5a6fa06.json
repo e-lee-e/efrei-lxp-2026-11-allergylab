@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:36:49Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien d'hommes de moins de 30 ans sont sous biothérapie pour leur asthme, à l'exclusion des patients présentant des symptômes cutanés ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 5,
+    "justification": "5 patients vérifient le filtre « Age<30 et Gender=1 et Treatment_of_athsma dans 6,7,8 et Skin_Symptoms=0 »."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1149,
+    "sortie": 383
+  },
+  "cout_estime": 0.00030639999999999997,
+  "duree_s": 2.08,
+  "erreur": null
+}

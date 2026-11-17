@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:01Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la répartition des patients selon leur département de résidence ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "82 départements distincts ; deptY 49.9 % (2130 patients), deptA 6.6 % (281), deptEE 3.3 % (140)",
+    "justification": "Sur 4271 patients, aucune valeur manquante n'a été exclue (n = 4271). Les 82 libellés sont anonymisés (deptY, deptA…) et ne correspondent pas à des codes départementaux officiels, donc la répartition ne peut pas être rattachée à des départements réels. Un libellé concentre à lui seul près de la moitié de l'échantillon, ce qui limite la lecture géographique des autres groupes, dont plusieurs sont petits."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 33203,
+    "sortie": 1202
+  },
+  "cout_estime": 0.0039213,
+  "duree_s": 11.26,
+  "erreur": null
+}

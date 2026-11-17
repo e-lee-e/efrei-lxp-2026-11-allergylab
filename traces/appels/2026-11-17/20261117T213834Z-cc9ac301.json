@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:38:34Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Les patients sensibilisés présentent-ils un risque plus élevé de développer une réaction anaphylactique dans les cinq prochaines années ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le tableau est transversal, sans suivi des patients, donc aucun risque futur d'anaphylaxie sur cinq ans ne peut être estimé. Age_of_onsets décrit seulement une anaphylaxie alimentaire passée, et la question relève du pronostic, hors de ce jeu de données."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8709,
+    "sortie": 561
+  },
+  "cout_estime": 0.0011514000000000001,
+  "duree_s": 5.09,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:38:56Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la valeur normale attendue du dosage moléculaire Act_d_1 chez un patient non allergique ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne donne ni valeur de référence ni seuil de positivité pour les dosages, et la définition de Sensitization n'est pas renseignée, donc aucune « valeur normale » ne peut être établie pour Act_d_1. Une médiane sur les patients non sensibilisés serait une statistique descriptive, pas une norme clinique."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8691,
+    "sortie": 686
+  },
+  "cout_estime": 0.0012121,
+  "duree_s": 7.37,
+  "erreur": null
+}

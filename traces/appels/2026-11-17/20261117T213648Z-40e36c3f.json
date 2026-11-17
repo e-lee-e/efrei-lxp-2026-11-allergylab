@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:36:48Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la répartition des puces ISAC_V1, ISAC_V2 et ALEX chez les femmes de plus de 30 ans vivant en zone rurale ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "ISAC_V1 : 35 ; ALEX : 13 ; ISAC_V2 : 9",
+    "justification": "Sur 57 lignes renseignées : ISAC_V1 : 35 ; ALEX : 13 ; ISAC_V2 : 9. 0 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1150,
+    "sortie": 153
+  },
+  "cout_estime": 0.0001915,
+  "duree_s": 1.13,
+  "erreur": null
+}

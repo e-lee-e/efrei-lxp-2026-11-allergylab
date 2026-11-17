@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:36:25Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "cache",
+  "modele": "cache",
+  "question": "Quel est l'âge médian des patients sous biothérapie, en comparant les hommes et les femmes âgés de moins de 50 ans ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "femmes : 20.0 ans (n=7) ; hommes : 12.0 ans (n=13)",
+    "justification": "Sur 27 patients sous biothérapie (codes 6, 7 ou 8 de Treatment_of_athsma), 20 ont moins de 50 ans et un sexe renseigné (7 femmes, 13 hommes) ; 61 âges et 62 sexes manquants ont été exclus. Les effectifs sont inférieurs à 30 par groupe, donc les médianes sont instables. Les hommes ont une médiane d'âge plus basse que les femmes (12.0 contre 20.0 ans), écart à lire avec prudence."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:19:28Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Parmi les patients vivant en zone urbaine et âgés de 18 à 40 ans, combien présentent des symptômes cutanés et sont traités pour une rhinite ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 17,
+    "justification": "17 patients vérifient le filtre « Rural_or_urban_area=1 et Age>=18 et Age<=40 et Skin_Symptoms=1 et Treatment_of_rhinitis dans 1,2,3,4 »."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1129,
+    "sortie": 421
+  },
+  "cout_estime": 0.0003234,
+  "duree_s": 2.24,
+  "erreur": null
+}

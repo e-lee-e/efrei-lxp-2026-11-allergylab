@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:30:30Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "C'est quoi la repartition des prelevements selon les mois ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "7 : 641 ; 3 : 415 ; 1 : 367 ; 6 : 365 ; 12 : 336 ; 2 : 332 ; 11 : 327 ; 10 : 326 ; 5 : 311 ; 9 : 300 ; 4 : 258 ; 8 : 168",
+    "justification": "Sur 4146 lignes renseignées : 7 : 641 ; 3 : 415 ; 1 : 367 ; 6 : 365 ; 12 : 336 ; 2 : 332 ; 11 : 327 ; 10 : 326 ; 5 : 311 ; 9 : 300 ; 4 : 258 ; 8 : 168. 125 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1091,
+    "sortie": 69
+  },
+  "cout_estime": 0.00014360000000000002,
+  "duree_s": 0.86,
+  "erreur": null
+}

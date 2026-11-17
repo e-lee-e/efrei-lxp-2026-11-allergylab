@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:29:44Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Quelle est la répartition des patients entre les trois types de puces ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "ISAC_V1 : 2351 ; ALEX : 1139 ; ISAC_V2 : 781",
+    "justification": "Les 4271 patients se répartissent ainsi : ISAC_V1 : 2351 ; ALEX : 1139 ; ISAC_V2 : 781. Aucune ligne n'est exclue, la puce est renseignée pour tous."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.02,
+  "erreur": null
+}

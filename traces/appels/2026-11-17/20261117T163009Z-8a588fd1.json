@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:30:09Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "3bd47040e176c7e7",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la répartition des patients selon leur milieu de résidence, rural ou urbain ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "9 : 2980 ; 1 : 966 ; 0 : 325",
+    "justification": "Sur 4271 lignes renseignées : 9 : 2980 ; 1 : 966 ; 0 : 325. 0 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1102,
+    "sortie": 30
+  },
+  "cout_estime": 0.0001252,
+  "duree_s": 0.96,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:13Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Cb de patients ont fait le test ALEX ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 1139,
+    "justification": "1139 patients portent les codes ALEX de Chip_Type. 3132 lignes sont hors du groupe ou non renseignées."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1087,
+    "sortie": 133
+  },
+  "cout_estime": 0.00017519999999999998,
+  "duree_s": 1.05,
+  "erreur": null
+}

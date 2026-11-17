@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:37:44Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel est le taux de sensibilisation aux acariens chez les patients de moins de 18 ans ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Les dosages d'acariens (Der_p_1 à Der_p_23, Der_f_1, Der_f_2) n'ont ni unité ni seuil de positivité dans le fichier, et la colonne Sensitization, définie 0/1 sans précision, ne porte pas sur les acariens. Le taux demandé ne peut donc pas être calculé sans convention absente du tableau."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16718,
+    "sortie": 1297
+  },
+  "cout_estime": 0.0023203,
+  "duree_s": 9.58,
+  "erreur": null
+}

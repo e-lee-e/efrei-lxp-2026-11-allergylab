@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:05:17Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "6a96a577cee7acd8",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Parmi les patients âgés de 18 à 30 ans, combien sont des femmes vivant en zone urbaine ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 78,
+    "justification": "78 patients portent les codes 0 de Gender. 0 lignes sont hors du groupe ou non renseignées."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1082,
+    "sortie": 224
+  },
+  "cout_estime": 0.00022019999999999999,
+  "duree_s": 2.31,
+  "erreur": null
+}

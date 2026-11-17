@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:35:41Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel est l'âge moyen des patients inclus dans l'étude ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 23.077434679334917,
+    "justification": "La valeur moyene de Age est 23.08, calculée sur 4210 lignes renseignées ; 61 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1116,
+    "sortie": 23
+  },
+  "cout_estime": 0.0001231,
+  "duree_s": 0.73,
+  "erreur": null
+}

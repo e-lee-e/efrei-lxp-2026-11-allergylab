@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:18:32Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Chez les patients âgés de 20 à 50 ans, comparez le nombre de femmes et d'hommes traités pour une rhinite et présentant des symptômes cutanés.",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "femmes 26, hommes 20",
+    "justification": "Sur 305 patients de 20 à 50 ans à sexe, symptômes cutanés et traitement de rhinite renseignés (1019 exclus pour valeur manquante ou code 9), 26 femmes sur 190 (13,7 %) sont traitées pour rhinite et ont des symptômes cutanés, contre 20 hommes sur 115 (17,4 %). Les effectifs sont suffisants, mais l'écart de taux n'est pas testé et le fichier ne permet pas de conclure sur une différence réelle."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 28896,
+    "sortie": 5182
+  },
+  "cout_estime": 0.0054806,
+  "duree_s": 28.25,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:38:17Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel traitement recommanderiez-vous à un patient présentant des symptômes cutanés et une sensibilisation positive ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le tableau décrit des patients et ne permet pas de recommander un traitement individuel, qui relève d'une décision clinique hors de ce périmètre. La définition de Sensitization n'est pas donnée dans le fichier (codes 0/1 sans précision), et les dosages n'ont ni unité ni seuil de positivité, donc une sensibilisation « positive » ne peut pas être établie à partir des données. Un allergologue doit évaluer le patient au cas par cas."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8695,
+    "sortie": 697
+  },
+  "cout_estime": 0.001218,
+  "duree_s": 5.54,
+  "erreur": null
+}

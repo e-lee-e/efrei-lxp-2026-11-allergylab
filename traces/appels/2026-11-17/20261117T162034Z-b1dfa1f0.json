@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:20:34Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel pourcentage des patients est sensibilisé aux pollens ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne nomme que des molécules, sans famille d'allergènes ; la seule colonne pollinique est Cor_a_pollen et Jug_r_pollen, deux molécules isolées. La colonne Sensitization (0/1) n'a pas de définition par famille, donc la part de patients sensibilisés aux pollens ne peut pas être calculée."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16575,
+    "sortie": 1136
+  },
+  "cout_estime": 0.0022255,
+  "duree_s": 7.81,
+  "erreur": null
+}

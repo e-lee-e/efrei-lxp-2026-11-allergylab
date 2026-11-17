@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:38:23Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Peut-on prédire l'apparition d'une anaphylaxie chez les patients sensibilisés à partir de leurs dosages moléculaires ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le tableau est transversal (une ligne par patient, sans suivi dans le temps), donc il ne permet pas de mesurer une apparition future. La seule colonne liée à l'anaphylaxie, Age_of_onsets, décrit une anaphylaxie alimentaire déjà survenue et son âge de survenue, pas un pronostic. Prédire l'apparition relève du pronostic, hors de ce tableau."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8711,
+    "sortie": 842
+  },
+  "cout_estime": 0.0012921,
+  "duree_s": 6.88,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:39:03Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "En fonction des dosages moléculaires et des traitements reçus, quel protocole thérapeutique personnalisé recommandez-vous pour les patients asthmatiques ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Un protocole thérapeutique personnalisé relève d'une décision clinique et d'une posologie, que ce tableau ne permet pas d'établir. Le fichier ne donne ni seuil de positivité des dosages moléculaires ni lien causal entre dosage, traitement et réponse. Il peut seulement décrire des associations entre traitements de l'asthme et dosages, à discuter avec un allergologue."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8725,
+    "sortie": 716
+  },
+  "cout_estime": 0.0012304999999999998,
+  "duree_s": 5.71,
+  "erreur": null
+}

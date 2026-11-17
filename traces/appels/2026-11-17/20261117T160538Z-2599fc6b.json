@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:05:38Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "6a96a577cee7acd8",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien de patients présentant des symptômes cutanés sont traités pour une rhinite, en excluant ceux dont le traitement est non renseigné ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 211,
+    "justification": "Sur 573 patients présentant des symptômes cutanés (Skin_Symptoms=1) et au traitement de rhinite renseigné, 211 sont traités pour une rhinite (codes 1 à 4 de Treatment_of_rhinitis), soit 36.8 % de ce groupe. Exclus : 567 patients au traitement non renseigné (code 9) ; les 2445 patients sans information cutanée (code 9) ne sont pas dans ce groupe."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 25835,
+    "sortie": 3158
+  },
+  "cout_estime": 0.0041624999999999995,
+  "duree_s": 17.88,
+  "erreur": null
+}

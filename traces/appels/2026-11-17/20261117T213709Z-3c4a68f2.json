@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:37:09Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel pourcentage des patients est sensibilisé aux pollens ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne contient pas de sensibilisation propre aux pollens : seules deux molécules polliniques sont dosées (Cor_a_pollen, Jug_r_pollen), sans seuil de positivité. La colonne Sensitization (0/1) n'a pas de définition dans le dictionnaire et ne précise pas l'allergène, donc le pourcentage ne peut pas être calculé sans inventer une convention."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 24893,
+    "sortie": 1210
+  },
+  "cout_estime": 0.0030943000000000003,
+  "duree_s": 9.47,
+  "erreur": null
+}

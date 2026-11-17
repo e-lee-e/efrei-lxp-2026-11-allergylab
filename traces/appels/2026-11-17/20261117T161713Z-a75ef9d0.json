@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:13Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Tu peux me donner l'age median stp ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 16.0,
+    "justification": "La valeur médiane de Age est 16.00, calculée sur 4210 lignes renseignées ; 61 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1085,
+    "sortie": 22
+  },
+  "cout_estime": 0.0001195,
+  "duree_s": 0.8,
+  "erreur": null
+}

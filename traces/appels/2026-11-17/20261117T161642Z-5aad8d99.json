@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:16:42Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la répartition des patients selon le mois de prélèvement sanguin ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "7 : 641 ; 3 : 415 ; 1 : 367 ; 6 : 365 ; 12 : 336 ; 2 : 332 ; 11 : 327 ; 10 : 326 ; 5 : 311 ; 9 : 300 ; 4 : 258 ; 8 : 168",
+    "justification": "Sur 4146 lignes renseignées : 7 : 641 ; 3 : 415 ; 1 : 367 ; 6 : 365 ; 12 : 336 ; 2 : 332 ; 11 : 327 ; 10 : 326 ; 5 : 311 ; 9 : 300 ; 4 : 258 ; 8 : 168. 125 lignes sans valeur sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1098,
+    "sortie": 29
+  },
+  "cout_estime": 0.0001243,
+  "duree_s": 0.83,
+  "erreur": null
+}

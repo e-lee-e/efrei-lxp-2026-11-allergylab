@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:35:42Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien de patients sont âgés de moins de 18 ans ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 2272,
+    "justification": "2272 patients vérifient le filtre « Age<18 »."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1113,
+    "sortie": 76
+  },
+  "cout_estime": 0.00014930000000000002,
+  "duree_s": 0.99,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:20:53Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Les patients ayant un dosage Der_p_1 élevé présentent-ils un risque accru de développer un asthme ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne donne aucun seuil de positivité pour les dosages, donc « Der_p_1 élevé » ne peut pas être défini. Le tableau est transversal (une ligne par patient, sans suivi) : il ne permet pas d'établir un risque de développer un asthme, qui relève d'une étude prospective."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8669,
+    "sortie": 766
+  },
+  "cout_estime": 0.0012499,
+  "duree_s": 6.4,
+  "erreur": null
+}

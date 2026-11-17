@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:06:17Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "6a96a577cee7acd8",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien de patients de plus de 60 ans sont sous biothérapie, en excluant ceux qui présentent des symptômes cutanés ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 2,
+    "justification": "Sur 222 patients de plus de 60 ans, 3 sont sous biothérapie (codes 6, 7 ou 8 de Treatment_of_athsma). Parmi eux, 2 n'ont pas de symptômes cutanés (Skin_Symptoms=0) ; le 3e, au statut cutané non renseigné, est exclu. Effectif très faible (n=3 sous biothérapie), résultat instable."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 26366,
+    "sortie": 3912
+  },
+  "cout_estime": 0.0045926000000000005,
+  "duree_s": 21.7,
+  "erreur": null
+}

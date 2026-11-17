@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:30:08Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "On a combien de femmes et combien d'hommes dans la base ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "2070 femmes ; 2139 hommes",
+    "justification": "Sur 4271 patients, 2070 sont codés femme (Gender=0) et 2139 homme (Gender=1). 62 patients n'ont pas de valeur de genre renseignée et sont exclus ; aucun code 9 n'a été trouvé (2070 + 2139 + 62 = 4271)."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16784,
+    "sortie": 784
+  },
+  "cout_estime": 0.0020704,
+  "duree_s": 6.43,
+  "erreur": null
+}

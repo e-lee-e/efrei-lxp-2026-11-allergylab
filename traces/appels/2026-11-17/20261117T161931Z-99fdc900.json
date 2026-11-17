@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:19:31Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Comparez le taux de sensibilisation des patients de moins de 18 ans, de 18 à 40 ans et de plus de 40 ans.",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "Moins de 18 ans : 86.8 % (n=2272) ; 18 à 40 ans : 86.8 % (n=1116) ; plus de 40 ans : 76.0 % (n=822)",
+    "justification": "Taux de sensibilisation (codes 0/1, définition non donnée dans le fichier) calculé sur les patients à âge renseigné ; 61 patients sans âge exclus, aucune sensibilisation manquante. Les moins de 18 ans et les 18 à 40 ans ont le même taux, environ 10 points de plus que les plus de 40 ans (76.0 %)."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 17443,
+    "sortie": 2089
+  },
+  "cout_estime": 0.0027888,
+  "duree_s": 12.33,
+  "erreur": null
+}

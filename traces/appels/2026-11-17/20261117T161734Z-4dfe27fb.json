@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:34Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Quel est l'age moyen des patients stp merci ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 23.077434679334917,
+    "justification": "L'âge moyen est de 23.08 ans sur 4210 patients dont l'âge est renseigné. Les 61 lignes sans âge sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.02,
+  "erreur": null
+}

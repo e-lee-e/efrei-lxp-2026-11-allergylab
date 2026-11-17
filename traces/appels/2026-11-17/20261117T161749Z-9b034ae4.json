@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:49Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Chez les femmes et les hommes, c'est quoi le taux de sensibilisation ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "Femmes : 80.9 % ; hommes : 88.5 %",
+    "justification": "Taux de Sensitization = 1 : femmes 80.9 % (1674 sur 2070) ; hommes 88.5 % (1892 sur 2139). 62 lignes exclues pour groupe ou valeur manquante ; la définition clinique de Sensitization n'est pas précisée dans le fichier."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16561,
+    "sortie": 1121
+  },
+  "cout_estime": 0.0022166,
+  "duree_s": 7.91,
+  "erreur": null
+}

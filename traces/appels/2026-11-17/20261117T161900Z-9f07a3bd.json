@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:19:00Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel est l'âge médian des patients sous biothérapie, en comparant les hommes et les femmes âgés de moins de 50 ans ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "Femmes : 20.0 ans (n=7) ; hommes : 12.0 ans (n=13)",
+    "justification": "Sur 20 patients sous biothérapie (codes 6, 7 ou 8) de moins de 50 ans, aucun n'a été exclu pour sexe non renseigné ; sexe 0=féminin, 1=masculin. Les effectifs sont faibles (moins de 30 par groupe), donc les médianes sont instables ; l'âge est en années."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 36083,
+    "sortie": 4074
+  },
+  "cout_estime": 0.005645300000000001,
+  "duree_s": 28.58,
+  "erreur": null
+}

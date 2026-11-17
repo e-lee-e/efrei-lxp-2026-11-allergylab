@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:39:09Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "hors-sujet",
+  "modele": "local",
+  "question": "Quelle est la différence entre un processeur AMD Ryzen 7 et un Intel Core i7 ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:21:09Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle molécule est la plus fortement associée aux allergies alimentaires ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "Ana_o",
+    "justification": "Parmi 1699 patients valides (2572 codés 9 exclus, aucun manquant), la corrélation de Pearson avec l'anaphylaxie alimentaire est la plus forte pour Ana_o (r=0,178, n=504), devant Cor_a_1.0103 (r=0,175, n=504) et Ara_h_6 (r=0,174, n=1699). Les écarts sont faibles et les effectifs diffèrent selon la puce, donc Ara_h_6 (plus grand effectif) est quasi équivalent ; ces corrélations restent faibles et ne prouvent pas de lien causal."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 29361,
+    "sortie": 3730
+  },
+  "cout_estime": 0.004801099999999999,
+  "duree_s": 20.5,
+  "erreur": null
+}

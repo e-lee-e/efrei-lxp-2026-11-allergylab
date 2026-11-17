@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:30:32Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Chez les femmes et les hommes, c'est quoi le taux de sensibilisation ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "80.9 % contre 88.5 %",
+    "justification": "Premier groupe : 1674 sur 2070 (80.9 %) ; second groupe : 1892 sur 2139 (88.5 %). La définition de Sensitization n'est pas donnée."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1100,
+    "sortie": 376
+  },
+  "cout_estime": 0.000298,
+  "duree_s": 1.9,
+  "erreur": null
+}

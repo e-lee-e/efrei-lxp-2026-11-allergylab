@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:29:55Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la répartition des patients selon leur département de résidence ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "deptY 49,9 % (2130/4271) ; deptA 6,6 % (281) ; deptEE 3,3 % (140) ; deptGGG 3,1 % (131) ; deptKKK 2,9 % (124) ; 77 autres départements entre 1,7 % et 0,02 %",
+    "justification": "Sur n = 4271 patients renseignés (0 manquant), 82 départements distincts apparaissent ; les 10 premiers sont listés. Les codes sont anonymisés (deptY, deptA…) : on ne peut pas les rattacher à des départements réels, et deptY concentre à lui seul près de la moitié des patients."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 33311,
+    "sortie": 1242
+  },
+  "cout_estime": 0.0039521,
+  "duree_s": 11.49,
+  "erreur": null
+}

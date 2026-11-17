@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:30:17Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien de patients sont traités pour la rhinite svp ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 430,
+    "justification": "430 patients portent les codes 1/2/3/4 de Treatment_of_rhinitis. 3841 lignes sont hors du groupe ou non renseignées."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1090,
+    "sortie": 194
+  },
+  "cout_estime": 0.000206,
+  "duree_s": 1.15,
+  "erreur": null
+}

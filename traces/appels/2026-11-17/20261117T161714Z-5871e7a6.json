@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:17:14Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "On a combien de femmes et combien d'hommes dans la base ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "2070 femmes et 2139 hommes",
+    "justification": "Effectifs par sexe calculés sur 4209 patients renseignés (Gender 0=féminin, 1=masculin) ; 62 patients sur 4271 sont exclus car le sexe n'est pas renseigné (code 9 ou case vide)."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16621,
+    "sortie": 781
+  },
+  "cout_estime": 0.0020526,
+  "duree_s": 6.78,
+  "erreur": null
+}

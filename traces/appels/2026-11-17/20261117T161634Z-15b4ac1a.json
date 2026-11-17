@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:16:34Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Quel est l'âge médian des patients ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 16.0,
+    "justification": "L'âge médian est de 16 ans sur 4210 patients dont l'âge est renseigné. Les 61 lignes sans âge sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.02,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:21:35Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Peut-on prédire l'apparition d'une anaphylaxie chez les patients sensibilisés à partir de leurs dosages moléculaires ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "La question demande un pronostic, qui sort de ce tableau descriptif. L'anaphylaxie n'est repérable que via Age_of_onsets (0 = aucune) et le fichier ne donne aucun seuil de positivité pour les dosages moléculaires. Aucune prédiction ne peut donc être établie à partir de ces données."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16591,
+    "sortie": 1025
+  },
+  "cout_estime": 0.0021716,
+  "duree_s": 8.09,
+  "erreur": null
+}

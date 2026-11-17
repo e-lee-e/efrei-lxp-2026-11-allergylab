@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:38:29Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "cache",
+  "modele": "cache",
+  "question": "Quelle est la concentration de Bet_v_1 exprimée en microgrammes par litre chez les patients adultes ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 7.2735,
+    "justification": "Moyenne de Bet_v_1 de 7,2735 calculée sur n=1938 patients adultes (Age ≥ 18), 0 valeur manquante ignorée. Le fichier ne précise pas l'unité des dosages : la valeur est donnée telle quelle, sans confirmation qu'elle soit en µg/L."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.02,
+  "erreur": null
+}

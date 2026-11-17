@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:19:44Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien d'hommes de moins de 30 ans sont sous biothérapie pour leur asthme, à l'exclusion des patients présentant des symptômes cutanés ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 5,
+    "justification": "Sur 4271 patients, 10 hommes de moins de 30 ans sont sous biothérapie (codes 6, 7 ou 8, cellules multiples incluses) ; 3 sont exclus pour symptômes cutanés oui et 2 pour symptômes cutanés non renseignés (code 9 ou vide). L'outil calculer ne lit que les codes uniques (1 patient), ce qui sous-estime le total ; le décompte retenu tient compte des codes multiples."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 35570,
+    "sortie": 4422
+  },
+  "cout_estime": 0.0057680000000000006,
+  "duree_s": 26.54,
+  "erreur": null
+}

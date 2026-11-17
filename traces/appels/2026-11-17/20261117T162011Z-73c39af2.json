@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T16:20:11Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "e5b2af97b6dc2238",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Chez les patients âgés de 30 à 60 ans, comparez le taux de sensibilisation entre les zones rurales et urbaines, en excluant les patients dont la résidence n'est pas renseignée.",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "81.8 % contre 80.8 %",
+    "justification": "Premier groupe : 63 sur 77 (81.8 %) ; second groupe : 147 sur 182 (80.8 %). La définition de Sensitization n'est pas donnée."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1139,
+    "sortie": 650
+  },
+  "cout_estime": 0.0004389,
+  "duree_s": 3.19,
+  "erreur": null
+}

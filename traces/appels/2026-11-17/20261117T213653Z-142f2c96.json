@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T21:36:53Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "1d28d848e5271b46a0e7bee80b28598b64830a84",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien de femmes de plus de 40 ans sont traitées pour une rhinite et présentent une sensibilisation positive, comparativement aux hommes du même âge ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 32,
+    "justification": "Parmi les 150 femmes de plus de 40 ans renseignées (254 patients retenus au total, 568 exclus pour rhinite non renseignée, code 9), 32 sont traitées pour rhinite et sensibilisées, contre 14 hommes sur 104 ; taux de 86.5 % chez les femmes (37 traitées) contre 87.5 % chez les hommes (16 traitées). Le groupe masculin traité compte 16 patients, moins de 30 : son taux est instable, et la différence de taux entre sexes n'est pas interprétable."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 26552,
+    "sortie": 2689
+  },
+  "cout_estime": 0.0039997,
+  "duree_s": 15.82,
+  "erreur": null
+}

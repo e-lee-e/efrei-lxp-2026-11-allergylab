@@ -139,3 +139,9 @@ def test_consigne_de_b_et_format_du_kit_dans_les_instructions(mini, monkeypatch)
     monkeypatch.setattr(agent.modele, "ModeleKit", lambda: ModeleScripte())
     consigne = agent.construire("ferme").instructions
     assert agent.CONSIGNE.strip() in consigne and reponse.FORMAT in consigne and "chercher_colonne" in consigne
+
+
+def test_deux_outils_seulement():
+    """Chaque description d'outil est repayée à chaque étape : on n'en offre que deux, courtes."""
+    assert [outil.name for outil in agent.OUTILS] == ["calculer", "chercher_colonne"]
+    assert sum(len(outil.description) + len(str(outil.inputs)) for outil in agent.OUTILS) < 2600

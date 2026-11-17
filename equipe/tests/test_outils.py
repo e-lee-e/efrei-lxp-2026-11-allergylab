@@ -1,16 +1,19 @@
-"""Les outils, testés sur une table inventée. Aucun réseau, aucun modèle, aucun jeton.
+"""Lecture des cellules du fichier et calculs par groupe, sur une table inventée.
 
 La table est fausse exprès : elle contient un 9 (non renseigné), une cellule à
 valeurs multiples, une case vide et un sexe inconnu, pour vérifier que les
-denominateurs sont justes.
+dénominateurs sont justes. Ces cas viennent des anciens outils taux_par_groupe,
+taux_par_presence et positifs, fusionnés dans `calculer` ; les mêmes chiffres
+doivent sortir. Aucun réseau, aucun modèle, aucun jeton.
 """
 
 import pandas as pd
 import pytest
 
+from equipe.outils import calculer
 from equipe.outils.champs import codes, texte
-from equipe.outils.positives import _positifs
-from equipe.outils.taux import _presence, _taux
+from equipe.outils.positives import chiffres
+from garde_fous import sans_fichier_reel, sans_reseau, sans_vraie_cle  # noqa: F401  (actifs d'office)
 
 
 @pytest.fixture
@@ -19,68 +22,84 @@ def tableau():
         {
             "Gender": [1.0, 0.0, 1.0, 0.0, None, 9.0, 1.0, 0.0, 1.0, 0.0],
             "Sensitization": [1, 1, 0, 1, 1, 1, 9, 0, 1, 0],
-            "General_cofactors": ["1, 10", "9", "4, 5", "0", "", "1", "10", "2", "9", "4"],
+            "General_cofactors": ["1, 10", "9", "4, 5", "0", None, "1", "10", "2", "9", "4"],
             "Bet_v_1": [0.5, 2.0, None, 0.3, 1.0, 0.0, 5.0, None, 0.29, 1.5],
         }
     )
 
 
 def test_texte_ramene_les_flottants_entiers():
-    assert texte(1.0) == "1"
-    assert texte("9") == "9"
-    assert texte(None) is None
+    assert texte(1.0) == "1" and texte("9") == "9" and texte(None) is None
 
 
 def test_codes_separe_les_valeurs_multiples_et_ecarte_le_9():
     assert codes("4, 5, 10") == {"4", "5", "10"}
-    assert codes("9") == set()
-    assert codes("") == set()
-    assert codes(None) == set()
+    assert codes("9") == set() and codes("") == set() and codes(None) == set()
 
 
-def test_taux_exclut_les_non_renseignes_et_les_vides(tableau):
-    resume = _taux(tableau, "Gender", "Sensitization", "1")
-    assert "1 : 2 sur 3 (66.7 %)" in resume
-    assert "0 : 2 sur 4 (50.0 %)" in resume
-    # 1 sexe vide, 1 sexe à 9, 1 sensibilisation à 9 : trois lignes hors dénominateur.
-    assert "3 ligne(s) sans groupe ou sans valeur, exclues." in resume
+def test_taux_par_groupe_exclut_les_non_renseignes_et_les_vides(tableau):
+    """Ancien taux_par_groupe : par sexe, la part sensibilisée, sans le 9 ni le vide."""
+    phrase = calculer.calculer_sur(tableau, "pourcentage", filtre="Sensitization=1", par="Gender")
+    assert "1 : 66.6667 % des patients (2 sur 3" in phrase
+    assert "0 : 50 % des patients (2 sur 4" in phrase
+    assert "2 patients sans valeur écartés" in phrase  # le sexe vide et le sexe à 9
 
 
 def test_taux_ne_confond_pas_1_et_10(tableau):
-    resume = _taux(tableau, "Gender", "General_cofactors", "1")
-    # Groupe 1 : « 1, 10 » porte le code, « 4, 5 » et « 10 » ne le portent pas.
-    assert "1 : 1 sur 3 (33.3 %)" in resume
-    assert "0 : 0 sur 3 (0.0 %)" in resume
+    """« 1 » ne se trouve pas dans « 10 » : on compare le code exact de la cellule."""
+    phrase = calculer.calculer_sur(tableau, "pourcentage", filtre="General_cofactors=1", par="Gender")
+    assert "1 : 33.3333 % des patients (1 sur 3" in phrase
+    assert "0 : 0 % des patients (0 sur 3" in phrase
 
 
-def test_taux_signale_une_colonne_inconnue(tableau):
-    assert "colonne inconnue" in _taux(tableau, "Sexe", "Sensitization", "1")
-
-
-def test_positifs_ecarte_les_cases_vides_du_denominateur(tableau):
-    resume = _positifs(tableau, "Bet_v_1", 0.3)
-    assert "6 positifs sur 8 mesurés (75.0 %)" in resume
-
-
-def test_positifs_ventile_par_groupe(tableau):
-    resume = _positifs(tableau, "Bet_v_1", 0.3, "Gender")
-    assert "1 : 2 sur 3 (66.7 %)" in resume
-    assert "0 : 3 sur 3 (100.0 %)" in resume
-
-
-def test_positifs_signale_une_molecule_inconnue(tableau):
-    assert "colonne inconnue" in _positifs(tableau, "Bet_v_9", 0.3)
-
-
-def test_presence_regroupe_plusieurs_codes():
-    """Un groupe défini par plusieurs codes (traité = 1 à 4) contre ceux qui n'en portent aucun."""
+def test_taux_par_presence_regroupe_plusieurs_codes():
+    """Ancien taux_par_presence : traité = 1 à 4 (cellule « 1,3 » comprise), contre non traité."""
     table = pd.DataFrame(
         {
             "Treatment_of_rhinitis": ["0", "1", "3", "9", "1,3", "1", None],
             "Sensitization": ["1", "1", "1", "1", "0", "0", "1"],
         }
     )
-    resume = _presence(table, "Treatment_of_rhinitis", ["1", "2", "3", "4"], "Sensitization", "1")
-    assert "porte 1/2/3/4 : 2 sur 4 (50.0 %)" in resume
-    assert "aucun de ces codes : 1 sur 1 (100.0 %)" in resume
-    assert "2 ligne(s) sans valeur, exclues" in resume
+    phrase = calculer.calculer_sur(
+        table, "pourcentage", filtre="Sensitization=1", par="Treatment_of_rhinitis dans 1,2,3,4"
+    )
+    assert "oui : 50 % des patients (2 sur 4" in phrase
+    assert "non : 100 % des patients (1 sur 1" in phrase
+    assert "2 patients sans valeur écartés" in phrase  # le 9 et la case vide
+
+
+def test_cellule_multi_codes_comptee_une_fois_par_code():
+    """Le cas des questions fausses : « 1,3 » ne doit pas être jetée comme un nombre illisible."""
+    table = pd.DataFrame({"Treatment_of_athsma": ["1", "1,3", "3", "0", "10", "6,7"]})
+    assert calculer.calculer_sur(table, "compter", filtre="Treatment_of_athsma=3").startswith("2 patients")
+    assert calculer.calculer_sur(table, "compter", filtre="Treatment_of_athsma dans 6,7,8").startswith("1 patients")
+    assert calculer.calculer_sur(table, "compter", filtre="Treatment_of_athsma=1").startswith("2 patients")  # pas le 10
+
+
+def test_positifs_ecarte_les_cases_vides_du_denominateur(tableau):
+    """Ancien positifs : un dosage vide n'est pas un zéro, il sort du dénominateur."""
+    phrase = calculer.calculer_sur(tableau, "pourcentage", filtre="Bet_v_1>=0.3")
+    assert phrase.startswith("75 % des patients (6 sur 8, 2 sans valeur ignorés")
+
+
+def test_positifs_ventile_par_groupe(tableau):
+    phrase = calculer.calculer_sur(tableau, "pourcentage", filtre="Bet_v_1>=0.3", par="Gender")
+    assert "1 : 66.6667 % des patients (2 sur 3" in phrase
+    assert "0 : 100 % des patients (3 sur 3" in phrase
+
+
+def test_chiffres_du_routeur_donnent_les_memes_nombres(tableau):
+    """Le routeur garde son propre calcul : il doit rester d'accord avec calculer."""
+    calcul = chiffres(tableau, "Bet_v_1", 0.3)
+    assert (calcul["positifs"], calcul["n"]) == (6, 8)
+
+
+def test_par_refuse_trop_de_groupes():
+    table = pd.DataFrame({"Patient_ID": [f"P{i}" for i in range(11)], "Age": range(11)})
+    with pytest.raises(ValueError, match="trop de groupes"):
+        calculer.calculer_sur(table, "compter", par="Patient_ID")
+
+
+def test_par_colonne_inconnue_dit_quoi_faire(tableau):
+    with pytest.raises(ValueError, match="chercher_colonne"):
+        calculer.calculer_sur(tableau, "compter", par="Sexe")

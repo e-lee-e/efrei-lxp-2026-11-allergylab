@@ -43,8 +43,6 @@ from kit.donnees import charger
 from equipe import cache, hors_sujet, routeur, traducteur
 from equipe.outils.calculer import calculer
 from equipe.outils.chercher_colonne import chercher_colonne
-from equipe.outils.positives import positifs
-from equipe.outils.taux import taux_par_groupe, taux_par_presence
 
 CONSIGNE = (Path(__file__).parent / "consigne.md").read_text(encoding="utf-8")
 
@@ -52,6 +50,7 @@ CONSIGNE = (Path(__file__).parent / "consigne.md").read_text(encoding="utf-8")
 NOTE_OUTILS = """
 
 Outils : pour tout calcul sur les patients, cherche le nom exact de la colonne avec chercher_colonne, puis calcule avec calculer. Ne refais pas à la main un calcul que calculer sait faire.
+calculer lit seul les cellules à plusieurs codes (« 1,3 ») et écarte le code 9.
 Si calculer répond « ABSTENTION », reprends sa raison dans la justification et rends le statut "abstention" sans valeur."""
 
 VARIANTE = os.environ.get("ALLERGYLAB_VARIANTE", "ouvert")  # "ouvert", "ferme" ou "outils"
@@ -60,8 +59,10 @@ VARIANTE = os.environ.get("ALLERGYLAB_VARIANTE", "ouvert")  # "ouvert", "ferme" 
 # jusqu'à 0,008 $, et la question de l'âge a consommé quatre étapes pile.
 ETAPES_MAX = int(os.environ.get("ALLERGYLAB_ETAPES_MAX", "5"))
 
-# Les outils de l'équipe : ceux du camarade (calculer, chercher_colonne) et les nôtres.
-OUTILS = [calculer, chercher_colonne, taux_par_groupe, taux_par_presence, positifs]
+# Deux outils, pas cinq : chaque description est repayée à chaque étape (1 127
+# caractères pour cinq outils). Les taux par groupe, par présence de codes et les
+# positifs au-dessus d'un seuil sont des cas de `calculer` (voir outils/calculer.py).
+OUTILS = [calculer, chercher_colonne]
 
 def raccourcis():
     """Les couches gratuites peuvent être coupées, pour mesurer l'agent seul."""

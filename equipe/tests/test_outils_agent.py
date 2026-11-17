@@ -161,3 +161,17 @@ def test_chercher_colonne_limite_les_resultats(mini, monkeypatch):
 def test_chercher_colonne_mot_vide(mini):
     with pytest.raises(ValueError, match="vide"):
         chercher_colonne.chercher_dans(mini, "  ")
+
+
+@pytest.mark.parametrize("filtre, morceau", [
+    ("Chip_Type>ALEX", "seuls ="),  # un ordre n'a pas de sens sur un texte
+    ("Age dans", "illisible"),
+    ("Age dans vieux,jeune", "n'en est pas un"),
+])
+def test_filtre_dans_et_texte_dit_quoi_faire(filtre, morceau, mini):
+    with pytest.raises(ValueError, match=morceau):
+        calculer.calculer_sur(mini, "compter", "", filtre)
+
+
+def test_dans_sur_un_nombre(mini):
+    assert calculer.calculer_sur(mini, "compter", "", "Age dans 8,34").startswith("2 patients")

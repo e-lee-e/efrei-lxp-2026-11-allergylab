@@ -47,8 +47,28 @@ VOCABULAIRE = (
 # Les fautes de frappe courantes ne se devinent pas par ressemblance (« dent »
 # n'est pas proche de « dans »). Une petite table phonétique les couvre, bornée
 # volontairement aux mots outils : on ne corrige jamais un nom de variable.
+# Les mots courants qu'il ne faut JAMAIS « corriger » : « ont » est à une lettre de
+# « sont », et difflib le remplaçait — la question changeait de sens sans que rien
+# ne le signale. Un mot juste ne doit jamais être retouché.
+JAMAIS_CORRIGE = frozenset(
+    """ont sont est et a on il elle ils elles un une des de du le la les que qui quoi
+    quel quelle quels quelles plus moins souvent combien patient patients patiente
+    patientes jeu fichier tableau donnees dataset age annees ans puce region
+    departement traitement sensibilisation cutane rhinite asthme rural ville
+    homme femme hommes femmes total nombre""".split()
+)
+
 TYPO = {
-    "dent": "dans", "ds": "dans", "dnas": "dans", "dan": "dans", "dens": "dans",
+    "dent": "dans",
+    "til": "t il",
+    "cb": "combien",
+    "cbien": "combien",
+    "kombien": "combien",
+    "kombyen": "combien",
+    "comb1en": "combien",
+    "vs": "vous",
+    "dansle": "dans le",
+    "dufichier": "du fichier", "ds": "dans", "dnas": "dans", "dan": "dans", "dens": "dans",
     "ke": "que", "kes": "que", "kel": "quel", "kelle": "quelle", "koi": "quoi", "ki": "qui",
     "bcp": "beaucoup", "pcq": "parce", "pck": "parce", "ske": "ce", "chui": "je", "jsuis": "je",
     "ya": "y a", "commen": "combien", "kombien": "combien", "comb1": "combien",
@@ -73,7 +93,10 @@ def corriger(question):
     corriges = []
     for mot in question.split():
         mot = TYPO.get(mot, mot)
-        if mot in VOCABULAIRE:  # un mot correct ne se « corrige » pas vers un voisin
+        # Un mot correct ne se « corrige » pas vers un voisin, et surtout pas un
+        # mot courant : « ont » est à une lettre de « sont », et le remplacer
+        # change le sens de la question sans que rien ne le signale.
+        if mot in VOCABULAIRE or mot in JAMAIS_CORRIGE:
             corriges.append(mot)
         else:
             corriges.append(_proche(mot) or mot)

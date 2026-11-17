@@ -39,8 +39,13 @@ def _plat(texte):
     # « ya-t-il » est une faute de frappe courante de « y a-t-il » : sans cette
     # réécriture, la question la plus banale du fichier escalade.
     sans_accent = re.sub(r"\bya([\s-])", r"y a\1", sans_accent)
+    # « l'age » n'est pas un mot : c'est « l' » et « age ». Sans ce découpage, aucune
+    # question écrite avec une élision ne passe, même parfaitement orthographiée.
+    sans_accent = re.sub(r"'", " ", sans_accent)
     return " ".join(sans_accent.split())
 
+
+INTRO = r"(?:quell?e? (?:est|sont)? ?|c est quoi |qu est ce que |combien fait |donne moi )?"
 
 POLITESSE = r"(?:merci beaucoup|merci d avance|merci|svp|stp|s il te plait|s il vous plait|please)"
 
@@ -72,7 +77,7 @@ def _lignes(question, tableau):
 
 def _age_median(question, tableau):
     """« Quel est l'âge médian des patients ? »"""
-    motif = r"(?:quel(?:le)? (?:est )?|quelle (?:est )?)?(?:l'? ?)?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = INTRO + r"(?:l ?)?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")
@@ -119,7 +124,7 @@ def _positifs(question, tableau):
 
 def _age_moyen(question, tableau):
     """« Quel est l'âge moyen des patients ? »"""
-    motif = r"(?:quel(?:le)? (?:est )?|quelle (?:est )?)?(?:l'? ?)?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = INTRO + r"(?:l ?)?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")
@@ -380,6 +385,10 @@ VIDES_COMPARAISON = frozenset({"autres", "reste", "comparaison", "compare", "eca
 BRUIT = BRUIT | frozenset(
     {"dataset", "donnees", "fichier", "tableau", "jeu", "se", "sa", "tous", "zone", "zones",
      "patient", "patients", "sujet", "sujets", "personne", "personnes",
+     "tu", "peux", "peut", "je", "me", "te", "nous", "vous", "dire", "dites", "dis",
+     "svp", "stp", "merci", "s'il", "te", "plait", "plaît", "alors", "donc", "juste",
+     "eu", "a", "ai", "ont", "vite", "voulais", "voudrais", "aimerais", "savoir", "vs",
+     "il", "ils", "elle", "elles", "on", "y", "t", "est", "sont", "etre", "ete",
      "on", "ont"}
 )
 
@@ -542,6 +551,29 @@ ROUTES = (
 )
 
 
+# Les mots de politesse et les pronoms, qui ne portent rien : à ne pas confondre
+# avec BRUIT, qui contient aussi les mots d'intention (« combien », « plus »,
+# « souvent ») — les retirer viderait la phrase de sa question.
+REMPLISSAGE = frozenset(
+    """tu peux peut je me te nous vous vs dire dites dis svp stp merci alors donc
+    juste vite voulais voudrais aimerais savoir y t il ils elle elles on a
+    pouvez pourriez pourrais pourra peux-tu pouvez-vous pourriez-vous
+    bonjour bonsoir salut hello m c qu""".split()
+)
+
+
+def _nue(texte):
+    """La phrase dépouillée des mots qui ne portent rien : « combien y a t il de patients » devient « combien de patients ».
+
+    Les motifs stricts supposent l'intention collée à son objet. Ce n'est pas ainsi
+    qu'on écrit : on intercale « y a-t-il », « s'il vous plaît », « tu peux me dire ».
+    Cette forme est essayée en dernier, quand les autres ont échoué.
+    """
+    return " ".join(
+        mot for mot in texte.split() if mot.strip("?!.,;:") not in REMPLISSAGE
+    )
+
+
 def router(question, tableau=None):
     """La réponse locale, ou None si aucune route ne reconnaît la question."""
     plat = _sans_politesse(_plat(question))
@@ -558,7 +590,7 @@ def router(question, tableau=None):
     # Repli tolérant : même intention, ordre libre et fautes corrigées. Une route
     # stricte n'est qu'un chemin propre ; celui-ci accepte les chemins de traverse.
     corrigee = langage.corriger(plat)
-    for texte in (plat, corrigee):
+    for texte in (plat, corrigee, _nue(corrigee)):
         for route in ROUTES:  # un motif strict peut se déclencher après correction
             reponse = route(texte, tableau)
             if reponse is not None:

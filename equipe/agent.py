@@ -19,7 +19,7 @@ from pathlib import Path
 from smolagents import CodeAgent
 
 from kit import modele, reponse
-from equipe import cache, routeur
+from equipe import cache, hors_sujet, routeur
 from equipe.outils.positives import positifs
 from equipe.outils.taux import taux_par_groupe, taux_par_presence
 
@@ -49,6 +49,15 @@ def repondre(question):
         modele.journal["moteur"] = "cache"
         modele.journal["modele"] = "cache"
         return gardee
+
+    # Question hors sujet : aucune variable du fichier n'y figure, un autre sujet
+    # y est nommé. Abstention locale, zéro jeton, et la question n'entre pas dans
+    # le cache (elle ne dépend d'aucune donnée).
+    refus = hors_sujet.examiner(question)
+    if refus is not None:
+        modele.journal["moteur"] = "hors-sujet"
+        modele.journal["modele"] = "local"
+        return refus
 
     # Question reconnaissable : la réponse est calculée ici, sans modèle, zéro jeton.
     locale = routeur.router(question)

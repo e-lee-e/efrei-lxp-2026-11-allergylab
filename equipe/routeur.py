@@ -23,7 +23,9 @@ from equipe.outils.champs import NON_RENSEIGNE, codes as _codes, texte as _texte
 from equipe.outils.positives import chiffres
 
 # Mots tolérés après le motif de comptage : ils ne changent pas la question.
-FIN = r"(?: (?:y|a|t|il|compte|contient|dans|le|ce|cet|tableau|fichier|jeu|au|total|en|tout|du))*\s*\??"
+# Les tirets sont acceptés comme séparateurs (« y a-t-il »), et la politesse est
+# retirée avant le match par _sans_politesse.
+FIN = r"(?:[\s-]+(?:y|a|t|il|compte|contient|dans|le|ce|cet|tableau|fichier|jeu|au|total|en|tout|du))*\s*\??"
 
 
 def _plat(texte):
@@ -33,13 +35,29 @@ def _plat(texte):
     return " ".join(sans_accent.split())
 
 
+POLITESSE = r"(?:merci beaucoup|merci d avance|merci|svp|stp|s il te plait|s il vous plait|please)"
+
+
+def _sans_politesse(question):
+    """Retire les formules de politesse finales : elles ne changent pas la question."""
+    retour = question
+    while True:
+        court = re.sub(r"[\s,.!]*" + POLITESSE + r"[\s?!.,;]*$", "", retour).strip()
+        if court == retour:
+            return retour
+        retour = court
+
+
 def _reponse(valeur, justification):
     return {"statut": "reponse", "valeur": valeur, "justification": justification}
 
 
 def _lignes(question, tableau):
     """« Combien de lignes compte le tableau ? »"""
-    if not re.fullmatch(r"combien(?: de| d)? (?:lignes?|patients?|individus?|cas)" + FIN, question):
+    if not re.fullmatch(
+        r"(?:il y a )?combien(?: de| d)? (?:lignes?|patients?|patientes?|individus?|cas)" + FIN,
+        question,
+    ):
         return None
     total = len(tableau)
     return _reponse(total, f"Le tableau compte {total} lignes au total, sans filtrage.")
@@ -47,7 +65,7 @@ def _lignes(question, tableau):
 
 def _age_median(question, tableau):
     """« Quel est l'âge médian des patients ? »"""
-    motif = r"(?:quel(?:le)? est |quelle est )?l'? ?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = r"(?:quel(?:le)? est |quelle est )?(?:l'? ?)?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")
@@ -94,7 +112,7 @@ def _positifs(question, tableau):
 
 def _age_moyen(question, tableau):
     """« Quel est l'âge moyen des patients ? »"""
-    motif = r"(?:quel(?:le)? est |quelle est )?l'? ?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = r"(?:quel(?:le)? est |quelle est )?(?:l'? ?)?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")
@@ -144,7 +162,7 @@ def _plus_moins_de_ans(question, tableau):
 def _taux_jeunes(question, tableau):
     """« Quelle proportion des patients de moins de 18 ans est sensibilisée ? »"""
     trouve = re.fullmatch(
-        r"(?:quelle est la |quelle )?(?:proportion|part|taux) des patients de moins de (\d+) ans"
+        r"(?:quelle est la |quelle )?(?:proportion|part|taux) de(?:s)? patients de moins de (\d+) ans"
         r"(?: est| sont| qui sont)? sensibilise\w*" + FIN,
         question,
     )
@@ -204,7 +222,7 @@ ROUTES = (
 
 def router(question, tableau=None):
     """La réponse locale, ou None si aucune route ne reconnaît la question."""
-    plat = _plat(question)
+    plat = _sans_politesse(_plat(question))
     tableau = cache.tableau() if tableau is None else tableau
     for route in ROUTES:
         reponse = route(plat, tableau)

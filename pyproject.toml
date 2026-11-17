@@ -18,7 +18,7 @@ dev = ["pytest"]
 kit = "kit.cli:main"
 
 [build-system]
-requires = ["uv_build>=0.9,<0.12"]
+requires = ["uv_build>=0.9,<0.14"]
 build-backend = "uv_build"
 
 # Le paquet kit/ est à la racine du dépôt, pas dans un dossier src/.

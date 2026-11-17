@@ -2,6 +2,13 @@
 
 Ce dépôt est le kit de démarrage d'une semaine intensive à l'EFREI, du 16 au 20 novembre 2026. Vingt étudiants de deuxième année, bases de Python, l'installent sur leur portable personnel et construisent dessus un agent d'analyse de données de santé. Le dépôt est public et le kit s'y développe directement : tout commit poussé est lu par eux, ce fichier compris, messages de commit compris.
 
+## Deux sortes de dépôts
+
+Ce fichier sert dans le dépôt du kit et dans les dépôts d'équipe, qui en sont des copies. `equipe.toml` dit où l'on est.
+
+- `equipe = "accueil"` : c'est le dépôt du kit. Tout ce qui suit s'applique.
+- `equipe = "equipe-N"` : c'est le dépôt d'une équipe d'étudiants, et les règles 1, 2, 6 et 7 ne s'y appliquent pas. Dans `equipe/`, `README.md` et `JOURNAL.md`, l'équipe écrit librement ses outils d'analyse, sa consigne, sa règle d'abstention, ses questions de contrôle et leurs réponses. Elle ajoute une bibliothèque par `uv add` et appelle le modèle dans la limite de sa cagnotte. Les règles 3, 4 et 5 valent toujours. Le dossier `kit/` ne se modifie pas : l'animateur le met à jour.
+
 ## Règle zéro
 
 Lire `SPEC.md` avant toute modification. Elle fait foi. Si une demande contredit la spec ou une règle ci-dessous : s'arrêter, le signaler, ne pas improviser d'exception.
@@ -39,6 +46,10 @@ uv run kit installer      installe, vérifie les données, demande la clé
 uv run kit cle            enregistre ou remplace la clé
 uv run kit controle       RÉUSSITE (code 0) ou ÉCHEC (code 1) ; --hors-ligne saute l'appel au modèle
 uv run kit agent "…"      pose une question à l'agent de l'équipe
+uv run kit pousser        envoie les traces vers le dépôt de l'équipe
+uv run kit evaluer        fait passer une batterie de questions à l'agent
+uv run kit noter          note après coup une trace d'évaluation
+uv run kit bilan          tableau des exécutions passées
 uv run pytest -q          tous les tests, hors ligne
 ```
 
@@ -103,6 +114,7 @@ Le kit tourne sous macOS, Windows et Linux, sans droits d'administrateur. Une ma
 - Un commit par chantier, message en français, à l'infinitif.
 - `git add` avec des chemins explicites. Jamais `-A`, jamais `-a`, jamais `.`.
 - Ne pas pousser, ne pas créer de dépôt, ne pas modifier l'organisation, sauf si le prompt le demande.
+- Dans le dépôt du kit, ne jamais modifier `equipe/`, `equipe.toml`, `README.md` ni `JOURNAL.md` : ces fichiers appartiennent aux équipes, et un changement y ferait échouer la mise à jour de leurs dépôts.
 
 ## Fini, c'est quand
 

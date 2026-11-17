@@ -19,7 +19,7 @@ from pathlib import Path
 from smolagents import CodeAgent
 
 from kit import modele, reponse
-from equipe import cache, hors_sujet, routeur
+from equipe import cache, hors_sujet, routeur, traducteur
 from equipe.outils.positives import positifs
 from equipe.outils.taux import taux_par_groupe, taux_par_presence
 
@@ -65,6 +65,16 @@ def repondre(question):
         modele.journal["moteur"] = "routeur"
         modele.journal["modele"] = "local"
         return locale
+
+    # Traduction en requête canonique : le modèle ne calcule rien, il choisit une
+    # opération et ses paramètres dans une liste fermée ; le code exécute. Dix fois
+    # moins cher qu'une analyse complète, et le calcul est déterministe.
+    requete = traducteur.traduire(question)
+    if requete is not None:
+        calculee = traducteur.executer(requete, cache.tableau())
+        if calculee is not None:
+            modele.journal["moteur"] = "traducteur"
+            return calculee
 
     agent = CodeAgent(
         model=modele_du_jour(),  # Haiku, ou qwen3:8b local avec ALLERGYLAB_MODELE=local

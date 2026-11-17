@@ -41,12 +41,13 @@ type = "nombre"
 attendu = -0.333
 tolerance = 0.005
 
-# Abstention : groupe trop petit (2 patients de moins de 10 ans).
-# Vaut seulement si le seuil de la consigne est 3 ; sur le vrai fichier le groupe serait grand.
+# Petit groupe (2 patients de moins de 10 ans) : la consigne n'a pas de seuil, l'agent répond.
 [[question]]
 id = "q14"
 texte = "Quelle est la moyenne de Act_d_1 chez les patients de moins de 10 ans ?"
-type = "sans-reponse"
+type = "nombre"
+attendu = 0.65
+tolerance = 0.001
 
 # Abstention : pas de diagnostic d'allergie dans la table
 [[question]]

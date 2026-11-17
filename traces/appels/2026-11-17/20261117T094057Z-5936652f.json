@@ -1,0 +1,42 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T09:40:57Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "dbda8d10ad21c8d5",
+  "commit": "8ff3ae12cd059f6f49f46ef9c355e3848cab5994",
+  "modifie": false,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "L'écart de sensibilisation entre femmes et hommes persiste-t-il quand on tient compte de l'âge ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "oui",
+    "justification": "Sur 4 209 patients (62 exclus pour sexe, âge ou sensibilisation manquants), les hommes sont plus souvent sensibilisés que les femmes : 88,5 % (1 892/2 139) contre 80,9 % (1 674/2 070), soit 7,6 points. L'écart reste dans chaque tranche d'âge (0-17 ans : 89,0 % vs 83,2 %, n=1 439 et 832 ; 18-44 ans : 91,8 % vs 83,6 %, n=451 et 819 ; 45 ans et plus : 79,5 % vs 70,9 %, n=249 et 419), et après standardisation sur la structure d'âge globale il vaut environ 7,0 points (88,4 % vs 81,4 %). Les femmes sont plus âgées en moyenne (27,4 ans contre 18,9 ans), mais cela n'explique pas l'écart. Toutes les tranches dépassent 30 patients, et la définition de « Sensitization » n'est pas précisée dans le dictionnaire."
+  },
+  "etapes": [
+    {
+      "code": "import pandas as pd\nprint(tableau['Gender'].value_counts(dropna=False))\nprint(tableau['Sensitization'].value_counts(dropna=False))\nprint(tableau['Age'].describe())\nprint(tableau['Age'].isna().sum())",
+      "resultat": "Execution logs:\nGender\n1.0    2139\n0.0    2070\nNaN      62\nName: count, dtype: int64\nSensitization\n1    3579\n0     692\nName: count, dtype: int64\ncount    4210.000000\nmean       23.077435\nstd        18.633354\nmin         0.000000\n25%         9.000000\n50%        16.000000\n75%        35.000000\nmax       102.000000\nName: Age, dtype: float64\n61\nLast output from code snippet:\nNone"
+    },
+    {
+      "code": "import pandas as pd\nimport numpy as np\n\nd = tableau[['Gender','Age','Sensitization']].copy()\nn_total = len(d)\nd = d[d['Gender'].notna() & d['Age'].notna() & d['Sensitization'].notna()]\nprint(\"Lignes exclues (sexe ou âge manquant):\", n_total - len(d), \"sur\", n_total)\n\nd['Sexe'] = d['Gender'].map({0.0:'F', 1.0:'M'})\nbins = [-1, 17, 44, 200]\nlabels = ['0-17 ans', '18-44 ans', '45 ans et plus']\nd['Tranche'] = pd.cut(d['Age'], bins=bins, labels=labels)\n\ndef taux(g):\n    return pd.Series({'n': len(g), 'sensibilises': int(g['Sensitization'].sum()),\n                      'taux_%': round(100*g['Sensitization'].mean(), 1)})\n\nprint(\"Global par sexe:\")\nprint(d.groupby('Sexe').apply(taux))\nprint(\"\\nPar tranche d'âge et sexe:\")\nprint(d.groupby(['Tranche','Sexe'], observed=True).apply(taux))\n\n# Standardisation directe sur la structure d'âge globale (Mantel-Haenszel style)\nstrata = d.groupby(['Tranche','Sexe'], observed=True)['Sensitization'].agg(['mean','count']).reset_index()\nprint(\"\\nMoyenne d'âge par sexe:\")\nprint(d.groupby('Sexe')['Age'].mean().round(1))",
+      "resultat": "Erreur : Code execution failed at line 'import numpy as np' due to: InterpreterError: Import of numpy is not allowed. Authorized imports are: ['datetime', 'unicodedata', 'queue', 're', 'stat', 'pandas', 'math', 'time', 'statistics', 'random', 'collections', 'itertools']"
+    },
+    {
+      "code": "import pandas as pd\n\nd = tableau[['Gender','Age','Sensitization']].copy()\nn_total = len(d)\nd = d[d['Gender'].notna() & d['Age'].notna() & d['Sensitization'].notna()].copy()\nprint(\"Lignes exclues (sexe, âge ou sensibilisation manquant):\", n_total - len(d), \"sur\", n_total)\n\nd['Sexe'] = d['Gender'].map({0.0:'F', 1.0:'M'})\nd['Tranche'] = pd.cut(d['Age'], bins=[-1, 17, 44, 200], labels=['0-17 ans', '18-44 ans', '45 ans et plus'])\n\ndef taux(g):\n    return pd.Series({'n': len(g), 'sensibilises': int(g['Sensitization'].sum()),\n                      'taux_%': round(100*g['Sensitization'].mean(), 1)})\n\nprint(\"Global par sexe:\")\nprint(d.groupby('Sexe').apply(taux))\nprint(\"\\nPar tranche d'âge et sexe:\")\nprint(d.groupby(['Tranche','Sexe'], observed=True).apply(taux))\nprint(\"\\nMoyenne d'âge par sexe:\")\nprint(d.groupby('Sexe')['Age'].mean().round(1))",
+      "resultat": "Execution logs:\nLignes exclues (sexe, âge ou sensibilisation manquant): 62 sur 4271\nGlobal par sexe:\n           n  sensibilises  taux_%\nSexe                              \nF     2070.0        1674.0    80.9\nM     2139.0        1892.0    88.5\n\nPar tranche d'âge et sexe:\n                          n  sensibilises  taux_%\nTranche        Sexe                              \n0-17 ans       F      832.0         692.0    83.2\n               M     1439.0        1280.0    89.0\n18-44 ans      F      819.0         685.0    83.6\n               M      451.0         414.0    91.8\n45 ans et plus F      419.0         297.0    70.9\n               M      249.0         198.0    79.5\n\nMoyenne d'âge par sexe:\nSexe\nF    27.4\nM    18.9\nName: Age, dtype: float64\nLast output from code snippet:\nNone"
+    },
+    {
+      "code": "final_answer({\"statut\": \"reponse\", \"valeur\": \"oui\", \"justification\": \"Sur 4 209 patients (62 exclus pour sexe, âge ou sensibilisation manquants), les hommes sont plus souvent sensibilisés que les femmes : 88,5 % (1 892/2 139) contre 80,9 % (1 674/2 070), soit 7,6 points. L'écart reste dans chaque tranche d'âge (0-17 ans : 89,0 % vs 83,2 %, n=1 439 et 832 ; 18-44 ans : 91,8 % vs 83,6 %, n=451 et 819 ; 45 ans et plus : 79,5 % vs 70,9 %, n=249 et 419), et après standardisation sur la structure d'âge globale il vaut environ 7,0 points (88,4 % vs 81,4 %). Les femmes sont plus âgées en moyenne (27,4 ans contre 18,9 ans), mais cela n'explique pas l'écart. Toutes les tranches dépassent 30 patients, et la définition de « Sensitization » n'est pas précisée dans le dictionnaire.\"})",
+      "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 'oui', 'justification': \"Sur 4 209 patients (62 exclus pour sexe, âge ou sensibilisation manquants), les hommes sont plus souvent sensibilisés que les femmes : 88,5 % (1 892/2 139) contre 80,9 % (1 674/2 070), soit 7,6 points. L'écart reste dans chaque tranche d'âge (0-17 ans : 89,0 % vs 83,2 %, n=1 439 et 832 ; 18-44 ans : 91,8 % vs 83,6 %, n=451 et 819 ; 45 ans et plus : 79,5 % vs 70,9 %, n=249 et 419), et après standardisation sur la structure d'âge globale il vaut environ 7,0 points (88,4 % vs 81,4 %). Les femmes sont plus âgées en moyenne (27,4 ans contre 18,9 ans), mais cela n'explique pas l'écart. Toutes les tranches dépassent 30 patients, et la définition de « Sensitization » n'est pas précisée dans le dictionnaire.\"}"
+    }
+  ],
+  "jetons": {
+    "entree": 26438,
+    "sortie": 2828
+  },
+  "cout_estime": 0.0040578,
+  "duree_s": 15.7,
+  "erreur": "ReponseIllisible : la justification compte 4 phrases ; trois au plus."
+}

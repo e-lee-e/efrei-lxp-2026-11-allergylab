@@ -59,7 +59,7 @@ def _reponse(valeur, justification):
 def _lignes(question, tableau):
     """« Combien de lignes compte le tableau ? »"""
     if not re.fullmatch(
-        r"(?:il y a )?combien(?: de| d)? (?:lignes?|patients?|patientes?|individus?|cas)" + FIN,
+        r"(?:il y a )?combien(?: de| d)? (?:lignes?|patients?|individus?|cas)" + FIN,
         question,
     ):
         return None
@@ -268,6 +268,24 @@ def _taux_codes(tableau, colonne, codes_du_groupe, cible="Sensitization", code_c
     return int((du_groupe & cibles.map(lambda valeurs: code_cible in valeurs)).sum()), n
 
 
+def _puce_unique(question, tableau):
+    """« Combien de patients ont eu une puce ALEX ? »"""
+    trouve = re.fullmatch(
+        r"combien de patients? (?:ont|ont eu|ont recu|sont sous) (?:une |la )?puce (isac_v1|isac_v2|alex)" + FIN,
+        question,
+    )
+    if trouve is None or "Chip_Type" not in tableau.columns:
+        return None
+    puce = trouve.group(1).upper()
+    valeurs = tableau["Chip_Type"].map(_texte)
+    nombre = int((valeurs == puce).sum())
+    return _reponse(
+        nombre,
+        f"{nombre} patients sur {len(tableau)} ont eu la puce {puce}. "
+        f"Les trois puces ne mesurent pas les mêmes molécules.",
+    )
+
+
 def _comparaison(question, tableau):
     """« Les femmes sont-elles plus souvent sensibilisées que les hommes ? »
 
@@ -358,7 +376,7 @@ VIDES_COMPARAISON = frozenset({"autres", "reste", "comparaison", "compare", "eca
 # Contexte : ces mots désignent le fichier sans le paramétrer.
 BRUIT = BRUIT | frozenset(
     {"dataset", "donnees", "fichier", "tableau", "jeu", "se", "sa", "tous", "zone", "zones",
-     "patient", "patients", "patiente", "patientes", "sujet", "sujets", "personne", "personnes",
+     "patient", "patients", "sujet", "sujets", "personne", "personnes",
      "on", "ont"}
 )
 
@@ -487,7 +505,9 @@ def _sac_effectifs(question, tableau):
     if any(mot.startswith("sensibilis") for mot in mots):
         return None
     groupes = _groupes_dans(mots)
-    if len(groupes) != 2 or groupes[0][1][0] != groupes[1][1][0]:
+    if not groupes or len(groupes) > 2:
+        return None
+    if len(groupes) == 2 and groupes[0][1][0] != groupes[1][1][0]:
         return None
     consommes = {mot for nom, _groupe_trouve in groupes for mot in nom.split()}
     if not _reste_explique(mots, consommes, frozenset()):
@@ -513,6 +533,7 @@ ROUTES = (
     _plus_moins_de_ans,
     _taux_jeunes,
     _region_dominante,
+    _puce_unique,
     _comparaison,
     _positifs,
 )

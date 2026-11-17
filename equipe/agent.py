@@ -19,7 +19,7 @@ from pathlib import Path
 from smolagents import CodeAgent
 
 from kit import modele, reponse
-from equipe import cache, hors_sujet, routeur, traducteur
+from equipe import cache, hors_sujet, reformulateur, routeur, traducteur
 from equipe.outils.positives import positifs
 from equipe.outils.taux import taux_par_groupe, taux_par_presence
 
@@ -65,6 +65,16 @@ def repondre(question):
         modele.journal["moteur"] = "routeur"
         modele.journal["modele"] = "local"
         return locale
+
+    # Reformulation locale : un petit modèle réécrit la question dans une forme que
+    # le routeur connaît déjà. Gratuit, un demi-seconde, et sans réseau.
+    reecrite = reformulateur.reformuler(question)
+    if reecrite and reecrite != question:
+        locale = routeur.router(reecrite)
+        if locale is not None:
+            modele.journal["moteur"] = "reformulateur"
+            modele.journal["modele"] = "local"
+            return locale
 
     # Traduction en requête canonique : le modèle ne calcule rien, il choisit une
     # opération et ses paramètres dans une liste fermée ; le code exécute. Dix fois

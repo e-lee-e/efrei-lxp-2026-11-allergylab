@@ -37,6 +37,11 @@ URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
 # double la taille (1,4 Go) et réussit 4 sur 4, pour qui a la mémoire.
 NOM = os.environ.get("ALLERGYLAB_REFORMULATEUR", "qwen3:0.6b")
 
+# Le serveur local a déjà bloqué une passe entière : après un échec, on le laisse
+# tranquille jusqu'à la fin du processus. Un raccourci qui coûte du temps n'en est
+# plus un.
+_EN_PANNE = False
+
 CONSIGNE = """Réécris la question en français simple, sans rien ajouter ni retirer.
 Formes acceptées, choisis la plus proche :
 - Combien de lignes compte le tableau ?
@@ -103,8 +108,17 @@ def _nombres(texte):
     return set(re.findall(r"\d+(?:[.,]\d+)?", str(texte)))
 
 
-def reformuler(question, delai=60):
-    """La question réécrite par le modèle local, ou None si la réécriture n'est pas sûre."""
+def reformuler(question, delai=12):
+    """La question réécrite par le modèle local, ou None si la réécriture n'est pas sûre.
+
+    Le délai est court exprès : ce module est un raccourci, pas une dépendance. Un
+    serveur chargé a fait attendre une passe entière cinq minutes ; douze secondes
+    suffisent largement pour une phrase de soixante jetons, et au-delà on escalade.
+    Après le premier échec, on ne rappelle plus le serveur de la session : une
+    machine qui ne répond pas ne répondra pas mieux à la question suivante.
+    """
+    if _EN_PANNE:
+        return None
     corps = {
         "model": NOM,
         "messages": [
@@ -124,6 +138,7 @@ def reformuler(question, delai=60):
         with urllib.request.urlopen(requete, timeout=delai) as reponse:
             contenu = json.loads(reponse.read()).get("message", {}).get("content", "")
     except (OSError, ValueError):
+        globals()["_EN_PANNE"] = True
         return None
 
     reecrite = " ".join(str(contenu).strip().strip('"').split())
@@ -131,6 +146,8 @@ def reformuler(question, delai=60):
         return None
     if _nombres(reecrite) != _nombres(question):
         return None  # un nombre est apparu ou a disparu : on ne fait pas confiance
-    if _sens(question) - _sens(reecrite):
+    # Ni perdre un concept, ni en inventer un : « à partir de quel seuil Act_d_1
+    # est-il positif » ne doit jamais devenir une question sur les puces.
+    if _sens(question) - _sens(reecrite) or _sens(reecrite) - _sens(question):
         return None  # un mot porteur de sens a disparu : la question a changé
     return reecrite

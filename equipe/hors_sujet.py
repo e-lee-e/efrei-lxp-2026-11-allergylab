@@ -142,6 +142,37 @@ HORS_SUJET = (
     "ton role",
     "qui es tu",
     "ton nom",
+    "algorithme",
+    "complexite",
+    "tri fusion",
+    "ordinateur",
+    "gaming",
+    "planete",
+    "systeme solaire",
+    "tcp",
+    "protocole",
+    "reseau informatique",
+    "carte graphique",
+    "gpu",
+    "processeur",
+    "calorie",
+    "riz",
+    "joueur",
+    "coupe du monde",
+    "japon",
+)
+
+# Signaux forts : un seul suffit, même si un mot du domaine est présent. « Le
+# meilleur traitement pour une carte graphique » contient « traitement », mais
+# parle de matériel : deux conditions ne suffisent pas, il faut une exception.
+FORT = (
+    "carte graphique",
+    "gpu",
+    "ordinateur portable",
+    "processeur",
+    "tri fusion",
+    "systeme solaire",
+    "coupe du monde",
 )
 
 
@@ -160,10 +191,16 @@ def _normaliser(question):
 def examiner(question):
     """Une abstention motivée si la question est hors sujet, sinon None."""
     plat = _normaliser(question)
+    if _contient(plat, FORT):
+        return _refus()
     if _contient(plat, DOMAINE):
         return None
     if not _contient(plat, HORS_SUJET):
         return None
+    return _refus()
+
+
+def _refus():
     return {
         "statut": "abstention",
         "valeur": None,

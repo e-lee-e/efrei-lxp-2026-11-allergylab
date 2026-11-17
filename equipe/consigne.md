@@ -22,8 +22,9 @@ catégorie.
 - Treatment_of_rhinitis 0=aucun, 1=anti-H1 local, 2=anti-H1 général,
   3=anti-H1+corticoïde local, 4=corticoïde général
 - Treatment_of_athsma 0=aucun, 1=SABA à la demande, 2=ICS faible, 3=ICS/LABA
-  faible, 4=ICS/LABA moyen ou fort, 5=ICS/LABA fort ou long cours, 6=anti-IL5,
-  7=anti-IL4/13, 8=non répondeur, 10=LTRA avec ou sans ICS faible
+  faible, 4=ICS/LABA moyen ou fort, 5=ICS/LABA fort ou long cours, 6=anti-IL5
+  (biothérapie), 7=anti-IL4/13 (biothérapie), 8=non répondeur à la biothérapie,
+  10=LTRA avec ou sans ICS faible · « sous biothérapie » = codes 6, 7 ou 8
 - Age_of_onsets (anaphylaxie alimentaire) 0=aucune, 1=avant 6 mois, 2=6 mois à
   2 ans, 3=2 à 3 ans, 4=3 à 10 ans, 5=10 à 20 ans, 6=après 20 ans
 - General_cofactors (cumulables) 0=aucun, 1=effort, 2=AINS, 3=alcool,
@@ -31,6 +32,8 @@ catégorie.
   11=mucoviscidose, 12=IPP
 - Treatment_of_atopic_dematitis 0=aucun, 1=émollients, 2=dermocorticoïdes,
   3=Protopic, 4=ciclosporine, 5=Dupilumab, 6=Upadacitinib, 7=Baricitinib
+- Une cellule peut porter deux codes séparés par une virgule (« 1,3 ») : elle vaut
+  les deux. Ne la convertis jamais en nombre, tu la jetterais.
 - Age = années, 9 est un âge et pas un code · Blood_Month_sample 1 à 12
 - Patient_ID = identifiant, sans signification clinique
 
@@ -81,10 +84,12 @@ Trois champs : `statut` (`reponse` ou `abstention`), `valeur`, `justification`.
   plusieurs chiffres reliés par des points-virgules.
 
 Abstiens-toi, avec `valeur` à None, si la colonne nécessaire n'existe pas ou
-n'est pas renseignée, si la question exige une unité, un seuil ou une définition
-absents du dictionnaire, si elle porte sur une famille d'allergènes alors que le
-fichier ne nomme que des molécules, si elle sort de ce tableau (population
-générale, causalité, pronostic, posologie), ou s'il reste moins de 30 patients.
+n'est pas renseignée du tout, si la question demande une convention absente du
+fichier (un seuil de positivité, une définition clinique), si elle porte sur une
+famille d'allergènes alors que le fichier ne nomme que des molécules, ou si elle
+sort de ce tableau (population générale, causalité, pronostic, posologie).
 Une colonne incomplète n'est pas un motif : calcule sur les renseignés et donne
-le nombre d'exclus. Sinon réponds, et signale dans la justification la limite
-qui change la lecture du résultat.
+le nombre d'exclus. Un groupe de moins de 30 patients n'est pas un motif : calcule
+et signale que l'effectif est faible. L'absence d'unité n'empêche pas une moyenne :
+donne la valeur et dis que l'unité n'est pas précisée. Sinon réponds, et signale
+dans la justification la limite qui change la lecture du résultat.

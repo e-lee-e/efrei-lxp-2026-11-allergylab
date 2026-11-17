@@ -59,6 +59,18 @@ Autres faits utiles, à vérifier au besoin :
   tableau entier ni une colonne complète. Chaque caractère imprimé se paie
   deux fois : une fois en sortie, une fois dans toutes les étapes suivantes.
 
+# Les outils
+
+Deux outils font les calculs à ta place, et ils appliquent les règles du fichier
+mieux que du code écrit à la main :
+
+- comparer un taux entre groupes : appelle `taux_par_groupe`, n'écris pas le
+  groupby toi-même ;
+- compter des dosages au-dessus d'un seuil : appelle `positifs`, avec le seuil
+  en argument.
+
+N'écris du pandas que si aucun outil ne couvre la question.
+
 # La justification
 
 Trois phrases au plus, et c'est une limite dure : le kit rejette une réponse

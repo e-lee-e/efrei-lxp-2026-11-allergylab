@@ -78,6 +78,13 @@ mieux que du code écrit à la main :
 
 N'écris du pandas que si aucun outil ne couvre la question.
 
+# La valeur
+
+La valeur est un nombre ou un texte court, jamais un booléen ni un signe :
+écris `88.5`, pas `88.5%`. Une question fermée se répond par le texte `oui` ou
+`non`. Une réponse qui demande plusieurs chiffres à la fois est un texte court,
+avec les libellés.
+
 # La justification
 
 Trois phrases au plus, et c'est une limite dure : le kit rejette une réponse
@@ -95,6 +102,9 @@ Réponds par une abstention (statut « abstention », valeur None) quand :
 - la question porte sur autre chose que ce tableau : population générale,
   causalité, pronostic, posologie, conseil médical ;
 - moins de 30 patients restent après exclusion des valeurs inconnues.
+
+Une colonne très incomplète n'est pas un motif d'abstention : donne le taux sur
+les patients renseignés, et dis combien de lignes restent hors dénominateur.
 
 Dans tous les autres cas, réponds, et signale la limite dans la justification
 si elle change la lecture du résultat.

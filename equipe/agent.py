@@ -69,18 +69,8 @@ def raccourcis():
 
 
 def modele_du_jour():
-    """Haiku 5.5 par défaut ; qwen3:8b sur Ollama si ALLERGYLAB_MODELE=local, pour itérer à 0 $."""
-    if os.environ.get("ALLERGYLAB_MODELE", "").strip().lower() != "local":
-        return modele.ModeleKit()
-
-    from equipe.modele_local import ModeleLocal, disponible
-
-    if disponible() is None:
-        raise modele.ErreurModele(
-            "le serveur Ollama ne répond pas sur 127.0.0.1:11434.",
-            "lance ~/cally/Ai/outils/ollama/bin/ollama serve, ou retire ALLERGYLAB_MODELE pour repasser sur Haiku.",
-        )
-    return ModeleLocal()
+    """Haiku 5.5. Le modèle local a été essayé puis retiré : voir NOTES.md, « ce qu'on a abandonné »."""
+    return modele.ModeleKit()
 
 
 def noter_appels(etape):

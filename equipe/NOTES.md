@@ -52,8 +52,27 @@ C'est pour ça qu'un outil non routé coûte plus qu'il ne rapporte.
    exécutable ; un appel d'outil écrit en JSON ou en prose déclenche « code
    parsing » et brûle une étape entière (~6 000 jetons). La consigne doit dire
    qu'un appel d'outil s'écrit dans un bloc de code, suivi d'un `print`.
-4. **`uv run pytest` ne voit pas `equipe/tests`** : `pyproject.toml` fixe
-   `testpaths = ["kit/tests"]`. La commande est `uv run pytest equipe/tests -q`.
-   Le fichier `pyproject.toml` n'est pas à nous (Adrien le pousse) : on n'y touche pas.
+4. **`uv run pytest` voit maintenant `equipe/tests`** : la fusion de a/agent-outils
+   a étendu `testpaths` à `["kit/tests", "equipe/tests"]`. Les deux commandes
+   marchent ; celle qui ne lance que l'équipe reste `uv run pytest equipe/tests -q`.
 5. **`kit/` est figé** : `controle` vérifie son empreinte à partir du lot 2.
    Toute idée d'optimisation dans `kit/` se traduit en `equipe/` ou ne se fait pas.
+
+## Ce qu'on a abandonné, et pourquoi
+
+**Le reformulateur local (qwen3:0.6b, 522 Mo).** Un petit modèle Ollama réécrivait
+la question dans une forme connue du routeur. Sur les 40 questions de
+`equipe/questions/lot-gpt.toml` : le routeur seul en route 8, le routeur avec le
+modèle en route 8 aussi. **Zéro question gagnée**, pour 522 Mo, 12 s de délai au
+pire et une dépendance à un serveur local. Une passe a même attendu 320 s sur une
+question bloquée. Il a été branché, mesuré, puis retiré ; `modele_local.py` et
+`reformulateur.py` ont été supprimés.
+
+La conclusion n'est pas « un petit modèle ne sert à rien », mais « sur ces
+quarante-là, il ne servait à rien ». Le jour où une batterie montre des tournures
+qu'il rattrape, la mesure se refait en une heure.
+
+**L'agent entièrement local (qwen3:8b).** Utile pour itérer à 0 $, mais ses
+réponses ne sont pas comparables à celles d'Anthropic et il ne passe pas les tests
+notés. Retiré aussi : l'agent ne parle plus qu'à l'API, ce qui rend le dépôt
+transportable — rien à installer, rien à télécharger.

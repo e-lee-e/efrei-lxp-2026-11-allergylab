@@ -1,9 +1,10 @@
 """L'agent de l'équipe. Le kit n'en appelle qu'une fonction : repondre(question).
 
-Autour du modèle, quatre couches gratuites s'essaient d'abord, dans cet ordre :
-le cache, le portier hors sujet, le routeur, puis le reformulateur local. Ce qui
-n'est pas reconnu passe au traducteur (une requête canonique, dix fois moins
-chère qu'une analyse) et, en dernier recours, à l'agent complet.
+Autour du modèle, trois couches gratuites s'essaient d'abord, dans cet ordre :
+le cache, le portier hors sujet, puis le routeur. Ce qui n'est pas reconnu passe
+au traducteur (une requête canonique, dix fois moins chère qu'une analyse) et, en
+dernier recours, à l'agent complet. Aucun modèle local : le reformulateur a été
+mesuré puis retiré, voir plus bas.
 
 Trois variantes de l'agent, pour les comparer sur les mêmes questions (jetons,
 coût, durée, justesse) :
@@ -39,7 +40,7 @@ from smolagents import CodeAgent, ToolCallingAgent
 from kit import modele, reponse
 from kit.donnees import charger
 
-from equipe import cache, hors_sujet, reformulateur, routeur, traducteur
+from equipe import cache, hors_sujet, routeur, traducteur
 from equipe.outils.calculer import calculer
 from equipe.outils.chercher_colonne import chercher_colonne
 from equipe.outils.positives import positifs
@@ -140,15 +141,12 @@ def repondre(question):
             modele.journal["modele"] = "local"
             return locale
 
-        # Reformulation locale : un petit modèle réécrit la question dans une forme que
-        # le routeur connaît déjà. Gratuit, un demi-seconde, et sans réseau.
-        reecrite = reformulateur.reformuler(question)
-        if reecrite and reecrite != question:
-            locale = routeur.router(reecrite)
-            if locale is not None:
-                modele.journal["moteur"] = "reformulateur"
-                modele.journal["modele"] = "local"
-                return locale
+        # Il y avait ici un reformulateur local (qwen3:0.6b, 522 Mo) : un petit modèle
+        # réécrivait la question dans une forme connue du routeur. Mesuré sur la
+        # batterie extérieure de quarante questions, il n'en a fait router aucune de
+        # plus que le normaliseur seul (0 sur 40), pour 522 Mo, douze secondes de
+        # délai au pire et une dépendance à Ollama. Retiré. equipe/reformulateur.py
+        # reste, avec sa mesure, pour qui voudra refaire l'essai sur d'autres questions.
 
         # Traduction en requête canonique : le modèle ne calcule rien, il choisit une
         # opération et ses paramètres dans une liste fermée ; le code exécute. Dix fois

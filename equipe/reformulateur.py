@@ -1,9 +1,17 @@
 """Le reformulateur local : réécrire la question en français simple, sans réseau ni facture.
 
-L'idée : le routeur sait reconnaître une dizaine de formulations propres. Plutôt
-que d'en écrire une de plus chaque fois qu'une question arrive autrement, un
-petit modèle tourne sur la machine et réécrit la question dans une des formes
-que le routeur connaît déjà. Ce qui reste incompréhensible escalade.
+**NON BRANCHÉ sur l'agent, et c'est un résultat de mesure.** Sur la batterie
+extérieure de quarante questions (equipe/questions/lot-gpt.toml), le normaliseur
+seul en route huit ; avec ce modèle, huit aussi. Il n'en apporte aucune, pour
+522 Mo de modèle, douze secondes au pire et une dépendance à Ollama. Le fichier
+reste pour qui voudra refaire l'essai sur d'autres questions : la conclusion
+n'est pas « un petit modèle ne sert à rien », c'est « sur ces quarante-là, il ne
+servait à rien ».
+
+L'idée, si vous voulez la reprendre : le routeur sait reconnaître une dizaine de
+formulations propres. Plutôt que d'en écrire une de plus chaque fois qu'une
+question arrive autrement, un petit modèle la réécrit dans une des formes que le
+routeur connaît déjà. Ce qui reste incompréhensible escalade.
 
 Trois propriétés, dans cet ordre d'importance :
 

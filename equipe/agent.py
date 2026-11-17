@@ -31,9 +31,9 @@ def modele_du_jour():
     if os.environ.get("ALLERGYLAB_MODELE", "").strip().lower() != "local":
         return modele.ModeleKit()
 
-    from equipe.modele_local import ModeleLocal
+    from equipe.modele_local import ModeleLocal, disponible
 
-    if ModeleLocal.disponible() is None:
+    if disponible() is None:
         raise modele.ErreurModele(
             "le serveur Ollama ne répond pas sur 127.0.0.1:11434.",
             "lance ~/cally/Ai/outils/ollama/bin/ollama serve, ou retire ALLERGYLAB_MODELE pour repasser sur Haiku.",

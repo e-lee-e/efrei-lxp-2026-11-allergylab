@@ -54,7 +54,7 @@ def test_comparer_deux_groupes():
         "codes_b": ["1"],
         "cible": "Sensitization",
     }
-    assert executer(requete, grand_tableau())["valeur"] == "oui"  # 75 % contre 50 %
+    assert executer(requete, grand_tableau())["valeur"] == "75.0 % contre 50.0 %"
 
 
 def test_valeur_dominante():
@@ -70,3 +70,44 @@ def test_une_colonne_numerique_ne_devient_pas_un_groupe():
 def test_une_colonne_inconnue_est_refusee():
     requete = {"operation": "repartition", "colonne": "Poids"}
     assert _valider(requete, tableau()) is None
+
+
+def tableau_a_filtres():
+    """Un petit tableau où une cellule porte deux codes, comme dans le vrai fichier."""
+    return pd.DataFrame(
+        {
+            "Gender": [0.0, 0.0, 1.0, 1.0],
+            "Age": [10.0, 25.0, 45.0, 70.0],
+            "Rural_or_urban_area": [1.0, 1.0, 0.0, 9.0],
+            "Treatment_of_rhinitis": ["1", "1,3", "0", "2"],
+        }
+    )
+
+
+def test_un_filtre_d_age_reduit_le_tableau():
+    requete = {"operation": "compter_lignes", "filtre": "Age>=18 et Age<=30"}
+    assert executer(requete, tableau_a_filtres())["valeur"] == 1
+
+
+def test_un_filtre_compose_de_trois_conditions():
+    requete = {
+        "operation": "compter_lignes",
+        "filtre": "Age>=18 et Gender=0 et Rural_or_urban_area=1",
+    }
+    assert executer(requete, tableau_a_filtres())["valeur"] == 1
+
+
+def test_dans_lit_une_cellule_a_deux_codes():
+    """« 1,3 » appartient au groupe 1 à 4 : la comparaison numérique l'aurait jetée."""
+    requete = {"operation": "compter_lignes", "filtre": "Treatment_of_rhinitis dans 1,2,3,4"}
+    assert executer(requete, tableau_a_filtres())["valeur"] == 3
+
+
+def test_un_filtre_sur_une_colonne_inconnue_est_refuse():
+    requete = {"operation": "compter_lignes", "filtre": "Acariens=1"}
+    assert _valider(requete, tableau_a_filtres()) is None
+
+
+def test_un_filtre_avec_une_comparaison_interdite_est_refuse():
+    requete = {"operation": "compter_lignes", "filtre": "Gender ~ 1"}
+    assert _valider(requete, tableau_a_filtres()) is None

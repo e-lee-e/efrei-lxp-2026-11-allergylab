@@ -21,6 +21,7 @@ l'agent complet, qui coûte plus cher mais sait se débrouiller.
 import json
 import re
 
+from equipe.outils._filtre import appliquer, colonne_connue
 from equipe.outils.champs import NON_RENSEIGNE, codes as _codes, texte as _texte
 from kit import modele
 
@@ -60,15 +61,23 @@ Treatment_of_rhinitis 0 aucun, 1 à 4 traité | Treatment_of_athsma 0 aucun,
 5 ICS/LABA fort, 6 anti-IL5, 7 anti-IL4/13, 8 non répondeur, 10 LTRA |
 General_cofactors cumulables 0 aucun, 1 effort, 2 AINS, 3 alcool, 4 moisissures,
 5 acariens, 6 chat, 7 chien, 8 cheval, 10 rongeur, 11 mucoviscidose, 12 IPP |
-Age numérique | French_Region texte | Blood_Month_sample 1 à 12.
+Age numérique | French_Region texte | French_Residence_Department texte (deptA,
+deptY…) | Blood_Month_sample 1 à 12.
+
+Champ facultatif « filtre » : des conditions sur des colonnes, reliées par
+« et », appliquées AVANT l'opération. Exemple : "Age>=18 et Age<=30 et Gender=0".
+Comparaisons permises : <, <=, >, >=, = sur les nombres ; = et != sur les codes ;
+« dans 1,2,3 » pour plusieurs codes ("Treatment_of_athsma dans 6,7,8" = biothérapie).
 
 Réponds par un seul objet JSON, sans texte autour :
 {"operation": "...", "colonne": "...", "codes": ["..."], "colonne_b": "...",
- "codes_b": ["..."], "cible": "...", "code_cible": "..."}
+ "codes_b": ["..."], "cible": "...", "code_cible": "...", "filtre": "..."}
+Omets les champs qui ne servent pas : une requête courte est une requête lue.
 
 Règles : mets les codes sous forme de texte. Si la question ne correspond à
-aucune opération, ou si elle contient un filtre que ces opérations ne savent pas
-exprimer (tranche d'âge, seuil, croisement), réponds {"operation": "inconnu"}.
+aucune opération, ou si elle demande une chose absente du fichier (famille
+d'allergènes, seuil de positivité, recommandation, pronostic), réponds
+{"operation": "inconnu"}.
 """
 
 
@@ -88,6 +97,32 @@ def _extraire_json(texte):
 COLONNES_NUMERIQUES = frozenset({"Age", "Blood_Month_sample"})
 
 
+def _filtrer(tableau, filtre):
+    """Les patients qui vérifient le filtre. Aucun eval, aucun query : chaque condition est relue.
+
+    « dans 1,2,3 » se traite ici et non dans _filtre.py, qui appartient à A : la
+    condition est découpée en codes et comparée ensemble par ensemble, ce qui lit
+    aussi les cellules à deux codes (« 1,3 ») que la comparaison numérique jetait.
+    Le reste est passé au parseur d'A, sans le modifier.
+    """
+    if not filtre or not str(filtre).strip():
+        return tableau
+    simples = []
+    for condition in filter(None, re.split(r"\s+et\s+", str(filtre).strip(), flags=re.IGNORECASE)):
+        lue = re.fullmatch(r"\s*(\w+)\s+dans\s+(.+?)\s*", condition, re.IGNORECASE)
+        if lue is None:
+            simples.append(condition)
+            continue
+        nom, valeurs = lue.groups()
+        colonne = colonne_connue(tableau, nom)
+        voulus = {morceau for morceau in re.split(r"[,;/\s]+", valeurs) if morceau}
+        porte = colonne.map(_codes).map(lambda portes: bool(portes & voulus))
+        tableau = tableau[porte]
+    if simples:
+        tableau = appliquer(tableau, " et ".join(simples))
+    return tableau
+
+
 def _valider(requete, tableau):
     """Vérifie que la requête ne désigne que des choses qui existent. Rend None si non."""
     if not isinstance(requete, dict):
@@ -95,6 +130,15 @@ def _valider(requete, tableau):
     operation = requete.get("operation")
     if operation not in OPERATIONS:
         return None
+
+    # Un filtre se vérifie en l'appliquant : une colonne inconnue ou une
+    # comparaison interdite fait escalader, elle ne produit pas une réponse fausse.
+    filtre = requete.get("filtre")
+    if filtre not in (None, ""):
+        try:
+            _filtrer(tableau, filtre)
+        except (ValueError, TypeError, KeyError):
+            return None
 
     def colonne_valide(nom):
         return isinstance(nom, str) and nom in tableau.columns
@@ -108,7 +152,9 @@ def _valider(requete, tableau):
     if operation == "effectifs_deux":
         if not colonne_valide(requete.get("colonne")) or requete.get("colonne") in COLONNES_NUMERIQUES:
             return None
-        if not isinstance(requete.get("codes"), list) or not isinstance(requete.get("codes_b"), list):
+        if not isinstance(requete.get("codes"), list) or not requete["codes"]:
+            return None
+        if not isinstance(requete.get("codes_b"), list) or not requete["codes_b"]:
             return None
         return requete
     if operation in ("effectif_groupe", "taux_groupe", "comparer_groupes"):
@@ -142,7 +188,9 @@ def traduire(question, modele_local=None):
             ChatMessage(role="system", content=CONSIGNE),
             ChatMessage(role="user", content=question),
         ],
-        max_tokens=400,  # le raisonnement interne du modèle mange la sortie
+        # 700 et non 400 : le raisonnement interne du modèle mange la sortie, et à
+        # 400 le JSON arrivait coupé, ce qui faisait escalader des questions traduisibles.
+        max_tokens=700,
     )
     requete = _extraire_json(reponse.content)
     if not requete:
@@ -165,10 +213,14 @@ def _lignes_du_groupe(tableau, colonne, codes_du_groupe):
 
 def executer(requete, tableau):
     """La réponse à partir de la requête vérifiée. Aucun appel au modèle ici."""
+    if requete.get("filtre"):
+        tableau = _filtrer(tableau, requete["filtre"])
     operation = requete["operation"]
 
     if operation == "compter_lignes":
         total = len(tableau)
+        if requete.get("filtre"):
+            return _reponse(total, f"{total} patients vérifient le filtre « {requete['filtre']} ».")
         return _reponse(total, f"Le tableau compte {total} lignes au total, sans filtrage.")
 
     if operation in ("mediane", "moyenne"):
@@ -192,7 +244,10 @@ def executer(requete, tableau):
         if valeurs.empty:
             return None
         compte = valeurs.value_counts()
-        texte = " ; ".join(f"{nom} : {int(nombre)}" for nom, nombre in compte.items())
+        gardees = compte.head(12)
+        texte = " ; ".join(f"{nom} : {int(nombre)}" for nom, nombre in gardees.items())
+        if len(compte) > len(gardees):
+            texte += f" ; et {len(compte) - len(gardees)} autres valeurs"
         return _reponse(
             texte,
             f"Sur {len(valeurs)} lignes renseignées : {texte}. "
@@ -250,8 +305,8 @@ def _taux(requete, tableau, avec_comparaison):
         masque = _lignes_du_groupe(tableau, colonne, codes_du_groupe)
         renseignes = masque & tableau[cible].map(_codes).map(bool)
         n = int(renseignes.sum())
-        if n < 30:
-            return None
+        if n == 0:
+            return None  # aucun patient renseigné : il n'y a pas de taux à calculer
         touches = int((renseignes & tableau[cible].map(_codes).map(lambda v: code_cible in v)).sum())
         return touches, n
 
@@ -271,7 +326,7 @@ def _taux(requete, tableau, avec_comparaison):
         return None
     part_a, part_b = 100 * premier[0] / premier[1], 100 * second[0] / second[1]
     return _reponse(
-        "oui" if part_a > part_b else "non",
+        f"{part_a:.1f} % contre {part_b:.1f} %",
         f"Premier groupe : {premier[0]} sur {premier[1]} ({part_a:.1f} %) ; second groupe : "
         f"{second[0]} sur {second[1]} ({part_b:.1f} %). La définition de {cible} n'est pas donnée.",
     )

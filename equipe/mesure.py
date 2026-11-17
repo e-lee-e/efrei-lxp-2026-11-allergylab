@@ -30,8 +30,8 @@ def charger_lot(chemin):
 
 def tient(reponse, attendu):
     """La réponse respecte-t-elle ce qui était attendu ? Vrai, faux, ou None si on ne sait pas."""
-    if reponse is None:
-        return False
+    if not isinstance(reponse, dict):
+        return False  # hors contrat, ou maximum d'étapes atteint : ce n'est pas une réponse
     statut = reponse.get("statut")
     if attendu == "abstention":
         return statut == "abstention"
@@ -74,9 +74,9 @@ def passer(lot, plafond=0.30):
                 "famille": question["famille"],
                 "attend": question["attend"],
                 "texte": question["texte"],
-                "statut": reponse.get("statut"),
-                "valeur": reponse.get("valeur"),
-                "justification": reponse.get("justification"),
+                "statut": reponse.get("statut") if isinstance(reponse, dict) else None,
+                "valeur": reponse.get("valeur") if isinstance(reponse, dict) else str(reponse)[:200],
+                "justification": reponse.get("justification") if isinstance(reponse, dict) else "réponse hors contrat",
                 "moteur": modele.journal.get("moteur"),
                 "jetons": modele.journal.get("jetons"),
                 "cout": cout,

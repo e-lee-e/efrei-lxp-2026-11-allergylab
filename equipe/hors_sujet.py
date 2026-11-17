@@ -160,6 +160,19 @@ HORS_SUJET = (
     "joueur",
     "coupe du monde",
     "japon",
+    "guilty gear",
+    "pokemon",
+    "pokémon",
+    "franchise",
+    "anime",
+    "manga",
+    "science fiction",
+    "proteine",
+    "protéine",
+    "musculaire",
+    "masse corporelle",
+    "intelligence artificielle",
+    "generation d images",
 )
 
 # Signaux forts : un seul suffit, même si un mot du domaine est présent. « Le

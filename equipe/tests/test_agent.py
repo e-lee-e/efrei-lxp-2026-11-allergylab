@@ -139,3 +139,43 @@ def test_consigne_de_b_et_format_du_kit_dans_les_instructions(mini, monkeypatch)
     monkeypatch.setattr(agent.modele, "ModeleKit", lambda: ModeleScripte())
     consigne = agent.construire("ferme").instructions
     assert agent.CONSIGNE.strip() in consigne and reponse.FORMAT in consigne and "chercher_colonne" in consigne
+
+
+def test_le_modele_est_bride_en_jetons_et_en_temps(monkeypatch):
+    """Un plafond de sortie et un délai passent à chaque appel : sans eux, 128 000 jetons et six minutes."""
+    vus = {}
+
+    class Faux:
+        def generate(self, messages, **options):
+            vus.update(options)
+            return "ok"
+
+    monkeypatch.setattr(agent.modele, "ModeleKit", lambda: Faux())
+    agent.modele_du_jour().generate([], max_tokens=50_000)
+    assert vus["max_tokens"] == agent.SORTIE_MAX
+    assert 0 < vus["timeout"] <= agent.DELAI_MAX
+
+
+def test_une_question_trop_lente_rend_une_abstention_lisible(monkeypatch):
+    """Au-delà du délai, la réponse est une abstention nette, pas une exception."""
+
+    class Faux:
+        def generate(self, messages, **options):
+            return "ok"
+
+    class AgentQuiAppelle:
+        def run(self, question, additional_args=None):
+            agent.modele_du_jour().generate([])  # lève DelaiDepasse
+
+    monkeypatch.setattr(agent, "DELAI_MAX", 0.0)
+    monkeypatch.setattr(agent, "VARIANTE", "ferme")
+    monkeypatch.setattr(agent, "raccourcis", lambda: False)
+    monkeypatch.setattr(agent.modele, "ModeleKit", lambda: Faux())
+    monkeypatch.setattr(agent, "construire", lambda variante: AgentQuiAppelle())
+
+    sortie = agent.repondre("une question qui ne finira pas")
+
+    assert sortie["statut"] == "abstention"
+    assert sortie["valeur"] is None
+    assert "délai" in sortie["justification"]
+    assert reponse.valider(sortie)

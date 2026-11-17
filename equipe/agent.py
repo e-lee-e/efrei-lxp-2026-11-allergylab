@@ -33,6 +33,7 @@ faire » du README.
 """
 
 import os
+import time
 from pathlib import Path
 
 from smolagents import CodeAgent, ToolCallingAgent
@@ -59,6 +60,9 @@ VARIANTE = os.environ.get("ALLERGYLAB_VARIANTE", "ouvert")  # "ouvert", "ferme" 
 # Cinq étapes et non les huit du kit : mesuré, une course à huit étapes coûte
 # jusqu'à 0,008 $, et la question de l'âge a consommé quatre étapes pile.
 ETAPES_MAX = int(os.environ.get("ALLERGYLAB_ETAPES_MAX", "5"))
+# Une question qui n'a pas fini dans ce temps ne sert plus à rien : la médiane
+# mesurée est de 8,6 s, et au-delà d'une demi-minute le chercheur est parti.
+DELAI_MAX = float(os.environ.get("ALLERGYLAB_DELAI_MAX", "35"))
 
 # Les outils de l'équipe : ceux du camarade (calculer, chercher_colonne) et les nôtres.
 OUTILS = [calculer, chercher_colonne, taux_par_groupe, taux_par_presence, positifs]
@@ -68,9 +72,43 @@ def raccourcis():
     return os.environ.get("ALLERGYLAB_RACCOURCIS", "1") != "0"
 
 
+SORTIE_MAX = int(os.environ.get("ALLERGYLAB_SORTIE_MAX", "2000"))
+
+
+class DelaiDepasse(RuntimeError):
+    """La question n'a pas abouti dans DELAI_MAX secondes."""
+
+
 def modele_du_jour():
-    """Haiku 5.5. Le modèle local a été essayé puis retiré : voir NOTES.md, « ce qu'on a abandonné »."""
-    return modele.ModeleKit()
+    """Haiku 5.5, avec un plafond de sortie dur par étape.
+
+    Sans ce plafond, une question de recommandation a fait boucler le modèle
+    jusqu'à 128 000 jetons de sortie en UNE étape : 0,064 $ et six minutes
+    d'attente pour rien. Le plafond borne le pire cas d'une étape à 2 000
+    jetons, soit 0,001 $, et cinq étapes à 0,005 $.
+
+    La classe est créée ici, et non au niveau du module, pour qu'un test qui
+    remplace modele.ModeleKit remplace aussi la classe de base.
+    """
+
+    base = modele.ModeleKit()
+    generate = base.generate
+    debut = time.monotonic()
+
+    def bride(messages, **options):
+        # Le temps se compte par question, pas par étape : cinq étapes de 7 s
+        # doivent s'arrêter à 35 s comme une seule de 35 s.
+        reste = DELAI_MAX - (time.monotonic() - debut)
+        if reste <= 0.5:
+            raise DelaiDepasse(f"plus de {DELAI_MAX:.0f} s")
+        voulu = options.get("max_tokens") or SORTIE_MAX
+        options["max_tokens"] = min(int(voulu), SORTIE_MAX)
+        # Passé à l'appel : une requête bloquée côté API ne peut pas manger le budget.
+        options["timeout"] = min(float(options.get("timeout") or reste), max(reste, 1.0))
+        return generate(messages, **options)
+
+    base.generate = bride  # l'instance, pas la classe : un test peut remplacer ModeleKit par un faux
+    return base
 
 
 def noter_appels(etape):
@@ -152,7 +190,15 @@ def repondre(question):
     if VARIANTE == "ouvert":
         # Accès aux données (2/2) : le code écrit par le modèle reçoit le tableau complet, sous le nom tableau.
         arguments["tableau"] = charger()
-    sortie = construire(VARIANTE).run(question, additional_args=arguments or None)
+    try:
+        sortie = construire(VARIANTE).run(question, additional_args=arguments or None)
+    except DelaiDepasse:
+        modele.journal["moteur"] = "delai"
+        return {
+            "statut": "abstention",
+            "valeur": None,
+            "justification": f"Le calcul n'a pas abouti dans le délai de {DELAI_MAX:.0f} secondes.",
+        }
     # On ne garde qu'une réponse qui respecte le contrat : une réponse
     # illisible doit être reproposée au modèle, pas resservie depuis le cache.
     try:

@@ -28,9 +28,11 @@ _consigne = None
 _dosages = None
 
 # Le moteur qui a produit la réponse entre dans la clé : sans ça, une réponse
-# obtenue avec le CodeAgent serait resservie après un basculement vers
-# kit.boucle_maison, qui raisonne autrement. À changer si le moteur change.
-MOTEUR = "codeagent"
+# obtenue avec Haiku serait resservie à un run local, et inversement.
+def moteur():
+    """Le moteur en cours, tel qu'il entre dans la clé de cache."""
+    local = os.environ.get("ALLERGYLAB_MODELE", "").strip().lower() == "local"
+    return "codeagent-local" if local else "codeagent-anthropic"
 
 
 def actif():
@@ -99,7 +101,7 @@ def empreinte_donnees():
 
 def cle(question):
     """L'empreinte de (question, consigne, données, moteur) : deux formulations différentes donnent deux clés."""
-    texte = "\n".join((normaliser(question), consigne(), MOTEUR, empreinte_donnees()))
+    texte = "\n".join((normaliser(question), consigne(), moteur(), empreinte_donnees()))
     return hashlib.sha256(texte.encode("utf-8")).hexdigest()
 
 

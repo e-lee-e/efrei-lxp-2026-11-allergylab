@@ -13,6 +13,7 @@ Ce que les traces ont montré, à relire avant de « simplifier » quoi que ce s
 - le cache (equipe/cache.py) ramène à zéro le coût d'une question déjà posée.
 """
 
+import os
 from pathlib import Path
 
 from smolagents import CodeAgent
@@ -23,6 +24,21 @@ from equipe.outils.positives import positifs
 from equipe.outils.taux import taux_par_groupe
 
 CONSIGNE = (Path(__file__).parent / "consigne.md").read_text(encoding="utf-8")
+
+
+def modele_du_jour():
+    """Haiku 5.5 par défaut ; qwen3:8b sur Ollama si ALLERGYLAB_MODELE=local, pour itérer à 0 $."""
+    if os.environ.get("ALLERGYLAB_MODELE", "").strip().lower() != "local":
+        return modele.ModeleKit()
+
+    from equipe.modele_local import ModeleLocal
+
+    if ModeleLocal.disponible() is None:
+        raise modele.ErreurModele(
+            "le serveur Ollama ne répond pas sur 127.0.0.1:11434.",
+            "lance ~/cally/Ai/outils/ollama/bin/ollama serve, ou retire ALLERGYLAB_MODELE pour repasser sur Haiku.",
+        )
+    return ModeleLocal()
 
 
 def repondre(question):
@@ -42,7 +58,7 @@ def repondre(question):
         return locale
 
     agent = CodeAgent(
-        model=modele.ModeleKit(),  # le modèle de kit/reglages.toml
+        model=modele_du_jour(),  # Haiku, ou qwen3:8b local avec ALLERGYLAB_MODELE=local
         tools=[taux_par_groupe, positifs],  # les outils de equipe/outils/, testés par pytest
         instructions=reponse.consigne(CONSIGNE),  # ta consigne, puis le format de réponse du kit
         max_steps=5,  # plafond maison : 8 étapes coûtent jusqu'à 0,008 $ (kit/reglages.toml ne se touche pas)

@@ -91,7 +91,56 @@ def _positifs(question, tableau):
     )
 
 
-ROUTES = (_lignes, _age_median, _positifs)
+def _age_moyen(question, tableau):
+    """« Quel est l'âge moyen des patients ? »"""
+    motif = r"(?:quel(?:le)? est |quelle est )?l'?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
+    if not re.fullmatch(motif, question):
+        return None
+    ages = pd.to_numeric(tableau["Age"], errors="coerce")
+    n = int(ages.notna().sum())
+    moyenne = float(ages.mean())
+    return _reponse(
+        moyenne,
+        f"L'âge moyen est de {moyenne:.2f} ans sur {n} patients dont l'âge est renseigné. "
+        f"Les {len(tableau) - n} lignes sans âge sont exclues.",
+    )
+
+
+def _repartition_puces(question, tableau):
+    """« Quelle est la répartition des puces ? »"""
+    motif = (
+        r"(?:quel(?:le)? est |quelle est )?(?:la )?repartition des (?:trois |3 )?"
+        r"(?:puces?(?: de test)?|types? de puce)" + FIN
+    )
+    if not re.fullmatch(motif, question) or "Chip_Type" not in tableau.columns:
+        return None
+    comptes = tableau["Chip_Type"].value_counts()
+    texte = " ; ".join(f"{nom} : {int(nombre)}" for nom, nombre in comptes.items())
+    return _reponse(
+        texte,
+        f"Les {len(tableau)} patients se répartissent ainsi : {texte}. "
+        "Aucune ligne n'est exclue, la puce est renseignée pour tous.",
+    )
+
+
+def _plus_moins_de_ans(question, tableau):
+    """« Combien de patients ont plus de 60 ans ? »"""
+    trouve = re.fullmatch(r"combien de patients? ont (plus|moins) de (\d+) ans" + FIN, question)
+    if trouve is None:
+        return None
+    sens, seuil = trouve.group(1), int(trouve.group(2))
+    ages = pd.to_numeric(tableau["Age"], errors="coerce")
+    n = int(ages.notna().sum())
+    compte = int((ages > seuil).sum() if sens == "plus" else (ages < seuil).sum())
+    compare = "plus" if sens == "plus" else "moins"
+    return _reponse(
+        compte,
+        f"{compte} patients sur {n} dont l'âge est renseigné ont {compare} de {seuil} ans. "
+        f"Les {len(tableau) - n} lignes sans âge sont exclues.",
+    )
+
+
+ROUTES = (_lignes, _age_median, _age_moyen, _repartition_puces, _plus_moins_de_ans, _positifs)
 
 
 def router(question, tableau=None):

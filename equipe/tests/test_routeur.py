@@ -17,6 +17,7 @@ def tableau():
             "Gender": [1.0, 0.0, 1.0, 0.0],
             "Age": [10.0, 12.0, 14.0, None],
             "Sensitization": [1, 1, 0, 1],
+            "Chip_Type": ["ISAC_V1", "ISAC_V1", "ALEX", "ALEX"],
             "Bet_v_1": [0.5, 0.1, 0.3, None],
         }
     )
@@ -33,10 +34,6 @@ def test_compte_les_lignes(tableau):
 
 def test_compte_les_patients_sans_verbe(tableau):
     assert router("combien de patients", tableau)["valeur"] == 4
-
-
-def test_escalade_une_question_filtree(tableau):
-    assert router("Combien de patients ont plus de 60 ans ?", tableau) is None
 
 
 def test_age_median(tableau):
@@ -72,8 +69,36 @@ def test_les_justifications_du_routeur_tiennent_en_trois_phrases(tableau):
     questions = (
         "Combien de lignes compte le tableau ?",
         "Quel est l'âge médian des patients ?",
+        "Quel est l'âge moyen des patients ?",
+        "Quelle est la répartition des trois puces de test ?",
+        "Combien de patients ont plus de 11 ans ?",
         "Combien de patients sont positifs à Bet_v_1 avec un seuil de 0,3 ?",
     )
     for question in questions:
         justification = router(question, tableau)["justification"]
         assert phrases(justification) <= 3, question
+
+
+def test_age_moyen(tableau):
+    reponse = router("Quel est l'âge moyen des patients ?", tableau)
+    assert reponse["valeur"] == 12.0
+    assert "3 patients" in reponse["justification"]
+
+
+def test_repartition_des_puces(tableau):
+    valeur = router("Quelle est la répartition des trois puces de test ?", tableau)["valeur"]
+    assert "ISAC_V1 : 2" in valeur
+    assert "ALEX : 2" in valeur
+
+
+def test_plus_de_n_ans(tableau):
+    assert router("Combien de patients ont plus de 11 ans ?", tableau)["valeur"] == 2
+    assert router("Combien de patients ont moins de 11 ans ?", tableau)["valeur"] == 1
+
+
+def test_escalade_un_filtre_combine(tableau):
+    assert router("Combien de patients ont plus de 11 ans et une sensibilisation ?", tableau) is None
+
+
+def test_escalade_une_repartition_qui_n_est_pas_la_puce(tableau):
+    assert router("Quelle est la répartition des sexes ?", tableau) is None

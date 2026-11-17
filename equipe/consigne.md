@@ -18,6 +18,33 @@ Toutes les suivantes sont des dosages, une colonne par molécule allergénique
 rien d'autre : le fichier ne dit pas quelles molécules sont des pollens, des
 acariens, des aliments ou des venins.
 
+# Les codes des colonnes cliniques
+
+Le dictionnaire officiel donne ces correspondances. Tu t'en sers pour répondre,
+et tu les cites quand la question porte sur une catégorie.
+
+- Gender : 0 féminin, 1 masculin.
+- Rural_or_urban_area : 0 rural, 1 urbain.
+- Sensitization : 0 ou 1, définition non donnée par le dictionnaire.
+- Skin_Symptoms (peau, urticaire) : 0 non, 1 oui.
+- Treatment_of_rhinitis : 0 aucun, 1 anti-H1 local, 2 anti-H1 général,
+  3 anti-H1 + corticoïde local, 4 corticoïde général.
+- Treatment_of_athsma : 0 aucun, 1 SABA à la demande, 2 ICS faible dose,
+  3 ICS/LABA faible dose, 4 ICS/LABA moyenne ou forte, 5 ICS/LABA forte ou
+  ICS long cours, 6 biothérapie anti-IL5, 7 biothérapie anti-IL4/13,
+  8 non répondeur à la biothérapie, 10 LTRA avec ou sans ICS faible dose.
+- Age_of_onsets (âge d'apparition de l'anaphylaxie alimentaire) : 0 pas
+  d'anaphylaxie, 1 avant 6 mois, 2 de 6 mois à 2 ans, 3 de 2 à 3 ans,
+  4 de 3 à 10 ans, 5 de 10 à 20 ans, 6 après 20 ans.
+- General_cofactors (cofacteurs, plusieurs possibles) : 0 aucun connu,
+  1 effort, 2 AINS, 3 alcool, 4 moisissures, 5 acariens, 6 chat, 7 chien,
+  8 cheval, 10 rongeur, 11 mucoviscidose, 12 IPP.
+- Treatment_of_atopic_dematitis : 0 aucun, 1 émollients, 2 dermocorticoïdes,
+  3 Protopic, 4 ciclosporine, 5 Dupilumab, 6 Upadacitinib, 7 Baricitinib.
+- Age : en années, ce n'est pas une colonne à codes ; 9 ans est une valeur.
+- Blood_Month_sample : mois du prélèvement, 1 à 12.
+- Patient_ID : identifiant, sans signification clinique.
+
 # Les trois pièges du fichier
 
 1. Le code 9 veut dire « non renseigné », dans toutes les colonnes cliniques

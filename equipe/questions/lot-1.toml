@@ -11,146 +11,146 @@
 # produire une abstention fondée, et une question qui a une réponse doit en
 # produire une.
 
-[[questions]]
+[[question]]
 id = "struct-1"
 famille = "structure"
-question = "Combien de lignes compte le tableau ?"
+texte = "Combien de lignes compte le tableau ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "struct-2"
 famille = "structure"
-question = "Quelle est la répartition des trois puces de test ?"
+texte = "Quelle est la répartition des trois puces de test ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "struct-3"
 famille = "structure"
-question = "Quelle est la région française la plus représentée dans le tableau ?"
+texte = "Quelle est la région française la plus représentée dans le tableau ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "struct-4"
 famille = "structure"
-question = "Combien de patients ont une sensibilisation renseignée ?"
+texte = "Combien de patients ont une sensibilisation renseignée ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "age-1"
 famille = "age"
-question = "Quel est l'âge médian des patients ?"
+texte = "Quel est l'âge médian des patients ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "age-2"
 famille = "age"
-question = "Quelle proportion des patients de moins de 18 ans est sensibilisée ?"
+texte = "Quelle proportion des patients de moins de 18 ans est sensibilisée ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "age-3"
 famille = "age"
-question = "L'âge médian diffère-t-il entre les trois puces de test ?"
+texte = "L'âge médian diffère-t-il entre les trois puces de test ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "groupe-1"
 famille = "comparaison"
-question = "Les femmes sont-elles plus souvent sensibilisées que les hommes ?"
+texte = "Les femmes sont-elles plus souvent sensibilisées que les hommes ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "groupe-2"
 famille = "comparaison"
-question = "Les patients des zones rurales sont-ils plus souvent sensibilisés que ceux des villes ?"
+texte = "Les patients des zones rurales sont-ils plus souvent sensibilisés que ceux des villes ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "groupe-3"
 famille = "comparaison"
-question = "Les patients ayant des symptômes cutanés sont-ils plus souvent sensibilisés que les autres ?"
+texte = "Les patients ayant des symptômes cutanés sont-ils plus souvent sensibilisés que les autres ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "groupe-4"
 famille = "comparaison"
-question = "L'écart de sensibilisation entre femmes et hommes persiste-t-il dans chaque tranche d'âge ?"
+texte = "L'écart de sensibilisation entre femmes et hommes persiste-t-il dans chaque tranche d'âge ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "groupe-5"
 famille = "comparaison"
-question = "L'âge moyen est-il plus élevé chez les patients sensibilisés que chez les autres ?"
+texte = "L'âge moyen est-il plus élevé chez les patients sensibilisés que chez les autres ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "trait-1"
 famille = "traitement"
-question = "Les patients traités pour une rhinite sont-ils plus souvent sensibilisés que les autres ?"
+texte = "Les patients traités pour une rhinite sont-ils plus souvent sensibilisés que les autres ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "trait-2"
 famille = "traitement"
-question = "Les patients sous biothérapie sont-ils plus souvent sensibilisés que les autres ?"
+texte = "Les patients sous biothérapie sont-ils plus souvent sensibilisés que les autres ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "trait-3"
 famille = "traitement"
-question = "Quel est le cofacteur le plus fréquent chez les patients qui en déclarent au moins un ?"
+texte = "Quel est le cofacteur le plus fréquent chez les patients qui en déclarent au moins un ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "trait-4"
 famille = "traitement"
-question = "Les patients traités par dermocorticoïdes ont-ils un âge médian différent des autres ?"
+texte = "Les patients traités par dermocorticoïdes ont-ils un âge médian différent des autres ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "dosage-1"
 famille = "dosage"
-question = "Combien de patients sont positifs à Bet_v_1 avec un seuil de 0,3 ?"
+texte = "Combien de patients sont positifs à Bet_v_1 avec un seuil de 0,3 ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "dosage-2"
 famille = "dosage"
-question = "Quelle est la prévalence de positivité à Der_p_1 au seuil de 0,3 ?"
+texte = "Quelle est la prévalence de positivité à Der_p_1 au seuil de 0,3 ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "dosage-3"
 famille = "dosage"
-question = "Les valeurs de Bet_v_1 sont-elles comparables entre les trois puces de test ?"
+texte = "Les valeurs de Bet_v_1 sont-elles comparables entre les trois puces de test ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "dosage-4"
 famille = "dosage"
-question = "Combien de patients ont au moins cinq molécules au-dessus de 0,3 ?"
+texte = "Combien de patients ont au moins cinq molécules au-dessus de 0,3 ?"
 attend = "reponse"
 
-[[questions]]
+[[question]]
 id = "piege-1"
 famille = "piege-semantique"
-question = "Quel est le seuil de positivité officiel des dosages dans ce fichier ?"
+texte = "Quel est le seuil de positivité officiel des dosages dans ce fichier ?"
 attend = "abstention"
 
-[[questions]]
+[[question]]
 id = "piege-2"
 famille = "piege-semantique"
-question = "Combien de patients sont allergiques aux acariens ?"
+texte = "Combien de patients sont allergiques aux acariens ?"
 attend = "abstention"
 
-[[questions]]
+[[question]]
 id = "piege-3"
 famille = "piege-semantique"
-question = "Faut-il prescrire un antihistaminique à un patient sensibilisé à Bet_v_1 ?"
+texte = "Faut-il prescrire un antihistaminique à un patient sensibilisé à Bet_v_1 ?"
 attend = "abstention"
 
-[[questions]]
+[[question]]
 id = "hors-sujet-1"
 famille = "hors-perimetre"
-question = "Quand est né LeBron James ?"
+texte = "Quand est né LeBron James ?"
 attend = "abstention"

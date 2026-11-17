@@ -10,7 +10,7 @@ import pytest
 
 from equipe.outils.champs import codes, texte
 from equipe.outils.positives import _positifs
-from equipe.outils.taux import _taux
+from equipe.outils.taux import _presence, _taux
 
 
 @pytest.fixture
@@ -70,3 +70,17 @@ def test_positifs_ventile_par_groupe(tableau):
 
 def test_positifs_signale_une_molecule_inconnue(tableau):
     assert "colonne inconnue" in _positifs(tableau, "Bet_v_9", 0.3)
+
+
+def test_presence_regroupe_plusieurs_codes():
+    """Un groupe défini par plusieurs codes (traité = 1 à 4) contre ceux qui n'en portent aucun."""
+    table = pd.DataFrame(
+        {
+            "Treatment_of_rhinitis": ["0", "1", "3", "9", "1,3", "1", None],
+            "Sensitization": ["1", "1", "1", "1", "0", "0", "1"],
+        }
+    )
+    resume = _presence(table, "Treatment_of_rhinitis", ["1", "2", "3", "4"], "Sensitization", "1")
+    assert "porte 1/2/3/4 : 2 sur 4 (50.0 %)" in resume
+    assert "aucun de ces codes : 1 sur 1 (100.0 %)" in resume
+    assert "2 ligne(s) sans valeur, exclues" in resume

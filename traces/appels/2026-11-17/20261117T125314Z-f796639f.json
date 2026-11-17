@@ -1,0 +1,38 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T12:53:14Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "12deba7cfc26e5e4",
+  "commit": "ada52ac900e690a8636afe8f467f960f4a0d3035",
+  "modifie": false,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle proportion des patients de moins de 18 ans est sensibilisée ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 86.8,
+    "justification": "Sur 2272 patients de moins de 18 ans dont l'âge et la sensibilisation sont renseignés, 1973 sont sensibilisés (Sensitization = 1), soit 86.8 % ; 61 âges manquants ont été exclus du tableau de 4271 lignes. La définition de Sensitization n'est pas donnée dans le dictionnaire (codes 0/1 seulement), ce qui limite l'interprétation du taux."
+  },
+  "etapes": [
+    {
+      "code": "import pandas as pd\nprint(tableau['Age'].describe())\nprint(tableau['Sensitization'].value_counts(dropna=False).head(10))\nprint(tableau['Age'].isna().sum())",
+      "resultat": "Execution logs:\ncount    4210.000000\nmean       23.077435\nstd        18.633354\nmin         0.000000\n25%         9.000000\n50%        16.000000\n75%        35.000000\nmax       102.000000\nName: Age, dtype: float64\nSensitization\n1    3579\n0     692\nName: count, dtype: int64\n61\nLast output from code snippet:\nNone"
+    },
+    {
+      "code": "sub = tableau[tableau['Age'].notna() & (tableau['Age'] < 18)].copy()\nn_age = len(sub)\nsub = sub[sub['Sensitization'].notna() & (sub['Sensitization'] != 9)]\nn = len(sub)\npos = int((sub['Sensitization'] == 1).sum())\nprint(\"moins de 18 ans (age renseigne):\", n_age)\nprint(\"avec Sensitization renseignee:\", n)\nprint(\"sensibilises (1):\", pos)\nprint(\"proportion %:\", round(100 * pos / n, 1) if n else None)",
+      "resultat": "Execution logs:\nmoins de 18 ans (age renseigne): 2272\navec Sensitization renseignee: 2272\nsensibilises (1): 1973\nproportion %: 86.8\nLast output from code snippet:\nNone"
+    },
+    {
+      "code": "final_answer({\"statut\": \"reponse\", \"valeur\": 86.8, \"justification\": \"Sur 2272 patients de moins de 18 ans dont l'âge et la sensibilisation sont renseignés, 1973 sont sensibilisés (Sensitization = 1), soit 86.8 % ; 61 âges manquants ont été exclus du tableau de 4271 lignes. La définition de Sensitization n'est pas donnée dans le dictionnaire (codes 0/1 seulement), ce qui limite l'interprétation du taux.\"})",
+      "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 86.8, 'justification': \"Sur 2272 patients de moins de 18 ans dont l'âge et la sensibilisation sont renseignés, 1973 sont sensibilisés (Sensitization = 1), soit 86.8 % ; 61 âges manquants ont été exclus du tableau de 4271 lignes. La définition de Sensitization n'est pas donnée dans le dictionnaire (codes 0/1 seulement), ce qui limite l'interprétation du taux.\"}"
+    }
+  ],
+  "jetons": {
+    "entree": 19779,
+    "sortie": 1198
+  },
+  "cout_estime": 0.0025769,
+  "duree_s": 8.68,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T12:56:22Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "c16b1a66272cc73a",
+  "commit": "ada52ac900e690a8636afe8f467f960f4a0d3035",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Quelle proportion des patients de moins de 18 ans est sensibilisée ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 86.8,
+    "justification": "Chez les patients de moins de 18 ans, 1973 sur 2272 sont sensibilisés, soit 86.8 %. Les 1999 lignes sans âge ou sans valeur sont exclues."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

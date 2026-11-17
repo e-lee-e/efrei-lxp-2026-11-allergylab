@@ -18,6 +18,7 @@ def tableau():
             "Age": [10.0, 12.0, 14.0, None],
             "Sensitization": [1, 1, 0, 1],
             "Chip_Type": ["ISAC_V1", "ISAC_V1", "ALEX", "ALEX"],
+            "French_Region": ["regionA", "regionB", "regionA", "regionA"],
             "Bet_v_1": [0.5, 0.1, 0.3, None],
         }
     )
@@ -102,3 +103,25 @@ def test_escalade_un_filtre_combine(tableau):
 
 def test_escalade_une_repartition_qui_n_est_pas_la_puce(tableau):
     assert router("Quelle est la répartition des sexes ?", tableau) is None
+
+
+def test_taux_chez_les_jeunes():
+    tableau = pd.DataFrame(
+        {"Age": [10.0] * 40 + [30.0] * 40, "Sensitization": [1] * 30 + [0] * 10 + [0] * 40}
+    )
+    reponse = router("Quelle proportion des patients de moins de 18 ans est sensibilisée ?", tableau)
+    assert reponse["valeur"] == 75.0
+    assert "30 sur 40" in reponse["justification"]
+
+
+def test_escalade_trop_peu_de_jeunes(tableau):
+    # Quatre lignes dont deux de moins de 13 ans : sous le seuil de trente, on escalade.
+    assert router("Quelle proportion des patients de moins de 13 ans est sensibilisée ?", tableau) is None
+
+
+def test_region_dominante(tableau):
+    assert router("Quelle est la région française la plus représentée ?", tableau)["valeur"] == "regionA"
+
+
+def test_escalade_une_autre_formulation_de_region(tableau):
+    assert router("Quelle région compte le plus de patients ?", tableau) is None

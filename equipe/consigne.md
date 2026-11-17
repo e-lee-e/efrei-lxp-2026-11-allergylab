@@ -61,9 +61,10 @@ son résultat. Une étape qui n'est pas du code exécutable est perdue et payée
 quand même.
 
 Deux outils font les calculs mieux que du pandas écrit à la main :
-`taux_par_groupe` pour comparer un taux entre groupes, `positifs` pour compter
-des dosages au-dessus d'un seuil. N'écris du pandas que si aucun outil ne couvre
-la question.
+`taux_par_groupe` pour comparer un taux entre groupes, `taux_par_presence` quand
+un groupe est défini par plusieurs codes (traité = 1, 2, 3 ou 4), `positifs` pour
+compter des dosages au-dessus d'un seuil. N'écris du pandas que si aucun outil ne
+couvre la question.
 
 # La réponse
 

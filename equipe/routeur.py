@@ -19,6 +19,7 @@ import unicodedata
 import pandas as pd
 
 from equipe import cache
+from equipe.outils.champs import NON_RENSEIGNE, codes as _codes, texte as _texte
 from equipe.outils.positives import chiffres
 
 # Mots tolérés après le motif de comptage : ils ne changent pas la question.
@@ -140,7 +141,65 @@ def _plus_moins_de_ans(question, tableau):
     )
 
 
-ROUTES = (_lignes, _age_median, _age_moyen, _repartition_puces, _plus_moins_de_ans, _positifs)
+def _taux_jeunes(question, tableau):
+    """« Quelle proportion des patients de moins de 18 ans est sensibilisée ? »"""
+    trouve = re.fullmatch(
+        r"(?:quelle est la |quelle )?(?:proportion|part|taux) des patients de moins de (\d+) ans"
+        r"(?: est| sont| qui sont)? sensibilise\w*" + FIN,
+        question,
+    )
+    if trouve is None or "Sensitization" not in tableau.columns:
+        return None
+    seuil = int(trouve.group(1))
+    ages = pd.to_numeric(tableau["Age"], errors="coerce")
+    bruts = tableau["Sensitization"].map(_texte)
+    sensibilise = tableau["Sensitization"].map(_codes).map(lambda valeurs: "1" in valeurs)
+    # Une cellule vide ou à 9 est non renseignée : elle sort du dénominateur,
+    # elle ne compte pas comme « non sensibilisée ».
+    renseignes = ages.notna() & bruts.notna() & (bruts != NON_RENSEIGNE)
+    du_groupe = renseignes & (ages < seuil)
+    n = int(du_groupe.sum())
+    if n < 30:  # la règle des trente patients vaut ici aussi : on escalade
+        return None
+    touches = int((du_groupe & sensibilise).sum())
+    taux = 100 * touches / n
+    return _reponse(
+        round(taux, 1),
+        f"Chez les patients de moins de {seuil} ans, {touches} sur {n} sont sensibilisés, "
+        f"soit {taux:.1f} %. Les {len(tableau) - n} lignes sans âge ou sans valeur sont exclues.",
+    )
+
+
+def _region_dominante(question, tableau):
+    """« Quelle est la région française la plus représentée ? »"""
+    motif = (
+        r"(?:quel(?:le)? est )?la region(?: francaise)? la plus representee"
+        r"(?: dans (?:le|cet|ce) tableau)?" + FIN
+    )
+    if not re.fullmatch(motif, question) or "French_Region" not in tableau.columns:
+        return None
+    valeurs = tableau["French_Region"].map(_texte).dropna()
+    if valeurs.empty:
+        return None
+    compte = valeurs.value_counts()
+    nom, nombre = str(compte.index[0]), int(compte.iloc[0])
+    return _reponse(
+        nom,
+        f"{nom} est la région la plus représentée, avec {nombre} patients sur {len(valeurs)} "
+        f"renseignés. Les {len(tableau) - len(valeurs)} lignes sans région sont exclues.",
+    )
+
+
+ROUTES = (
+    _lignes,
+    _age_median,
+    _age_moyen,
+    _repartition_puces,
+    _plus_moins_de_ans,
+    _taux_jeunes,
+    _region_dominante,
+    _positifs,
+)
 
 
 def router(question, tableau=None):

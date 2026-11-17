@@ -50,6 +50,68 @@ def _taux(tableau, colonne_groupe, colonne_cible, code_cherche):
     return entete + "\n" + "\n".join(lignes or ["aucun groupe renseigné."])
 
 
+def _presence(tableau, colonne, liste_codes, colonne_cible, code_cible):
+    """Le taux de la cible chez ceux qui portent un des codes, contre ceux qui n'en portent aucun.
+
+    Sert au cas que _taux ne sait pas exprimer : un groupe défini par plusieurs
+    codes à la fois (« traité » = 1 à 8) comparé à ceux qui n'en portent aucun.
+    Sans cet outil, le modèle réécrit le parsing à la main, soit ~700 jetons de
+    sortie par question — mesuré sur la question de la rhinite.
+    """
+    for nom in (colonne, colonne_cible):
+        if nom not in tableau.columns:
+            return f"colonne inconnue : {nom!r}."
+
+    cherches = {str(code).strip() for code in liste_codes if str(code).strip()}
+    bruts = tableau[colonne].map(texte)
+    cibles = tableau[colonne_cible].map(codes)
+    porte = tableau[colonne].map(codes).map(lambda valeurs: bool(valeurs & cherches))
+    oui = cibles.map(lambda valeurs: str(code_cible).strip() in valeurs)
+    # Une cellule qui ne porte que du 9 est non renseignée, pas « ne porte rien ».
+    renseignes = bruts.notna() & (bruts != NON_RENSEIGNE) & cibles.map(bool)
+
+    lignes = []
+    for nom, masque in (
+        ("porte " + "/".join(sorted(cherches)), porte),
+        ("aucun de ces codes", ~porte),
+    ):
+        du_groupe = renseignes & masque
+        n = int(du_groupe.sum())
+        if n:
+            touches = int((du_groupe & oui).sum())
+            lignes.append(f"{nom} : {touches} sur {n} ({100 * touches / n:.1f} %)")
+
+    ecartees = int(len(tableau) - renseignes.sum())
+    entete = (
+        f"{colonne_cible} = {code_cible!r} selon {colonne} ; "
+        f"{ecartees} ligne(s) sans valeur, exclues."
+    )
+    return entete + "\n" + "\n".join(lignes or ["aucun groupe renseigné."])
+
+
+@tool
+def taux_par_presence(
+    colonne: str, codes_cherches: str, colonne_cible: str = "Sensitization", code_cible: str = "1"
+) -> str:
+    """Taux de la cible chez les patients portant au moins un des codes, contre les autres.
+
+    À utiliser dès qu'un groupe se définit par plusieurs codes possibles, par
+    exemple « traité pour rhinite » = 1, 2, 3 ou 4, comparé aux non-traités (0).
+
+    Args:
+        colonne: colonne clinique codée, par exemple "Treatment_of_rhinitis".
+        codes_cherches: les codes du groupe, séparés par des virgules, par exemple "1,2,3,4".
+        colonne_cible: colonne clinique codée qui porte le résultat, "Sensitization" par défaut.
+        code_cible: le code qui vaut « oui » dans la cible, "1" par défaut.
+
+    Returns:
+        Deux lignes : ceux qui portent un des codes, puis ceux qui n'en portent
+        aucun, avec effectif, nombre et pourcentage. Le code 9 et le vide sont exclus.
+    """
+    liste = str(codes_cherches).replace(";", ",").split(",")
+    return _presence(cache.tableau(), colonne, liste, colonne_cible, code_cible)
+
+
 @tool
 def taux_par_groupe(colonne_groupe: str, colonne_cible: str, code: str) -> str:
     """Part des patients portant un code, pour chaque valeur d'une colonne de groupe.

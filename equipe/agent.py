@@ -21,7 +21,7 @@ from smolagents import CodeAgent
 from kit import modele, reponse
 from equipe import cache, routeur
 from equipe.outils.positives import positifs
-from equipe.outils.taux import taux_par_groupe
+from equipe.outils.taux import taux_par_groupe, taux_par_presence
 
 CONSIGNE = (Path(__file__).parent / "consigne.md").read_text(encoding="utf-8")
 
@@ -59,7 +59,7 @@ def repondre(question):
 
     agent = CodeAgent(
         model=modele_du_jour(),  # Haiku, ou qwen3:8b local avec ALLERGYLAB_MODELE=local
-        tools=[taux_par_groupe, positifs],  # les outils de equipe/outils/, testés par pytest
+        tools=[taux_par_groupe, taux_par_presence, positifs],  # les outils de equipe/outils/, testés par pytest
         instructions=reponse.consigne(CONSIGNE),  # ta consigne, puis le format de réponse du kit
         max_steps=5,  # plafond maison : 8 étapes coûtent jusqu'à 0,008 $ (kit/reglages.toml ne se touche pas)
         max_print_outputs_length=modele.REGLAGES["agent"]["sortie_max"],

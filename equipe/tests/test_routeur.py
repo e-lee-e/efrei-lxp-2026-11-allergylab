@@ -161,3 +161,23 @@ def test_escalade_deux_colonnes_differentes():
 def test_escalade_une_comparaison_avec_un_age_precise():
     question = "les femmes de plus de 40 ans sont-elles plus souvent sensibilisées que les hommes ?"
     assert router(question, _tableau_comparaison()) is None
+
+
+def test_apostrophe_typographique(tableau):
+    """Une question copiée depuis un traitement de texte utilise « l’ » et non « l' »."""
+    assert router("Quel est l’âge médian des patients ?", tableau)["valeur"] == 12.0
+
+
+def test_patients_inclus_dans_le_jeu(tableau):
+    assert router("combien de patients sont inclus dans le jeu de données ?", tableau)["valeur"] == 4
+
+
+def test_repartition_entre_les_trois_types_de_puces(tableau):
+    valeur = router("Quelle est la répartition des patients entre les trois types de puces ?", tableau)["valeur"]
+    assert "ISAC_V1 : 2" in valeur
+
+
+def test_effectifs_de_deux_groupes():
+    assert router("Combien de patients sont des femmes et combien sont des hommes ?", _tableau_comparaison())[
+        "valeur"
+    ] == "40 femmes ; 40 hommes"

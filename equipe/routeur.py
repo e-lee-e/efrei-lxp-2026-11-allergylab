@@ -25,11 +25,15 @@ from equipe.outils.positives import chiffres
 # Mots tolérés après le motif de comptage : ils ne changent pas la question.
 # Les tirets sont acceptés comme séparateurs (« y a-t-il »), et la politesse est
 # retirée avant le match par _sans_politesse.
-FIN = r"(?:[\s-]+(?:y|a|t|il|on|ont|est|sont|compte|contient|dans|le|la|les|un|une|des|ce|cet|tableau|fichier|jeu|au|total|en|tout|du|patients|patientes|cohorte|donnees|dataset))*\s*\??"
+FIN = r"(?:[\s-]+(?:y|a|t|il|on|ont|est|sont|compte|contient|dans|le|la|les|un|une|des|de|ce|cet|tableau|fichier|jeu|au|total|en|tout|du|patients|patientes|cohorte|donnees|dataset|inclus|incluses|compris|regroupe|figure|apparait|apparaissent|present|presentes))*\s*\??"
 
 
 def _plat(texte):
     """Minuscules, sans accents, blancs ramenés à un seul. La ponctuation reste."""
+    # Les apostrophes typographiques (« l’âge » copié d'un traitement de texte)
+    # ne sont pas des apostrophes droites : sans cette normalisation, tout motif
+    # qui attend « l' » échoue sur une question tapée dans Word.
+    texte = str(texte).replace("’", "'").replace("‘", "'").replace("`", "'").replace("´", "'")
     decompose = unicodedata.normalize("NFKD", texte.lower())
     sans_accent = "".join(c for c in decompose if not unicodedata.combining(c))
     return " ".join(sans_accent.split())
@@ -128,8 +132,9 @@ def _age_moyen(question, tableau):
 def _repartition_puces(question, tableau):
     """« Quelle est la répartition des puces ? »"""
     motif = (
-        r"(?:quel(?:le)? est |quelle est )?(?:la )?repartition des (?:trois |3 )?"
-        r"(?:puces?(?: de test)?|types? de puce)" + FIN
+        r"(?:quel(?:le)? est |quelle est )?(?:la )?repartition des (?:patients )?"
+        r"(?:(?:entre|par|selon) (?:les )?)?(?:trois |3 )?(?:types? de )?"
+        r"puces?(?: de test)?" + FIN
     )
     if not re.fullmatch(motif, question) or "Chip_Type" not in tableau.columns:
         return None
@@ -465,7 +470,39 @@ def _sac_compte(question, tableau):
     )
 
 
-INTENTIONS = (_sac_comparaison, _sac_compte)
+def _effectif(tableau, colonne, codes_du_groupe):
+    """Le nombre de patients d'un groupe, non-renseignés exclus."""
+    if colonne not in tableau.columns:
+        return None
+    bruts = tableau[colonne].map(_texte)
+    porte = tableau[colonne].map(_codes).map(lambda valeurs: bool(valeurs & set(codes_du_groupe)))
+    return int((bruts.notna() & (bruts != NON_RENSEIGNE) & porte).sum())
+
+
+def _sac_effectifs(question, tableau):
+    """« Combien de patients sont des femmes et combien sont des hommes ? »"""
+    if "combien" not in question.split():
+        return None
+    mots = [mot for mot in question.split() if mot not in BRUIT]
+    if any(mot.startswith("sensibilis") for mot in mots):
+        return None
+    groupes = _groupes_dans(mots)
+    if len(groupes) != 2 or groupes[0][1][0] != groupes[1][1][0]:
+        return None
+    consommes = {mot for nom, _groupe_trouve in groupes for mot in nom.split()}
+    if not _reste_explique(mots, consommes, frozenset()):
+        return None
+    effectifs = [(nom, _effectif(tableau, groupe[0], groupe[1])) for nom, groupe in groupes]
+    if any(nombre is None for _nom, nombre in effectifs):
+        return None
+    texte = " ; ".join(f"{nombre} {nom}" for nom, nombre in effectifs)
+    return _reponse(
+        texte,
+        f"{texte}, sur {len(tableau)} lignes au total. Les lignes sans groupe renseigné sont exclues.",
+    )
+
+
+INTENTIONS = (_sac_comparaison, _sac_compte, _sac_effectifs)
 
 
 ROUTES = (

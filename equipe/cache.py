@@ -13,6 +13,7 @@ effacée. Utile avant une passe officielle.
 import hashlib
 import json
 import os
+import pickle
 import unicodedata
 from pathlib import Path
 
@@ -37,10 +38,36 @@ def actif():
 
 
 def tableau():
-    """Le tableau du kit, lu une seule fois par processus : une seconde gagnée par question."""
+    """Le tableau du kit, lu une fois par processus.
+
+    Le fichier est relu à chaque `uv run kit agent`, puisque chaque question est
+    un processus neuf. On garde donc une copie pickle dans le dossier de cache,
+    nommée par l'empreinte du CSV : tant que le fichier n'a pas changé, la copie
+    est relue (0,03 s au lieu de 0,66 s) ; dès qu'il change, le nom change et
+    elle est refaite. Ce n'est pas de l'argent, c'est de la seconde.
+    """
     global _tableau
-    if _tableau is None:
-        _tableau = charger()
+    if _tableau is not None:
+        return _tableau
+
+    copie = DOSSIER / f"tableau-{empreinte_donnees()[:16]}.pkl"
+    try:
+        with open(copie, "rb") as fichier:
+            _tableau = pickle.load(fichier)
+        return _tableau
+    except (OSError, pickle.UnpicklingError, ValueError, AttributeError, EOFError):
+        pass  # pas de copie, copie d'une autre version de pandas, copie tronquée : on relit le CSV
+
+    _tableau = charger()
+    try:
+        DOSSIER.mkdir(mode=0o700, parents=True, exist_ok=True)
+        provisoire = copie.with_name(f".{copie.name}.{os.getpid()}")
+        with open(provisoire, "wb") as fichier:
+            pickle.dump(_tableau, fichier, protocol=5)
+        os.chmod(provisoire, 0o600)
+        provisoire.replace(copie)
+    except OSError:
+        pass  # écrire la copie est un confort, jamais une condition
     return _tableau
 
 

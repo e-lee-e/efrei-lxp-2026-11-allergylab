@@ -59,6 +59,13 @@ Autres faits utiles, à vérifier au besoin :
   tableau entier ni une colonne complète. Chaque caractère imprimé se paie
   deux fois : une fois en sortie, une fois dans toutes les étapes suivantes.
 
+# La forme d'une étape
+
+Chaque étape est un bloc de code Python, et rien d'autre : pas de JSON, pas de
+phrase seule, pas de balise autour. Pour appeler un outil, écris l'appel dans ce
+bloc, suivi d'un `print` de son résultat. Une étape qui n'est pas du code
+exécutable est perdue, et se paie quand même.
+
 # Les outils
 
 Deux outils font les calculs à ta place, et ils appliquent les règles du fichier

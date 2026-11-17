@@ -42,14 +42,18 @@ Poids mesurés au tokenizer : la consigne fait **1 249 jetons** (24 % du premier
 appel) et les deux outils **375 jetons** de description, repayés à chaque étape.
 C'est pour ça qu'un outil non routé coûte plus qu'il ne rapporte.
 
-## Quatre pièges qui coûtent une mesure
+## Cinq pièges qui coûtent une mesure
 
 1. **Le cache fausse toute mesure** : une question rejouée sort à 0 jeton. Utiliser
    `ALLERGYLAB_SANS_CACHE=1` avant de conclure quoi que ce soit.
 2. **Un outil non routé est une taxe** : mesuré à +50 % de coût pour la même
    réponse, quand le modèle réécrit du pandas au lieu d'appeler l'outil.
-3. **`uv run pytest` ne voit pas `equipe/tests`** : `pyproject.toml` fixe
+3. **Une étape qui n'est pas du code est perdue** : smolagents attend du Python
+   exécutable ; un appel d'outil écrit en JSON ou en prose déclenche « code
+   parsing » et brûle une étape entière (~6 000 jetons). La consigne doit dire
+   qu'un appel d'outil s'écrit dans un bloc de code, suivi d'un `print`.
+4. **`uv run pytest` ne voit pas `equipe/tests`** : `pyproject.toml` fixe
    `testpaths = ["kit/tests"]`. La commande est `uv run pytest equipe/tests -q`.
    Le fichier `pyproject.toml` n'est pas à nous (Adrien le pousse) : on n'y touche pas.
-4. **`kit/` est figé** : `controle` vérifie son empreinte à partir du lot 2.
+5. **`kit/` est figé** : `controle` vérifie son empreinte à partir du lot 2.
    Toute idée d'optimisation dans `kit/` se traduit en `equipe/` ou ne se fait pas.

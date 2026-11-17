@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T09:54:30Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "da127f7cfc6059a9",
+  "commit": "4002d0ef6bf6383e90de567b6abeaf00bc6adb93",
+  "modifie": true,
+  "moteur": "cache",
+  "modele": "cache",
+  "question": "quel est l age median des patients ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 16.0,
+    "justification": "Médiane de l'âge calculée sur n = 4 210 patients renseignés, après exclusion de 61 valeurs manquantes sur 4 271 (dénominateur 4 210). L'âge va de 0 à 102 ans, et 54 % des patients ont moins de 18 ans, ce qui explique une médiane basse et une cohorte majoritairement pédiatrique."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.01,
+  "erreur": null
+}

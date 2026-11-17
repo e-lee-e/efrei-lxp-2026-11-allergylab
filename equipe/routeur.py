@@ -18,14 +18,14 @@ import unicodedata
 
 import pandas as pd
 
-from equipe import cache
+from equipe import cache, langage
 from equipe.outils.champs import NON_RENSEIGNE, codes as _codes, texte as _texte
 from equipe.outils.positives import chiffres
 
 # Mots tolérés après le motif de comptage : ils ne changent pas la question.
 # Les tirets sont acceptés comme séparateurs (« y a-t-il »), et la politesse est
 # retirée avant le match par _sans_politesse.
-FIN = r"(?:[\s-]+(?:y|a|t|il|compte|contient|dans|le|ce|cet|tableau|fichier|jeu|au|total|en|tout|du))*\s*\??"
+FIN = r"(?:[\s-]+(?:y|a|t|il|on|ont|est|sont|compte|contient|dans|le|la|les|un|une|des|ce|cet|tableau|fichier|jeu|au|total|en|tout|du|patients|patientes|cohorte|donnees|dataset))*\s*\??"
 
 
 def _plat(texte):
@@ -65,7 +65,7 @@ def _lignes(question, tableau):
 
 def _age_median(question, tableau):
     """« Quel est l'âge médian des patients ? »"""
-    motif = r"(?:quel(?:le)? est |quelle est )?(?:l'? ?)?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = r"(?:quel(?:le)? (?:est )?|quelle (?:est )?)?(?:l'? ?)?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")
@@ -112,7 +112,7 @@ def _positifs(question, tableau):
 
 def _age_moyen(question, tableau):
     """« Quel est l'âge moyen des patients ? »"""
-    motif = r"(?:quel(?:le)? est |quelle est )?(?:l'? ?)?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = r"(?:quel(?:le)? (?:est )?|quelle (?:est )?)?(?:l'? ?)?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")
@@ -338,6 +338,136 @@ def _code_miroir(groupe):
     return autres - set(codes_du_groupe)
 
 
+# Mots qui ne portent aucun sens pour le calcul : ils peuvent apparaître dans
+# n'importe quel ordre, ou manquer, sans changer la réponse.
+BRUIT = frozenset(
+    """le la les l un une des de du d au aux a et ou que qui quoi quel quelle quels quelles
+    est sont son se ce cet cette ces dans en pour par sur avec sans y il elle ils elles
+    t donc alors aussi svp stp merci beaucoup plus moins souvent davantage environ
+    combien nombre total tout tous toute toutes leur leurs chez parmi entre""".split()
+)
+
+# Ce qui explique une comparaison, une fois les groupes et la cible retirés.
+VIDES_COMPARAISON = frozenset({"autres", "reste", "comparaison", "compare", "ecart", "difference"})
+
+# Contexte : ces mots désignent le fichier sans le paramétrer.
+BRUIT = BRUIT | frozenset(
+    {"dataset", "donnees", "fichier", "tableau", "jeu", "se", "sa", "tous", "zone", "zones",
+     "patient", "patients", "patiente", "patientes", "sujet", "sujets", "personne", "personnes",
+     "on", "ont"}
+)
+
+
+def _groupes_dans(mots):
+    """Les groupes nommés présents, les noms de deux mots essayés d'abord (« zones rurales »)."""
+    trouves, i = [], 0
+    while i < len(mots):
+        if i + 1 < len(mots):
+            deux_mots = mots[i] + " " + mots[i + 1]
+            groupe = _groupe(deux_mots)
+            if groupe:
+                trouves.append((deux_mots, groupe))
+                i += 2
+                continue
+        groupe = _groupe(mots[i])
+        if groupe:
+            trouves.append((mots[i], groupe))
+        i += 1
+    return trouves
+
+
+def _reste_explique(mots, consommes, tolere):
+    """Vrai si tous les mots porteurs sont expliqués par les groupes, la cible ou une tolérance."""
+    return all(
+        mot in consommes or mot in tolere for mot in mots
+    )
+
+
+def _sac_comparaison(question, tableau):
+    """La comparaison, tolérée aux fautes et à l'ordre : « feme son sensibiler dent le datset »."""
+    mots = [mot for mot in question.split() if mot not in BRUIT]
+    if not any(mot.startswith("sensibilis") for mot in mots):
+        return None
+    groupes = _groupes_dans(mots)
+    if not groupes:
+        return None
+    noms = {mot for nom, _groupe_trouve in groupes for mot in nom.split()}
+    consommes = noms | {mot for mot in mots if mot.startswith("sensibilis")}
+    if not _reste_explique(mots, consommes, VIDES_COMPARAISON):
+        return None  # un mot non expliqué : il change peut-être la question, on escalade
+    if len(groupes) >= 2 and groupes[0][1][0] == groupes[1][1][0]:
+        return _comparaison_deux(mots, groupes, tableau)
+    if len(groupes) == 1:
+        return _comparaison_reste(groupes[0], tableau)
+    return None
+
+
+def _comparaison_deux(mots, groupes, tableau):
+    (nom_a, groupe_a), (nom_b, groupe_b) = groupes[0], groupes[1]
+    taux_a = _taux_codes(tableau, groupe_a[0], groupe_a[1])
+    taux_b = _taux_codes(tableau, groupe_b[0], groupe_b[1])
+    if not taux_a or not taux_b:
+        return None
+    part_a, part_b = 100 * taux_a[0] / taux_a[1], 100 * taux_b[0] / taux_b[1]
+    return _reponse(
+        "oui" if part_a > part_b else "non",
+        f"{nom_a} : {taux_a[0]} sur {taux_a[1]} ({part_a:.1f} %), contre "
+        f"{taux_b[0]} sur {taux_b[1]} ({part_b:.1f} %) pour {nom_b}. "
+        f"{len(tableau) - taux_a[1] - taux_b[1]} lignes hors de ces deux groupes ou sans valeur "
+        "sont exclues ; la définition de Sensitization n'est pas donnée.",
+    )
+
+
+def _comparaison_reste(groupe, tableau):
+    nom_a, (colonne, codes_du_groupe) = groupe
+    taux_a = _taux_codes(tableau, colonne, codes_du_groupe)
+    if not taux_a:
+        return None
+    bruts = tableau[colonne].map(_texte)
+    cibles = tableau["Sensitization"].map(_codes)
+    renseignes = bruts.notna() & (bruts != NON_RENSEIGNE) & cibles.map(bool)
+    n_total = int(renseignes.sum())
+    touches_total = int((renseignes & cibles.map(lambda valeurs: "1" in valeurs)).sum())
+    n_reste, touches_reste = n_total - taux_a[1], touches_total - taux_a[0]
+    if n_reste < 30:
+        return None
+    part_a, part_reste = 100 * taux_a[0] / taux_a[1], 100 * touches_reste / n_reste
+    return _reponse(
+        "oui" if part_a > part_reste else "non",
+        f"{nom_a} : {taux_a[0]} sur {taux_a[1]} ({part_a:.1f} %), contre "
+        f"{touches_reste} sur {n_reste} ({part_reste:.1f} %) chez les autres patients. "
+        f"{len(tableau) - n_total} lignes sans groupe ou sans valeur sont exclues ; "
+        "la définition de Sensitization n'est pas donnée.",
+    )
+
+
+def _sac_compte(question, tableau):
+    """« Combien de femmes sont sensibilisées, dans ce dataset ? » — sans ordre imposé."""
+    mots = [mot for mot in question.split() if mot not in BRUIT]
+    if not any(mot.startswith("combien") or mot == "nombre" for mot in question.split()):
+        return None
+    if not any(mot.startswith("sensibilis") for mot in mots):
+        return None
+    groupes = _groupes_dans(mots)
+    if len(groupes) != 1:
+        return None
+    nom, (colonne, codes_du_groupe) = groupes[0]
+    consommes = set(nom.split()) | {mot for mot in mots if mot.startswith("sensibilis")}
+    if not _reste_explique(mots, consommes, frozenset()):
+        return None
+    taux = _taux_codes(tableau, colonne, codes_du_groupe)
+    if not taux:
+        return None
+    return _reponse(
+        taux[0],
+        f"{taux[0]} patients sur {taux[1]} ({nom}) sont sensibilisés, soit "
+        f"{100 * taux[0] / taux[1]:.1f} %. Les autres lignes sont hors du groupe ou sans valeur.",
+    )
+
+
+INTENTIONS = (_sac_comparaison, _sac_compte)
+
+
 ROUTES = (
     _lignes,
     _age_median,
@@ -354,9 +484,26 @@ ROUTES = (
 def router(question, tableau=None):
     """La réponse locale, ou None si aucune route ne reconnaît la question."""
     plat = _sans_politesse(_plat(question))
+    # Un « ? » isolé après un mot est un jeton à part : il ne doit pas compter
+    # comme un mot porteur, sinon tout le repli tolérant échoue pour un point
+    # d'interrogation.
+    plat = " ".join(mot for mot in plat.split() if mot.strip("?!.,;:"))
     tableau = cache.tableau() if tableau is None else tableau
     for route in ROUTES:
         reponse = route(plat, tableau)
         if reponse is not None:
             return reponse
+
+    # Repli tolérant : même intention, ordre libre et fautes corrigées. Une route
+    # stricte n'est qu'un chemin propre ; celui-ci accepte les chemins de traverse.
+    corrigee = langage.corriger(plat)
+    for texte in (plat, corrigee):
+        for route in ROUTES:  # un motif strict peut se déclencher après correction
+            reponse = route(texte, tableau)
+            if reponse is not None:
+                return reponse
+        for intention in INTENTIONS:
+            reponse = intention(texte, tableau)
+            if reponse is not None:
+                return reponse
     return None

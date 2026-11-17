@@ -10,8 +10,7 @@ from smolagents import tool
 
 from equipe import cache
 from equipe.outils.champs import NON_RENSEIGNE, texte
-
-COLONNES_CLINIQUES = 15
+from kit.donnees import NB_CLINIQUES
 
 
 def _positifs(tableau, allergene, seuil, groupe=""):
@@ -34,7 +33,7 @@ def _positifs(tableau, allergene, seuil, groupe=""):
         return entete
 
     if groupe not in tableau.columns:
-        cliniques = ", ".join(map(str, tableau.columns[:COLONNES_CLINIQUES]))
+        cliniques = ", ".join(map(str, tableau.columns[:NB_CLINIQUES]))
         return entete + f"\ngroupe inconnu : {groupe!r}. Les colonnes cliniques sont : {cliniques}."
 
     noms = tableau[groupe].map(texte)

@@ -23,6 +23,12 @@ CONSIGNE = Path(__file__).parent / "consigne.md"
 
 _tableau = None
 _empreinte = None
+_consigne = None
+
+# Le moteur qui a produit la réponse entre dans la clé : sans ça, une réponse
+# obtenue avec le CodeAgent serait resservie après un basculement vers
+# kit.boucle_maison, qui raisonne autrement. À changer si le moteur change.
+MOTEUR = "codeagent"
 
 
 def actif():
@@ -51,13 +57,20 @@ def empreinte_donnees():
 
 
 def cle(question):
-    """L'empreinte de (question, consigne, données) : deux formulations différentes donnent deux clés."""
-    try:
-        consigne = CONSIGNE.read_text(encoding="utf-8")
-    except OSError:
-        consigne = ""
-    texte = "\n".join((normaliser(question), consigne, empreinte_donnees()))
+    """L'empreinte de (question, consigne, données, moteur) : deux formulations différentes donnent deux clés."""
+    texte = "\n".join((normaliser(question), consigne(), MOTEUR, empreinte_donnees()))
     return hashlib.sha256(texte.encode("utf-8")).hexdigest()
+
+
+def consigne():
+    """Le texte de la consigne, lu une fois par processus : il entre dans la clé de cache."""
+    global _consigne
+    if _consigne is None:
+        try:
+            _consigne = CONSIGNE.read_text(encoding="utf-8")
+        except OSError:
+            _consigne = ""
+    return _consigne
 
 
 def normaliser(question):

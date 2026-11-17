@@ -4,6 +4,10 @@ L'outil ne rend qu'un résumé chiffré, jamais le tableau. Les règles de lectu
 du fichier (code 9, valeurs multiples, cases vides) sont dans equipe/outils/champs.py,
 appliquées ici une fois pour toutes.
 
+Attention : le code 9 ne vaut que pour les colonnes cliniques codées. Sur Age ou
+sur une colonne de dosage, 9 est une valeur comme une autre — cet outil écartait
+donc silencieusement les patients de 9 ans.
+
 La fonction publique est un outil de smolagents ; le calcul est dans _taux, qui
 prend un tableau en argument et se teste sans réseau ni modèle.
 """
@@ -12,15 +16,14 @@ from smolagents import tool
 
 from equipe import cache
 from equipe.outils.champs import NON_RENSEIGNE, codes, texte
-
-COLONNES_CLINIQUES = 15
+from kit.donnees import NB_CLINIQUES
 
 
 def _taux(tableau, colonne_groupe, colonne_cible, code_cherche):
     """Le résumé chiffré : une ligne par groupe, plus le nombre de lignes écartées."""
     for nom in (colonne_groupe, colonne_cible):
         if nom not in tableau.columns:
-            cliniques = ", ".join(map(str, tableau.columns[:COLONNES_CLINIQUES]))
+            cliniques = ", ".join(map(str, tableau.columns[:NB_CLINIQUES]))
             return f"colonne inconnue : {nom!r}. Les colonnes cliniques sont : {cliniques}."
 
     cherche = str(code_cherche).strip()
@@ -28,11 +31,15 @@ def _taux(tableau, colonne_groupe, colonne_cible, code_cherche):
     cibles = tableau[colonne_cible].map(codes)
     renseignes = groupes.notna() & (groupes != NON_RENSEIGNE) & cibles.map(bool)
 
+    # « porte le code » ne dépend pas du groupe : calculé une fois pour toutes,
+    # et non une fois par groupe (sinon on reparcourt la colonne à chaque tour).
+    porte = cibles.map(lambda valeurs: cherche in valeurs)
+
     lignes = []
     for nom in sorted(groupes[renseignes].unique()):
         du_groupe = renseignes & (groupes == nom)
         n = int(du_groupe.sum())
-        touches = int((du_groupe & cibles.map(lambda valeurs: cherche in valeurs)).sum())
+        touches = int((du_groupe & porte).sum())
         lignes.append(f"{nom} : {touches} sur {n} ({100 * touches / n:.1f} %)")
 
     ecartees = int(len(tableau) - renseignes.sum())
@@ -47,9 +54,12 @@ def _taux(tableau, colonne_groupe, colonne_cible, code_cherche):
 def taux_par_groupe(colonne_groupe: str, colonne_cible: str, code: str) -> str:
     """Part des patients portant un code, pour chaque valeur d'une colonne de groupe.
 
+    Ne pas appeler sur Age ni sur une colonne de dosage : le code 9 n'y veut pas
+    dire « non renseigné ».
+
     Args:
-        colonne_groupe: colonne clinique qui définit les groupes, par exemple "Gender".
-        colonne_cible: colonne clinique où chercher le code, par exemple "Sensitization".
+        colonne_groupe: colonne clinique codée qui définit les groupes, par exemple "Gender".
+        colonne_cible: colonne clinique codée où chercher le code, par exemple "Sensitization".
         code: la valeur cherchée, en texte, par exemple "1".
 
     Returns:

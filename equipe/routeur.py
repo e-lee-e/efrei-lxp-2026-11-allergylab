@@ -36,6 +36,9 @@ def _plat(texte):
     texte = str(texte).replace("’", "'").replace("‘", "'").replace("`", "'").replace("´", "'")
     decompose = unicodedata.normalize("NFKD", texte.lower())
     sans_accent = "".join(c for c in decompose if not unicodedata.combining(c))
+    # « ya-t-il » est une faute de frappe courante de « y a-t-il » : sans cette
+    # réécriture, la question la plus banale du fichier escalade.
+    sans_accent = re.sub(r"\bya([\s-])", r"y a\1", sans_accent)
     return " ".join(sans_accent.split())
 
 

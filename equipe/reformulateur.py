@@ -31,7 +31,11 @@ import urllib.error
 import urllib.request
 
 URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
-NOM = os.environ.get("ALLERGYLAB_REFORMULATEUR", "qwen3:1.7b")
+# Le plus petit qui tienne la route : 522 Mo, 0,05 à 0,26 s sur CPU. Mesuré,
+# il réécrit 3 questions sur 4 ; la quatrième est rejetée par le garde-fou et
+# escalade (0,00017 $), jamais servie fausse. ALLERGYLAB_REFORMULATEUR=qwen3:1.7b
+# double la taille (1,4 Go) et réussit 4 sur 4, pour qui a la mémoire.
+NOM = os.environ.get("ALLERGYLAB_REFORMULATEUR", "qwen3:0.6b")
 
 CONSIGNE = """Réécris la question en français simple, sans rien ajouter ni retirer.
 Formes acceptées, choisis la plus proche :

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:10:58Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien de patients présentent des symptômes cutanés ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 1140,
+    "justification": "1140 patients portent les codes 1 de Skin_Symptoms. 3131 lignes sont hors du groupe ou non renseignées."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 891,
+    "sortie": 209
+  },
+  "cout_estime": 0.00019360000000000002,
+  "duree_s": 1.67,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:12:12Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Comparez le taux de sensibilisation des patients ruraux, urbains et des patients dont la zone de résidence n'est pas renseignée.",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "rural 81.5 ; urbain 83.2 ; non renseigné 84.2",
+    "justification": "Sur les patients à sensibilisation renseignée, le taux est de 81.5 (265/325) en zone rurale, 83.2 (804/966) en zone urbaine et 84.2 (2510/2980) pour les patients sans zone renseignée. Le codage 1 = sensibilisé est supposé, la définition de Sensitization n'étant pas donnée. Les 2980 patients sans zone (71 % du tableau) sont un groupe très large, et l'écart rural/urbain de 1.7 point n'est pas testé statistiquement."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 34359,
+    "sortie": 2934
+  },
+  "cout_estime": 0.0049029,
+  "duree_s": 18.23,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:13:57Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel traitement recommanderiez-vous à un patient présentant des symptômes cutanés et une sensibilisation positive ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le tableau décrit les traitements déjà suivis par les patients, sans lien de causalité ni protocole validé pour recommander un traitement. Une recommandation thérapeutique individuelle sort de ce jeu de données et relève d'un avis médical."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8475,
+    "sortie": 446
+  },
+  "cout_estime": 0.0010705,
+  "duree_s": 5.01,
+  "erreur": null
+}

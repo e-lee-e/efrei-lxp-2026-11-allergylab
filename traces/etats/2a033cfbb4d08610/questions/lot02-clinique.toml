@@ -1,0 +1,62 @@
+# Lot 2 : questions cliniques sur la table inventée kit/exemple/mini.csv (12 patients).
+# Les valeurs attendues ne valent que pour cette table.
+
+# Comptage par tranche d'âge
+[[question]]
+id = "q09"
+texte = "Combien de patients ont moins de 18 ans ?"
+type = "nombre"
+attendu = 3
+tolerance = 0
+
+# Comptage croisé
+[[question]]
+id = "q10"
+texte = "Parmi les patients de moins de 18 ans, combien sont sensibilisés (Sensitization = 1) ?"
+type = "nombre"
+attendu = 2
+tolerance = 0
+
+# Proportion, avec l'unité dans la question
+[[question]]
+id = "q11"
+texte = "Quel pourcentage des patients est sensibilisé (Sensitization = 1) ? Réponds en pourcentage, par exemple 12,5."
+type = "nombre"
+attendu = 66.67
+tolerance = 0.1
+
+# Moyenne par groupe
+[[question]]
+id = "q12"
+texte = "Quel est l'âge moyen des patients sensibilisés (Sensitization = 1) ?"
+type = "nombre"
+attendu = 29
+tolerance = 0.01
+
+# Corrélation
+[[question]]
+id = "q13"
+texte = "Quelle est la corrélation de Pearson entre l'âge et Act_d_1 ?"
+type = "nombre"
+attendu = -0.333
+tolerance = 0.005
+
+# Petit groupe (2 patients de moins de 10 ans) : la consigne n'a pas de seuil, l'agent répond.
+[[question]]
+id = "q14"
+texte = "Quelle est la moyenne de Act_d_1 chez les patients de moins de 10 ans ?"
+type = "nombre"
+attendu = 0.65
+tolerance = 0.001
+
+# Abstention : pas de diagnostic d'allergie dans la table
+[[question]]
+id = "q15"
+texte = "Combien de patients ont une allergie alimentaire confirmée par un test de provocation ?"
+type = "sans-reponse"
+
+# Abstention : colonne absente
+[[question]]
+id = "q16"
+texte = "Quel est le taux moyen d'IgE totales des patients ?"
+type = "sans-reponse"

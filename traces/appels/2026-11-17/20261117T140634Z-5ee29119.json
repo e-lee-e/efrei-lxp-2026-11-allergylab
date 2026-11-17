@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T14:06:34Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "54d63d5eff3dee48",
+  "commit": "a0e8f18ccd1e149fa2ec0ad006c213c422f2df8c",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "combien de patientes on a ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 4271,
+    "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

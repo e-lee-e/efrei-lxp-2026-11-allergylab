@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T13:20:17Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "4326a7aad11b63ed",
+  "commit": "ff97233043251b9f7ae429e45cc819b64a51077c",
+  "modifie": false,
+  "moteur": "smolagents",
+  "modele": null,
+  "question": "Les femmes sont-elles plus souvent sensibilisées ?",
+  "reponse": null,
+  "etapes": [
+    {
+      "code": null,
+      "resultat": null
+    }
+  ],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 56.39,
+  "erreur": "interrompu"
+}

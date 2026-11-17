@@ -27,6 +27,6 @@ module-name = "kit"
 module-root = ""
 
 [tool.pytest.ini_options]
-testpaths = ["kit/tests"]
+testpaths = ["kit/tests", "equipe/tests"]  # les tests du kit, puis ceux de l'équipe
 # Un avertissement de pydantic, émis à l'import de litellm, sans rapport avec le kit.
 filterwarnings = ["ignore:.*ReadOnly.*:UserWarning"]

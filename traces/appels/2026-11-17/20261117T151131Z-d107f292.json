@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:11:31Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Chez les patients de moins de 18 ans, quel est le taux de sensibilisation des hommes comparé à celui des femmes ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "hommes 88.95 ; femmes 83.17",
+    "justification": "Chez les moins de 18 ans, le taux de sensibilisation est de 88.95 % chez les hommes (n=1439) contre 83.17 % chez les femmes (n=832), soit un écart d'environ 5.8 points. Aucune valeur n'était manquante. La définition clinique de Sensitization n'est pas donnée dans le fichier, ce qui limite l'interprétation."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 25418,
+    "sortie": 2181
+  },
+  "cout_estime": 0.0036323,
+  "duree_s": 13.87,
+  "erreur": null
+}

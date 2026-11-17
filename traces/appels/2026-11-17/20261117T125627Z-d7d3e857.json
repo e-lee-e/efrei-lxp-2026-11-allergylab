@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T12:56:27Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "c16b1a66272cc73a",
+  "commit": "ada52ac900e690a8636afe8f467f960f4a0d3035",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Quelle est la région française la plus représentée dans le tableau ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "regionD",
+    "justification": "regionD est la région la plus représentée, avec 1100 patients sur 4271 renseignés. Les 0 lignes sans région sont exclues."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T14:00:46Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fac5111db17af410",
+  "commit": "f3d14ced035187ff3f20716e4477c26a7c895553",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Combien ya til de patient dans le fichier ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 4271,
+    "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 888,
+    "sortie": 16
+  },
+  "cout_estime": 9.680000000000001e-05,
+  "duree_s": 1.31,
+  "erreur": null
+}

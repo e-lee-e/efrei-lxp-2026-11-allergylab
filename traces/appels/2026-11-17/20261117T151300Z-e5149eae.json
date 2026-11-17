@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:13:00Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel pourcentage des patients est sensibilisé aux pollens ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne nomme que des molécules (Bet_v_1, Phl_p_1…) et ne donne aucune famille d'allergène, donc on ne peut pas isoler les sensibilisations aux pollens. La colonne Sensitization (0/1) n'a pas de définition dans le dictionnaire, et elle ne précise pas l'allergène concerné."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8439,
+    "sortie": 743
+  },
+  "cout_estime": 0.0012154000000000002,
+  "duree_s": 5.64,
+  "erreur": null
+}

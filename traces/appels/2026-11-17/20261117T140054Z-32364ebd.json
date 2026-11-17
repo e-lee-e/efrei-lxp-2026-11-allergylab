@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T14:00:54Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fac5111db17af410",
+  "commit": "f3d14ced035187ff3f20716e4477c26a7c895553",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle région française compte le plus de patients ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "regionD",
+    "justification": "regionD est la valeur la plus fréquente de French_Region, avec 1100 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 887,
+    "sortie": 171
+  },
+  "cout_estime": 0.00017419999999999998,
+  "duree_s": 2.06,
+  "erreur": null
+}

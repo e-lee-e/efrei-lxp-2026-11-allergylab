@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T11:16:25Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "ba5fac5d54eddb4f",
+  "commit": "7476331df2c3e7137e51701e22e58893e3a32652",
+  "modifie": false,
+  "moteur": null,
+  "modele": null,
+  "question": "Les femmes sont-elles plus souvent sensibilisées que les hommes ?",
+  "reponse": null,
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": "AttributeError : type object 'ModeleLocal' has no attribute 'disponible'"
+}

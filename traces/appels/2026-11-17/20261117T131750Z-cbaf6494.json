@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T13:17:50Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "4326a7aad11b63ed",
+  "commit": "ff97233043251b9f7ae429e45cc819b64a51077c",
+  "modifie": false,
+  "moteur": "cache",
+  "modele": "cache",
+  "question": "Les femmes sont-elles plus souvent sensibilisées que les autres patients",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "non",
+    "justification": "Les femmes (Gender=0) sont sensibilisées dans 80.9 % des cas (1674 sur 2070), contre 88.5 % chez les hommes (1892 sur 2139). 62 lignes sans sexe ou sans valeur de sensibilisation ont été exclues. Le dictionnaire ne définit pas la sensibilisation (0/1), ce qui limite l'interprétation à ce tableau."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

@@ -1,0 +1,682 @@
+[
+ {
+  "id": "A01",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Combien de patients sont inclus dans le jeu de données ?",
+  "statut": "reponse",
+  "valeur": 4271,
+  "justification": "Le jeu contient 4271 patients distincts (identifiants Patient_ID uniques) sur 4271 lignes ; 0 lignes sans identifiant. Les codes 9 ne sont pas concernés par cette question de comptage.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "A02",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Quel est l'âge médian des patients ?",
+  "statut": "reponse",
+  "valeur": 16.0,
+  "justification": "Médiane de l'âge calculée sur 4210 patients renseignés (dénominateur 4210 ; 61 cases vides exclues sur 4271). L'âge est une valeur en années et le code 9 n'a pas été retiré, car il ne signifie pas « non renseigné » pour cette colonne.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "A03",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Quelle est la répartition des patients entre les trois types de puces ?",
+  "statut": "reponse",
+  "valeur": "ISAC_V1 : 2351 (55.0 %) ; ALEX : 1139 (26.7 %) ; ISAC_V2 : 781 (18.3 %)",
+  "justification": "Sur n = 4271 patients, sans valeur manquante dans Chip_Type, ISAC_V1 regroupe 2351 patients (55,0 %), ALEX 1139 (26,7 %) et ISAC_V2 781 (18,3 %). Les trois puces ne mesurent pas les mêmes molécules, donc les dosages ne sont pas directement comparables entre elles.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "A04",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Combien de patients sont des femmes et combien sont des hommes ?",
+  "statut": "reponse",
+  "valeur": "2070 femmes ; 2139 hommes",
+  "justification": "Sur 4271 patients, 2070 sont codés 0 (féminin) et 2139 codés 1 (masculin), soit 4209 renseignés. Les 62 Gender vides sont exclus et aucun code 9 n'est présent.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "A05",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Quelle région française compte le plus de patients ?",
+  "statut": "reponse",
+  "valeur": "regionD",
+  "justification": "regionD compte 1100 patients sur 4271 renseignés, soit 25.8 % ; aucune ligne exclue pour région manquante. Les régions sont anonymisées (regionA à regionO), donc le nom réel n'est pas connu.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "A06",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Combien de patients présentent des symptômes cutanés ?",
+  "statut": "reponse",
+  "valeur": 1140,
+  "justification": "1140 patients ont Skin_Symptoms = 1 (oui) sur 1826 renseignés. 2445 lignes au code 9 (non renseigné) sont exclues, et aucune case n'est vide sur 4271 patients. Soit 62.4 % des patients renseignés.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "A07",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Quel est le nombre de patients traités pour une rhinite ?",
+  "statut": "reponse",
+  "valeur": 422,
+  "justification": "422 patients sont traités pour une rhinite (codes 1 à 4) parmi 1305 renseignés ; 883 n'ont aucun traitement (code 0). 2966 lignes sur 4271 sont exclues car vides ou au code 9 (non renseigné), ce qui limite la portée du nombre.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "A08",
+  "famille": "A",
+  "attend": "reponse",
+  "texte": "Quelle est la proportion de patients ayant une sensibilisation positive parmi les hommes et les femmes ?",
+  "statut": "reponse",
+  "valeur": "Femmes 80.9 % (1674/2070) ; hommes 88.5 % (1892/2139)",
+  "justification": "Taux de sensibilisation (Sensitization=1) calculé par sexe sur les lignes renseignées ; 62 lignes exclues pour sexe ou sensibilisation manquants (code 9 compris dans les exclusions). L'écart d'environ 7.6 points est comparé sur deux groupes de plus de 2000 patients chacun.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "B01",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "Combien ya til de patient dans le fichier ?",
+  "statut": "reponse",
+  "valeur": 4271,
+  "justification": "Le tableau compte 4271 lignes, soit 4271 Patient_ID distincts et aucun identifiant manquant ; chaque ligne correspond donc à un patient unique.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "B02",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "C'est quoi l'age moyen des patients stp ?",
+  "statut": "reponse",
+  "valeur": 23.1,
+  "justification": "L'âge moyen est de 23.1 ans, calculé sur n=4210 patients renseignés sur 4271. 61 âge(s) manquant(s) exclu(s) du calcul. Cette moyenne décrit le tableau de l'étude, pas la population générale.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "B03",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "Tu peux me dire cb de patients ont eu une puce ALEX ?",
+  "statut": "reponse",
+  "valeur": 1139,
+  "justification": "1139 patients sur 4271 (soit 26,7 %) ont une puce ALEX, sans valeur manquante dans Chip_Type. La puce ALEX ne mesure pas les mêmes molécules que ISAC_V1 (2351 patients) ou ISAC_V2 (781 patients), donc les dosages ne sont pas comparables entre puces.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "B04",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "Combien de femmes et d'hommes on a dans cette base ?",
+  "statut": "reponse",
+  "valeur": "2070 femmes et 2139 hommes",
+  "justification": "Sur 4271 lignes, 62 Gender vides sont exclues ; 0 code 9 trouvé. Femmes (code 0) = 2070 soit 49.2 % ; hommes (code 1) = 2139 soit 50.8 % ; dénominateur n = 4209.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "B05",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "Quelle region de france est la plus representee svp ?",
+  "statut": "reponse",
+  "valeur": "regionD",
+  "justification": "regionD est la valeur la plus fréquente de French_Region, avec 1100 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues.",
+  "moteur": "traducteur",
+  "jetons": {
+   "entree": 888,
+   "sortie": 187
+  },
+  "cout": 0.0001823,
+  "duree": 2.65,
+  "juste": true
+ },
+ {
+  "id": "B06",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "Ya combien de patients avec des symptomes cutanes ?",
+  "statut": "reponse",
+  "valeur": "1140 symptomes cutanes",
+  "justification": "1140 symptomes cutanes, sur 4271 lignes au total. Les lignes sans groupe renseigné sont exclues.",
+  "moteur": "routeur",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.02,
+  "juste": true
+ },
+ {
+  "id": "B07",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "Combien de patients prennent un traitement contre la rhinite ?",
+  "statut": "reponse",
+  "valeur": 430,
+  "justification": "430 patients portent les codes 1/2/3/4 de Treatment_of_rhinitis. 3841 lignes sont hors du groupe ou non renseignées.",
+  "moteur": "traducteur",
+  "jetons": {
+   "entree": 893,
+   "sortie": 260
+  },
+  "cout": 0.00021930000000000002,
+  "duree": 1.77,
+  "juste": true
+ },
+ {
+  "id": "B08",
+  "famille": "B",
+  "attend": "reponse",
+  "texte": "Stp tu peux comparer le taux de sensibilisation chez les patients des zones rurales et urbaines ?",
+  "statut": "reponse",
+  "valeur": "non",
+  "justification": "Premier groupe : 265 sur 325 (81.5 %) ; second groupe : 804 sur 966 (83.2 %). La définition de Sensitization n'est pas donnée.",
+  "moteur": "traducteur",
+  "jetons": {
+   "entree": 909,
+   "sortie": 286
+  },
+  "cout": 0.0002339,
+  "duree": 2.06,
+  "juste": true
+ },
+ {
+  "id": "C01",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Parmi les patients âgés de 18 à 30 ans, combien sont des femmes vivant en zone urbaine ?",
+  "statut": "reponse",
+  "valeur": 78,
+  "justification": "78 patients sur 4271 répondent aux trois critères : âge de 18 à 30 ans, Gender=0 (féminin) et Rural_or_urban_area=1 (urbain). Les codes 9 non renseignés sont exclus par le filtre sur Gender et Rural_or_urban_area.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "C02",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Quel est l'âge moyen des patients sous biothérapie, en excluant ceux dont l'âge est non renseigné ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La biothérapie n'est pas définie dans le dictionnaire : les codes biologiques (anti-IL5, anti-IL4/13 pour l'asthme, Dupilumab pour la dermatite atopique) ne suffisent pas à fixer le groupe sans définition officielle. Le calcul de l'âge moyen n'a donc pas été fait, et aucun chiffre n'est donné.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": false
+ },
+ {
+  "id": "C03",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Chez les patients de moins de 18 ans, quel est le taux de sensibilisation des hommes comparé à celui des femmes ?",
+  "statut": "reponse",
+  "valeur": "hommes 88.95 ; femmes 83.17",
+  "justification": "Chez les moins de 18 ans, 1280 hommes sur 1439 sont sensibilisés (88.95 %) contre 692 femmes sur 832 (83.17 %), soit un écart d'environ 5.8 points en faveur des hommes. Aucune valeur manquante ni code 9 n'a été trouvé pour la sensibilisation dans ces effectifs, et le dictionnaire ne donne pas de définition de la sensibilisation.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "C04",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Combien de patients présentant des symptômes cutanés sont traités pour une rhinite, en excluant ceux dont le traitement est non renseigné ?",
+  "statut": "reponse",
+  "valeur": 210,
+  "justification": "210 patients présentant des symptômes cutanés (Skin_Symptoms=1) sont traités pour une rhinite (codes 1 à 4 de Treatment_of_rhinitis), soit 36.7 % des 573 patients aux symptômes cutanés dont le traitement est renseigné. Les 363 patients au code 0 (aucun traitement) sont comptés dans le dénominateur, et les patients au code 9 (non renseigné) sont exclus.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "C05",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Quelle est la répartition des trois types de puces chez les patients âgés de plus de 40 ans ?",
+  "statut": "reponse",
+  "valeur": "ISAC_V1 49.6 ; ISAC_V2 16.7 ; ALEX 33.7",
+  "justification": "Parmi les 822 patients de plus de 40 ans (sur 4271), ISAC_V1 compte 408 patients (49.6 %), ISAC_V2 137 (16.7 %) et ALEX 277 (33.7 %) ; la somme des trois effectifs égale bien 822. Le 9 n'intervient pas ici car la question ne porte que sur l'âge et la puce, et les trois puces ne mesurent pas les mêmes molécules, ce qui ne change pas cette répartition des effectifs.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "C06",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Comparez le taux de sensibilisation des patients ruraux, urbains et des patients dont la zone de résidence n'est pas renseignée.",
+  "statut": "reponse",
+  "valeur": "Ruraux 81.5 % (265/325) ; urbains 83.2 % (804/966) ; zone non renseignée 84.2 % (2510/2980)",
+  "justification": "Taux de sensibilisation (Sensitization=1) calculés sur les patients renseignés : ruraux n=325, urbains n=966, zone non renseignée (code 9) n=2980, soit 4271 patients au total. Les écarts sont faibles (81.5 % à 84.2 %) et la définition de Sensitization n'est pas donnée dans le dictionnaire, donc il s'agit d'un taux brut. Le groupe non renseigné représente 70 % du tableau et n'est pas représentatif de la population générale.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "C07",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Combien de patients de plus de 60 ans sont sous biothérapie, en excluant ceux qui présentent des symptômes cutanés ?",
+  "statut": "reponse",
+  "valeur": 5,
+  "justification": "Sur 56 patients de plus de 60 ans sans symptômes cutanés renseignés (dénominateur n=56), 5 sont sous biothérapie. Biothérapie définie comme anti-IL5, anti-IL4/13 (asthme) ou Dupilumab (dermatite atopique), ce qui est une interprétation du dictionnaire ; 47 patients avec symptômes cutanés et 119 avec symptôme non renseigné (code 9) ont été exclus.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "C08",
+  "famille": "C",
+  "attend": "reponse",
+  "texte": "Chez les patients âgés de 20 à 50 ans, comparez le nombre de femmes et d'hommes traités pour une rhinite et présentant des symptômes cutanés.",
+  "statut": "reponse",
+  "valeur": "26 femmes contre 20 hommes",
+  "justification": "Sur 1324 patients de 20 à 50 ans, 46 sont traités pour rhinite (code 1 à 4, code 9 et 0 exclus) et présentent des symptômes cutanés : 26 femmes (Gender=0) et 20 hommes (Gender=1). Chaque groupe compte moins de 30 patients, donc l'écart est instable et ne permet pas de conclure à une différence réelle.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "D01",
+  "famille": "D",
+  "attend": "abstention",
+  "texte": "Quel pourcentage des patients est sensibilisé aux pollens ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "Le fichier ne nomme que des molécules (dosages) et ne donne aucune famille d'allergènes, donc aucun regroupement « pollens » n'est possible. La colonne Sensitization est codée 0/1 sans définition dans le dictionnaire, ce qui empêche de la rattacher aux seuls pollens.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "D02",
+  "famille": "D",
+  "attend": "reponse",
+  "texte": "Quelle est la concentration moyenne de Bet_v_1 en kUA/L ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question demande la moyenne de Bet_v_1 en kUA/L, or le fichier ne donne aucune unité pour les dosages et le dictionnaire n'en définit pas. Une moyenne en kUA/L ne peut donc pas être rendue sans inventer une unité ou une conversion.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": false
+ },
+ {
+  "id": "D03",
+  "famille": "D",
+  "attend": "abstention",
+  "texte": "À partir de quel seuil en kUA/L considère-t-on un dosage Act_d_1 comme positif ?",
+  "statut": "reponse",
+  "valeur": 2351,
+  "justification": "2351 patients sur 4271 ont eu la puce ISAC_V1. Les trois puces ne mesurent pas les mêmes molécules.",
+  "moteur": "reformulateur",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.42,
+  "juste": false
+ },
+ {
+  "id": "D04",
+  "famille": "D",
+  "attend": "abstention",
+  "texte": "Les patients ayant un dosage Der_p_1 élevé présentent-ils un risque accru de développer un asthme ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "Le tableau est une coupe transversale sans date de début d'asthme ni suivi dans le temps, donc le risque de développer un asthme ne peut pas être estimé. Un lien entre un dosage élevé et un traitement de l'asthme au même moment ne prouve ni un risque futur ni une causalité.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "D05",
+  "famille": "D",
+  "attend": "abstention",
+  "texte": "Quel est le taux de sensibilisation aux acariens chez les patients de moins de 18 ans ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La colonne Sensitization (0/1) n'est pas spécifique aux acariens et sa définition n'est pas donnée dans le dictionnaire. Les dosages d'acariens (Der_p_*, Der_f_*) n'ont pas de seuil de positivité dans le fichier, donc aucune sensibilisation aux acariens ne peut être calculée. Sur les 2272 patients de moins de 18 ans, aucune valeur de Sensitization n'est manquante.",
+  "moteur": "cache",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "D06",
+  "famille": "D",
+  "attend": "abstention",
+  "texte": "Quelle molécule est la plus fortement associée aux allergies alimentaires ?",
+  "statut": "reponse",
+  "valeur": "Ana_o",
+  "justification": "Ana_o a la corrélation la plus forte avec l'anaphylaxie alimentaire (r = 0,178 ; n = 504 patients renseignés, sur 241 molécules évaluées). Le code 9 a exclu 2572 patients, et Ara_h_6 (r = 0,174 ; n = 1699) est quasi équivalent avec un effectif bien plus grand. Il s'agit d'une association faible, qui ne dit rien de la causalité.",
+  "moteur": "smolagents",
+  "jetons": {
+   "entree": 36418,
+   "sortie": 4233
+  },
+  "cout": 0.0057583,
+  "duree": 24.74,
+  "juste": false
+ },
+ {
+  "id": "D07",
+  "famille": "D",
+  "attend": "abstention",
+  "texte": "Quel traitement recommanderiez-vous à un patient présentant des symptômes cutanés et une sensibilisation positive ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "Le tableau décrit des patients et leurs dosages, il ne contient ni efficacité ni issue de traitement, et la recommandation d'une prescription relève de la posologie et de la décision médicale, hors de portée de ce jeu de données. Les colonnes Skin_Symptoms et Sensitization existent, mais le fichier ne définit pas la sensibilisation et ne relie pas un traitement à un résultat clinique.",
+  "moteur": "smolagents",
+  "jetons": {
+   "entree": 8286,
+   "sortie": 425
+  },
+  "cout": 0.0010411,
+  "duree": 5.18,
+  "juste": true
+ },
+ {
+  "id": "D08",
+  "famille": "D",
+  "attend": "abstention",
+  "texte": "Peut-on prédire l'apparition d'une anaphylaxie chez les patients sensibilisés à partir de leurs dosages moléculaires ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question demande un pronostic, c'est-à-dire une prédiction de survenue future, que ce tableau transversal ne permet pas d'établir. La colonne Age_of_onsets décrit l'âge de l'anaphylaxie alimentaire déjà survenue, sans suivi ni délai, et les dosages n'ont ni seuil de positivité ni définition de sensibilisation dans le fichier.",
+  "moteur": "smolagents",
+  "jetons": {
+   "entree": 8302,
+   "sortie": 558
+  },
+  "cout": 0.0011092,
+  "duree": 6.08,
+  "juste": true
+ },
+ {
+  "id": "E01",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Combien de joueurs ont participé à la dernière Coupe du monde de football ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "E02",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Quelle est la capitale du Japon ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "E03",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Comment calculer la complexité temporelle d'un algorithme de tri fusion ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "E04",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Quel est le meilleur ordinateur portable gaming à moins de 1 500 euros ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "E05",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Combien de planètes composent le système solaire ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "E06",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Comment fonctionne le protocole TCP dans un réseau informatique ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "E07",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Quel est le meilleur traitement pour améliorer les performances d'une carte graphique ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ },
+ {
+  "id": "E08",
+  "famille": "E",
+  "attend": "abstention",
+  "texte": "Combien de calories contient une portion de riz blanc cuit ?",
+  "statut": "abstention",
+  "valeur": null,
+  "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau.",
+  "moteur": "hors-sujet",
+  "jetons": {
+   "entree": 0,
+   "sortie": 0
+  },
+  "cout": 0.0,
+  "duree": 0.0,
+  "juste": true
+ }
+]

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:00:54Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel est l'âge moyen des patients sous biothérapie, en excluant ceux dont l'âge est non renseigné ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 30.22,
+    "justification": "Moyenne d'âge de 30,22 ans chez les 27 patients sous biothérapie (codes 6, 7 ou 8 de Treatment_of_athsma), n=27 sur 27 patients sous biothérapie, aucun âge manquant exclu. Effectif inférieur à 30 : résultat instable ; médiane 20 ans, écart-type 20,7 ans."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 17846,
+    "sortie": 1951
+  },
+  "cout_estime": 0.0027600999999999997,
+  "duree_s": 320.21,
+  "erreur": null
+}

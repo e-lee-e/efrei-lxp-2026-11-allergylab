@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:13:13Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "À partir de quel seuil en kUA/L considère-t-on un dosage Act_d_1 comme positif ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne précise ni seuil de positivité ni unité pour les dosages, dont Act_d_1. Le seuil en kUA/L est une convention absente du tableau, donc je ne peux pas le fixer."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8465,
+    "sortie": 445
+  },
+  "cout_estime": 0.001069,
+  "duree_s": 4.81,
+  "erreur": null
+}

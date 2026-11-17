@@ -17,7 +17,7 @@ import pickle
 import unicodedata
 from pathlib import Path
 
-from kit.donnees import FICHIER, charger
+from kit.donnees import FICHIER, charger, colonnes
 
 DOSSIER = Path.home() / ".allergylab" / "cache"
 CONSIGNE = Path(__file__).parent / "consigne.md"
@@ -25,6 +25,7 @@ CONSIGNE = Path(__file__).parent / "consigne.md"
 _tableau = None
 _empreinte = None
 _consigne = None
+_dosages = None
 
 # Le moteur qui a produit la réponse entre dans la clé : sans ça, une réponse
 # obtenue avec le CodeAgent serait resservie après un basculement vers
@@ -69,6 +70,19 @@ def tableau():
     except OSError:
         pass  # écrire la copie est un confort, jamais une condition
     return _tableau
+
+
+def dosages():
+    """Les colonnes de dosage, lues dans le dictionnaire du kit (kit/colonnes.csv).
+
+    Source unique : compter sur la position des colonnes ne vaut que pour le
+    fichier livré, et casse dès qu'on passe une table inventée.
+    """
+    global _dosages
+    if _dosages is None:
+        dico = colonnes()
+        _dosages = set(dico.loc[dico["bloc"] == "dosage", "colonne"])
+    return _dosages
 
 
 def empreinte_donnees():

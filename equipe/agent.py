@@ -18,7 +18,7 @@ from pathlib import Path
 from smolagents import CodeAgent
 
 from kit import modele, reponse
-from equipe import cache
+from equipe import cache, routeur
 from equipe.outils.positives import positifs
 from equipe.outils.taux import taux_par_groupe
 
@@ -33,6 +33,13 @@ def repondre(question):
         modele.journal["moteur"] = "cache"
         modele.journal["modele"] = "cache"
         return gardee
+
+    # Question reconnaissable : la réponse est calculée ici, sans modèle, zéro jeton.
+    locale = routeur.router(question)
+    if locale is not None:
+        modele.journal["moteur"] = "routeur"
+        modele.journal["modele"] = "local"
+        return locale
 
     agent = CodeAgent(
         model=modele.ModeleKit(),  # le modèle de kit/reglages.toml

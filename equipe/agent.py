@@ -10,12 +10,20 @@ from pathlib import Path
 from smolagents import CodeAgent
 
 from kit import modele, reponse
-from kit.donnees import charger
+from equipe import cache
 
 CONSIGNE = (Path(__file__).parent / "consigne.md").read_text(encoding="utf-8")
 
 
 def repondre(question):
+    # Question déjà posée, même consigne, même fichier : la réponse est relue
+    # au lieu d'être recalculée. La trace dit d'où elle vient (moteur « cache »).
+    gardee = cache.lire(question)
+    if gardee is not None:
+        modele.journal["moteur"] = "cache"
+        modele.journal["modele"] = "cache"
+        return gardee
+
     agent = CodeAgent(
         model=modele.ModeleKit(),  # le modèle de kit/reglages.toml
         tools=[],  # les outils de equipe/outils/, une fois écrits et testés
@@ -26,8 +34,16 @@ def repondre(question):
         # Accès aux données : le code écrit par le modèle peut importer pandas.
         additional_authorized_imports=["pandas"],
     )
-    return agent.run(
+    sortie = agent.run(
         question,
         # Accès aux données : le code écrit par le modèle reçoit le tableau complet, sous le nom tableau.
-        additional_args={"tableau": charger()},
+        additional_args={"tableau": cache.tableau()},
     )
+    # On ne garde qu'une réponse qui respecte le contrat : une réponse
+    # illisible doit être reproposée au modèle, pas resservie depuis le cache.
+    try:
+        validee = reponse.valider(sortie)
+    except Exception:
+        return sortie
+    cache.ecrire(question, validee)
+    return validee

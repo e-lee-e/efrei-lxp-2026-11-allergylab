@@ -208,6 +208,136 @@ def _region_dominante(question, tableau):
     )
 
 
+# Les groupes nommés en français, et la colonne qui les porte. Un nom absent de
+# cette table fait escalader la question : le routeur ne devine jamais un groupe.
+LEXIQUE = (
+    (("femmes", "femme", "patientes", "patiente"), "Gender", {"0"}),
+    (("hommes", "homme", "patients masculins"), "Gender", {"1"}),
+    (("zones rurales", "zone rurale", "ruraux", "rurales", "rural", "campagne"), "Rural_or_urban_area", {"0"}),
+    (("villes", "ville", "zones urbaines", "urbains", "urbaines", "urbain"), "Rural_or_urban_area", {"1"}),
+    (("symptomes cutanes", "symptome cutane", "cutanes", "cutane", "urticaire"), "Skin_Symptoms", {"1"}),
+    (
+        ("traites pour une rhinite", "traitees pour une rhinite", "rhinite traitee", "traitement de la rhinite", "traites pour rhinite"),
+        "Treatment_of_rhinitis",
+        {"1", "2", "3", "4"},
+    ),
+    (("sous biotherapie", "biotherapie", "biologiques", "traitement biologique"), "Treatment_of_athsma", {"6", "7", "8"}),
+)
+
+PREFIXES = (
+    "patients des ", "patientes des ", "patients ", "patientes ", "sujets ", "personnes ",
+    "ceux des ", "celles des ", "ceux ", "celles ", "ayant des ", "ayant ", "avec des ", "avec ",
+    "les ", "le ", "la ",
+)
+
+
+def _nettoyer(nom):
+    """« les patients ayant des symptômes cutanés » devient « symptomes cutanes »."""
+    retour = _plat(nom)
+    for prefixe in PREFIXES:  # du plus long au plus court : l'ordre de la table compte
+        while retour.startswith(prefixe):
+            retour = retour[len(prefixe):].strip()
+    return retour
+
+
+def _groupe(nom):
+    """(colonne, codes) du groupe nommé, ou None."""
+    for noms, colonne, codes_du_groupe in LEXIQUE:
+        if nom in noms:
+            return colonne, codes_du_groupe
+    return None
+
+
+def _taux_codes(tableau, colonne, codes_du_groupe, cible="Sensitization", code_cible="1"):
+    """(touches, n) chez les patients qui portent un des codes ; None sous trente patients."""
+    if colonne not in tableau.columns or cible not in tableau.columns:
+        return None
+    bruts = tableau[colonne].map(_texte)
+    cibles = tableau[cible].map(_codes)
+    porte = tableau[colonne].map(_codes).map(lambda valeurs: bool(valeurs & set(codes_du_groupe)))
+    renseignes = bruts.notna() & (bruts != NON_RENSEIGNE) & cibles.map(bool)
+    du_groupe = renseignes & porte
+    n = int(du_groupe.sum())
+    if n < 30:
+        return None
+    return int((du_groupe & cibles.map(lambda valeurs: code_cible in valeurs)).sum()), n
+
+
+def _comparaison(question, tableau):
+    """« Les femmes sont-elles plus souvent sensibilisées que les hommes ? »
+
+    Deux formes, deux calculs : deux groupes nommés se comparent entre eux ;
+    un seul groupe nommé se compare au reste du tableau.
+    """
+    cible = r"plus souvent sensibilise\w*"
+
+    deux = re.fullmatch(r"les (?P<a>.+?) sont[- ](?:elles|ils) " + cible + r" que (?P<b>.+?)" + FIN, question)
+    if deux:
+        nom_a, nom_b = _nettoyer(deux.group("a")), _nettoyer(deux.group("b"))
+        groupe_a, groupe_b = _groupe(nom_a), _groupe(nom_b)
+        taux_a = _taux_codes(tableau, groupe_a[0], groupe_a[1]) if groupe_a else None
+        taux_b = (
+            _taux_codes(tableau, groupe_b[0], groupe_b[1])
+            if groupe_b and groupe_a and groupe_b[0] == groupe_a[0]
+            else None
+        )
+        if taux_a and taux_b:
+            part_a, part_b = 100 * taux_a[0] / taux_a[1], 100 * taux_b[0] / taux_b[1]
+            return _reponse(
+                "oui" if part_a > part_b else "non",
+                f"{nom_a} : {taux_a[0]} sur {taux_a[1]} ({part_a:.1f} %), contre "
+                f"{taux_b[0]} sur {taux_b[1]} ({part_b:.1f} %) pour {nom_b}. "
+                f"{len(tableau) - taux_a[1] - taux_b[1]} lignes hors de ces deux groupes ou sans valeur "
+                "sont exclues ; la définition de Sensitization n'est pas donnée.",
+            )
+        # Groupe inconnu ou deux colonnes différentes : la forme à un groupe tente
+        # sa chance juste après (« que les autres patients » arrive ici).
+
+    un = re.fullmatch(
+        r"les (?P<a>.+?) sont[- ](?:elles|ils) " + cible +        r"(?: que (?:les autres|le reste)(?: (?:patients|patientes|du tableau))?)?" + FIN,
+        question,
+    )
+    if not un:
+        return None
+    nom_a = _nettoyer(un.group("a"))
+    groupe_a = _groupe(nom_a)
+    if not groupe_a:
+        return None
+    taux_a = _taux_codes(tableau, groupe_a[0], groupe_a[1])
+    if not taux_a:
+        return None
+    total = _taux_codes(tableau, groupe_a[0], set(groupe_a[1]) | set(_code_miroir(groupe_a)))
+    if not total:
+        return None
+    # Le reste : le complément du groupe, dans les patients renseignés sur la cible.
+    bruts = tableau[groupe_a[0]].map(_texte)
+    cibles = tableau["Sensitization"].map(_codes)
+    renseignes = bruts.notna() & (bruts != NON_RENSEIGNE) & cibles.map(bool)
+    n_total = int(renseignes.sum())
+    touches_total = int((renseignes & cibles.map(lambda valeurs: "1" in valeurs)).sum())
+    n_reste, touches_reste = n_total - taux_a[1], touches_total - taux_a[0]
+    if n_reste < 30:
+        return None
+    part_a, part_reste = 100 * taux_a[0] / taux_a[1], 100 * touches_reste / n_reste
+    return _reponse(
+        "oui" if part_a > part_reste else "non",
+        f"{nom_a} : {taux_a[0]} sur {taux_a[1]} ({part_a:.1f} %), contre "
+        f"{touches_reste} sur {n_reste} ({part_reste:.1f} %) chez les autres patients. "
+        f"{len(tableau) - n_total} lignes sans groupe ou sans valeur sont exclues ; "
+        "la définition de Sensitization n'est pas donnée.",
+    )
+
+
+def _code_miroir(groupe):
+    """Les codes de l'autre groupe de la même colonne : sert à reconstruire le total renseigné."""
+    colonne, codes_du_groupe = groupe
+    autres = set()
+    for _noms, colonne_autre, codes_autre in LEXIQUE:
+        if colonne_autre == colonne:
+            autres |= set(codes_autre)
+    return autres - set(codes_du_groupe)
+
+
 ROUTES = (
     _lignes,
     _age_median,
@@ -216,6 +346,7 @@ ROUTES = (
     _plus_moins_de_ans,
     _taux_jeunes,
     _region_dominante,
+    _comparaison,
     _positifs,
 )
 

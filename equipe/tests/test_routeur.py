@@ -125,3 +125,39 @@ def test_region_dominante(tableau):
 
 def test_escalade_une_autre_formulation_de_region(tableau):
     assert router("Quelle région compte le plus de patients ?", tableau) is None
+
+
+def _tableau_comparaison():
+    """Quarante femmes et quarante hommes : au-dessus du seuil de trente patients."""
+    return pd.DataFrame(
+        {
+            "Gender": [0.0] * 40 + [1.0] * 40,
+            "Sensitization": [1] * 30 + [0] * 10 + [1] * 20 + [0] * 20,
+            "Rural_or_urban_area": [0.0] * 40 + [1.0] * 40,
+        }
+    )
+
+
+def test_comparaison_de_deux_groupes():
+    reponse = router("les femmes sont-elles plus souvent sensibilisées que les hommes ?", _tableau_comparaison())
+    assert reponse["valeur"] == "oui"  # 75 % contre 50 %
+    assert "30 sur 40" in reponse["justification"]
+
+
+def test_comparaison_au_reste_du_tableau():
+    reponse = router("les femmes sont-elles plus souvent sensibilisées ?", _tableau_comparaison())
+    assert reponse["valeur"] == "oui"
+    assert "autres patients" in reponse["justification"]
+
+
+def test_escalade_un_groupe_inconnu():
+    assert router("les professeurs sont-ils plus souvent sensibilisés que les hommes ?", _tableau_comparaison()) is None
+
+
+def test_escalade_deux_colonnes_differentes():
+    assert router("les femmes sont-elles plus souvent sensibilisées que les ruraux ?", _tableau_comparaison()) is None
+
+
+def test_escalade_une_comparaison_avec_un_age_precise():
+    question = "les femmes de plus de 40 ans sont-elles plus souvent sensibilisées que les hommes ?"
+    assert router(question, _tableau_comparaison()) is None

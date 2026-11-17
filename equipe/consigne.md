@@ -55,6 +55,9 @@ Autres faits utiles, à vérifier au besoin :
   d'inventer.
 - Si un groupe compte moins de 30 patients, dis-le : un taux sur si peu de
   monde est instable.
+- N'imprime qu'un résumé court : dix lignes au plus par étape, jamais un
+  tableau entier ni une colonne complète. Chaque caractère imprimé se paie
+  deux fois : une fois en sortie, une fois dans toutes les étapes suivantes.
 
 # La justification
 

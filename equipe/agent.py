@@ -28,7 +28,7 @@ def repondre(question):
         model=modele.ModeleKit(),  # le modèle de kit/reglages.toml
         tools=[],  # les outils de equipe/outils/, une fois écrits et testés
         instructions=reponse.consigne(CONSIGNE),  # ta consigne, puis le format de réponse du kit
-        max_steps=modele.REGLAGES["agent"]["etapes_max"],
+        max_steps=5,  # plafond maison : 8 étapes coûtent jusqu'à 0,008 $ (kit/reglages.toml ne se touche pas)
         max_print_outputs_length=modele.REGLAGES["agent"]["sortie_max"],
         step_callbacks=[modele.noter_etape],  # recopie chaque étape dans la trace
         # Accès aux données : le code écrit par le modèle peut importer pandas.

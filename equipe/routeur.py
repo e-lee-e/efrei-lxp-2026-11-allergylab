@@ -47,7 +47,7 @@ def _lignes(question, tableau):
 
 def _age_median(question, tableau):
     """« Quel est l'âge médian des patients ? »"""
-    motif = r"(?:quel(?:le)? est |quelle est )?l'?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = r"(?:quel(?:le)? est |quelle est )?l'? ?age median(?:e)?(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")
@@ -94,7 +94,7 @@ def _positifs(question, tableau):
 
 def _age_moyen(question, tableau):
     """« Quel est l'âge moyen des patients ? »"""
-    motif = r"(?:quel(?:le)? est |quelle est )?l'?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
+    motif = r"(?:quel(?:le)? est |quelle est )?l'? ?age moyen(?: des patients| de la cohorte| du tableau)?" + FIN
     if not re.fullmatch(motif, question):
         return None
     ages = pd.to_numeric(tableau["Age"], errors="coerce")

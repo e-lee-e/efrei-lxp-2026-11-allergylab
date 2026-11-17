@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:14:08Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "hors-sujet",
+  "modele": "local",
+  "question": "Combien de joueurs ont participé à la dernière Coupe du monde de football ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.02,
+  "erreur": null
+}

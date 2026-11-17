@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:11:10Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Stp tu peux comparer le taux de sensibilisation chez les patients des zones rurales et urbaines ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "non",
+    "justification": "Premier groupe : 265 sur 325 (81.5 %) ; second groupe : 804 sur 966 (83.2 %). La définition de Sensitization n'est pas donnée."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 909,
+    "sortie": 372
+  },
+  "cout_estime": 0.00027689999999999995,
+  "duree_s": 2.08,
+  "erreur": null
+}

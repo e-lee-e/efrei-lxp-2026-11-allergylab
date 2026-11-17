@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:13:27Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quel est le taux de sensibilisation aux acariens chez les patients de moins de 18 ans ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Le fichier ne nomme que des molécules (dosages) et ne donne aucune famille d'allergènes, donc la sensibilisation aux acariens ne peut pas être isolée. La colonne Sensitization est générale, sans définition donnée, et ne vise pas les acariens ; une réponse exigerait de fixer un seuil de positivité par molécule d'acarien, absent du fichier."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16227,
+    "sortie": 1193
+  },
+  "cout_estime": 0.0022192,
+  "duree_s": 8.91,
+  "erreur": null
+}

@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:14:02Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Peut-on prédire l'apparition d'une anaphylaxie chez les patients sensibilisés à partir de leurs dosages moléculaires ?",
+  "reponse": {
+    "statut": "abstention",
+    "valeur": null,
+    "justification": "Prédire la survenue future d'une anaphylaxie relève du pronostic, hors de ce tableau transversal sans suivi longitudinal. Age_of_onsets indique seulement l'âge de survenue déclaré, sans date de suivi ni validation de modèle. Aucun calcul descriptif des dosages ne permet de conclure à une prédiction."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 8491,
+    "sortie": 718
+  },
+  "cout_estime": 0.0012081,
+  "duree_s": 6.53,
+  "erreur": null
+}

@@ -1,0 +1,62 @@
+# Lot 1 : questions de base sur la table inventée kit/exemple/mini.csv (12 patients).
+# Les valeurs attendues ne valent que pour cette table.
+
+# Comptage
+[[question]]
+id = "q01"
+texte = "Combien de patients compte le tableau ?"
+type = "nombre"
+attendu = 12
+tolerance = 0
+
+# Statistique descriptive
+[[question]]
+id = "q02"
+texte = "Quel est l'âge moyen des patients ?"
+type = "nombre"
+attendu = 33
+tolerance = 0.01
+
+# Statistique par groupe
+[[question]]
+id = "q03"
+texte = "Quel est l'âge médian des patients de la puce ISAC_V1 ?"
+type = "nombre"
+attendu = 13.5
+tolerance = 0.01
+
+# Moyenne par groupe
+[[question]]
+id = "q04"
+texte = "Quelle est la moyenne de Act_d_1 chez les patients de la puce ALEX ?"
+type = "nombre"
+attendu = 1.505
+tolerance = 0.001
+
+# Valeurs manquantes
+[[question]]
+id = "q05"
+texte = "Combien de patients n'ont pas de région renseignée ?"
+type = "nombre"
+attendu = 1
+tolerance = 0
+
+# Cases vides à exclure du calcul (8 patients mesurés sur 12)
+[[question]]
+id = "q06"
+texte = "Quelle est la moyenne de Act_d_8 sur l'ensemble des patients ?"
+type = "nombre"
+attendu = 0.7525
+tolerance = 0.001
+
+# Abstention : dosage non mesuré par cette puce
+[[question]]
+id = "q07"
+texte = "Quelle est la moyenne de Act_d_8 chez les patients de la puce ALEX ?"
+type = "sans-reponse"
+
+# Abstention : colonne absente
+[[question]]
+id = "q08"
+texte = "Quel est le poids moyen des patients ?"
+type = "sans-reponse"

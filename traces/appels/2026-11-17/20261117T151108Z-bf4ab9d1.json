@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:11:08Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Ya combien de patients avec des symptomes cutanes ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "1140 symptomes cutanes",
+    "justification": "1140 symptomes cutanes, sur 4271 lignes au total. Les lignes sans groupe renseigné sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

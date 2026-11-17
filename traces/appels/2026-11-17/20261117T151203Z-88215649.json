@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:12:03Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "smolagents",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la répartition des trois types de puces chez les patients âgés de plus de 40 ans ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "ISAC_V1 49.6 % (408), ISAC_V2 16.7 % (137), ALEX 33.7 % (277)",
+    "justification": "Sur 822 patients de plus de 40 ans (Age>40, les 40 ans exacts sont exclus), ISAC_V1 représente 49.6 % (408), ISAC_V2 16.7 % (137) et ALEX 33.7 % (277). Les trois effectifs totalisent 822, sans valeur manquante de puce dans ce groupe."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 16703,
+    "sortie": 1216
+  },
+  "cout_estime": 0.0022783000000000005,
+  "duree_s": 8.62,
+  "erreur": null
+}

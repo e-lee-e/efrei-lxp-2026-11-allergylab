@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:11:02Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Quelle est la proportion de patients ayant une sensibilisation positive parmi les hommes et les femmes ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": "non",
+    "justification": "Premier groupe : 1674 sur 2070 (80.9 %) ; second groupe : 1892 sur 2139 (88.5 %). La définition de Sensitization n'est pas donnée."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 909,
+    "sortie": 278
+  },
+  "cout_estime": 0.0002299,
+  "duree_s": 1.92,
+  "erreur": null
+}

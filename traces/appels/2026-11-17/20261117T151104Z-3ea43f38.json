@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-17T15:11:04Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "166dad9aa967435a",
+  "commit": "2f221c7e54ac11ec790b910e55140162a90a70ec",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Tu peux me dire cb de patients ont eu une puce ALEX ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 1139,
+    "justification": "1139 patients sur 4271 ont eu la puce ALEX. Les trois puces ne mesurent pas les mêmes molécules."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.02,
+  "erreur": null
+}

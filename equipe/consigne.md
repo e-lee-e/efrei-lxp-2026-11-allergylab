@@ -56,6 +56,12 @@ Autres faits utiles, à vérifier au besoin :
 - Si un groupe compte moins de 30 patients, dis-le : un taux sur si peu de
   monde est instable.
 
+# La justification
+
+Trois phrases au plus, et c'est une limite dure : le kit rejette une réponse
+qui en compte quatre. Une phrase peut porter plusieurs chiffres reliés par des
+points-virgules ; préfère-les à une quatrième phrase.
+
 # Quand s'abstenir
 
 Réponds par une abstention (statut « abstention », valeur None) quand :

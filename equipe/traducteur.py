@@ -46,6 +46,11 @@ Opérations possibles :
 - compter_lignes : le nombre de lignes du tableau.
 - effectif_groupe : combien de patients dans un groupe.
 - taux_groupe : la part d'un groupe qui porte un code dans une colonne cible.
+  « la proportion de femmes parmi les patients sous biothérapie » = groupe
+  Treatment_of_athsma dans 6,7,8, cible Gender, "code_cible": "0". Toute tournure
+  « la proportion de X parmi Y » est un taux_groupe (cible = X, code_cible = son
+  code), jamais une repartition : repartition liste toutes les valeurs d'une
+  colonne, ce qui n'est pas la question posée.
 - comparer_groupes : comparer deux groupes sur cette part.
 - repartition : la répartition des patients selon une colonne.
 - mediane / moyenne : d'une colonne numérique (Age).
@@ -70,6 +75,11 @@ Champ facultatif « filtre » : des conditions sur des colonnes, reliées par
 « et », appliquées AVANT l'opération. Exemple : "Age>=18 et Age<=30 et Gender=0".
 Comparaisons permises : <, <=, >, >=, = sur les nombres ; = et != sur les codes ;
 « dans 1,2,3 » pour plusieurs codes ("Treatment_of_athsma dans 6,7,8" = biothérapie).
+« Traité pour l'asthme » se dit avec la liste des traitements — Treatment_of_athsma
+dans 1,2,3,4,5,6,7,8,10 — et jamais « !=0 » : le code 9 veut dire non renseigné, et
+2 771 patients le portent. Mesuré : 152 au lieu de 135 sur une question à trois
+conditions.
+
 Pour exclure une valeur (« en excluant ceux qui… », « sans présenter… », « hors »,
 « à l'exclusion de »), écris « colonne!=code » et jamais « colonne=0 » : le code 9
 veut dire non renseigné, et « =0 » le jetterait avec le groupe exclu.

@@ -141,6 +141,23 @@ def construire(variante):
     return CodeAgent(**options)
 
 
+def _relire(sortie):
+    """Retrouve le dictionnaire du contrat dans une réponse qui l'a habillé.
+
+    Rend None si la réponse ne contient aucun dictionnaire valide : dans ce cas
+    seule la vérité brute du modèle est rendue, et elle reste illisible — on ne
+    fabrique pas une abstention pour faire passer une réponse hors contrat.
+    """
+    if isinstance(sortie, dict):
+        return None  # déjà un dictionnaire : s'il est refusé, c'est pour une autre raison
+    texte = sortie if isinstance(sortie, str) else str(sortie)
+    morceau = _essayer(traducteur._extraire_json, texte)
+    if not isinstance(morceau, dict):
+        return None
+    essai = _essayer(reponse.valider, morceau)
+    return essai if isinstance(essai, dict) else None
+
+
 def _essayer(fonction, *arguments):
     """Un raccourci qui échoue se tait : la question continue vers le modèle.
 
@@ -249,6 +266,12 @@ def _repondre(question):
     try:
         validee = reponse.valider(sortie)
     except Exception:
-        return sortie
+        # Le modèle écrit parfois son dictionnaire entouré de prose, ou une liste.
+        # On retente l'extraction avant de déclarer la réponse illisible — c'est
+        # gratuit, puisque la réponse est déjà là. Mesuré : D06 rendait un tableau
+        # en markdown pour 0,009 $ et 36 s, et comptait comme illisible.
+        validee = _relire(sortie)
+        if validee is None:
+            return sortie
     cache.ecrire(question, validee)
     return validee

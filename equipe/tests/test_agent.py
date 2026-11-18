@@ -185,3 +185,19 @@ def test_deux_outils_seulement():
     """Chaque description d'outil est repayée à chaque étape : on n'en offre que deux, courtes."""
     assert [outil.name for outil in agent.OUTILS] == ["calculer", "chercher_colonne"]
     assert sum(len(outil.description) + len(str(outil.inputs)) for outil in agent.OUTILS) < 2600
+
+
+def test_une_reponse_habillee_de_prose_est_relue():
+    """Le modèle écrit parfois son dictionnaire dans du texte : on le retrouve sans rappeler le modèle."""
+    from equipe.agent import _relire
+
+    habillee = """**Réponse :**
+
+```json
+{"statut": "abstention", "valeur": null, "justification": "Le fichier ne nomme pas les molécules."}
+```
+
+Voilà."""
+    assert _relire(habillee)["statut"] == "abstention"
+    # Une réponse qui n'a rien d'un dictionnaire reste illisible : on ne l'invente pas.
+    assert _relire("Je ne sais pas.") is None

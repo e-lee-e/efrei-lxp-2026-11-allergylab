@@ -1,0 +1,414 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T12:13:47Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "4956ca25144bc449",
+  "commit": "fb08f1867d4c3e8b61fe0ebed0c0646820889faa",
+  "modifie": true,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "~/.allergylab/benchmark/fraiches-complete.toml",
+    "empreinte": "069c517e51b105b2",
+    "questions": 17
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 16,
+    "sur": 17
+  },
+  "abstention": {
+    "fondees": 0,
+    "sur": 0
+  },
+  "verdicts": {
+    "juste": 16,
+    "faux": 1,
+    "abstention-fondee": 0,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 17,
+    "total": {
+      "jetons": {
+        "entree": 128219,
+        "sortie": 10279
+      },
+      "cout_estime": 0.0179614,
+      "duree_s": 63.87
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 7542.3,
+        "sortie": 604.6
+      },
+      "cout_estime": 0.00105655,
+      "duree_s": 3.76
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "F01",
+      "texte": "Quel pourcentage des femmes est sensibilisé ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 80.9,
+        "justification": "1674 sur 2070 portent Sensitization = 1, soit 80.9 %. Les lignes sans groupe ou sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1579,
+        "sortie": 306
+      },
+      "cout_estime": 0.00031089999999999997,
+      "duree_s": 2.14,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F02",
+      "texte": "Quelle proportion des hommes est sensibilisée ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 88.5,
+        "justification": "1892 sur 2139 portent Sensitization = 1, soit 88.5 %. Les lignes sans groupe ou sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1578,
+        "sortie": 290
+      },
+      "cout_estime": 0.0003028,
+      "duree_s": 1.66,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F03",
+      "texte": "Quel est l'âge médian des femmes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 24.0,
+        "justification": "La valeur médiane de Age est 24.00, calculée sur 2070 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1574,
+        "sortie": 34
+      },
+      "cout_estime": 0.0001744,
+      "duree_s": 0.85,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F04",
+      "texte": "Quel est l'âge médian des hommes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 12.0,
+        "justification": "La valeur médiane de Age est 12.00, calculée sur 2139 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1574,
+        "sortie": 65
+      },
+      "cout_estime": 0.0001899,
+      "duree_s": 1.03,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F05",
+      "texte": "Combien de patients cumulent une rhinite et un asthme traité ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 280,
+        "justification": "280 patients sont traités pour une rhinite. 323 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1582,
+        "sortie": 546
+      },
+      "cout_estime": 0.0004312,
+      "duree_s": 2.61,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F06",
+      "texte": "Quel mois compte le plus de prélèvements ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "7",
+        "justification": "7 est la valeur la plus fréquente de Blood_Month_sample, avec 641 patients sur 4146 renseignés. Les 125 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1576,
+        "sortie": 92
+      },
+      "cout_estime": 0.00020360000000000002,
+      "duree_s": 1.24,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F07",
+      "texte": "Combien de patients ont été prélevés en janvier ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 367,
+        "justification": "367 patients ont un mois de prélèvement égal à 1 (colonne Blood_Month_sample) sur 4271 patients au total. Le calcul porte sur le code 1 de la colonne, interprété comme janvier."
+      },
+      "etapes": [
+        {
+          "code": "# Vérifier le nom exact de la colonne de mois de prélèvement\nprint(chercher_colonne(\"Blood_Month\"))",
+          "resultat": "Execution logs:\n1 colonne(s) : Blood_Month_sample (clinique, nombre)\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Compter les patients dont le mois de prélèvement vaut 1 (janvier)\nprint(calculer(operation=\"compter\", colonne=\"\", filtre=\"Blood_Month_sample=1\", colonne2=\"\", par=\"\"))",
+          "resultat": "Execution logs:\n367 patients sur 4271 (filtre : Blood_Month_sample=1).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Réponse : 367 patients prélevés en janvier (Blood_Month_sample=1) sur 4271 ; aucun code 9 à exclure pour ce mois.\nfinal_answer({\"statut\": \"reponse\", \"valeur\": 367, \"justification\": \"367 patients ont un mois de prélèvement égal à 1 (colonne Blood_Month_sample) sur 4271 patients au total. Le calcul porte sur le code 1 de la colonne, interprété comme janvier.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 367, 'justification': '367 patients ont un mois de prélèvement égal à 1 (colonne Blood_Month_sample) sur 4271 patients au total. Le calcul porte sur le code 1 de la colonne, interprété comme janvier.'}"
+        }
+      ],
+      "jetons": {
+        "entree": 25389,
+        "sortie": 597
+      },
+      "cout_estime": 0.0028374,
+      "duree_s": 5.42,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F08",
+      "texte": "Quelle puce est la plus utilisée ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "ISAC_V1",
+        "justification": "ISAC_V1 est la valeur la plus fréquente de Chip_Type, avec 2351 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1574,
+        "sortie": 30
+      },
+      "cout_estime": 0.00017240000000000002,
+      "duree_s": 0.82,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F09",
+      "texte": "Combien de patients cumulent rhinite, asthme traité et symptômes cutanés ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 152,
+        "justification": "152 patients vérifient le filtre « Treatment_of_rhinitis dans 1,2,3,4 et Treatment_of_athsma!=0 et Skin_Symptoms=1 »."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1589,
+        "sortie": 581
+      },
+      "cout_estime": 0.0004494,
+      "duree_s": 3.0,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "F10",
+      "texte": "Quelle est la proportion de patients sous biothérapie parmi ceux qui sont traités pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4.48,
+        "justification": "Sur 603 patients traités pour l'asthme (codes 1 à 8 et 10 de Treatment_of_athsma, code 0 et code 9 non renseigné exclus), 27 sont sous biothérapie (codes 6, 7 ou 8), soit 4,48 %. Le numérateur ne compte que 27 patients, effectif faible qui rend le taux instable."
+      },
+      "etapes": [
+        {
+          "code": null,
+          "resultat": "Erreur : Error in code parsing:\nYour code snippet is invalid, because the regex pattern <code>(.*?)</code> was not found in it.\n            Here is your code snippet:\n            <invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<invoke with a tool call>\n\n\n<… [tronqué : 3411 caractères]"
+        },
+        {
+          "code": "# Étape 1 : vérifier le nom exact de la colonne asthme, puis compter les patients traités pour l'asthme et ceux sous biothérapie.\nprint(chercher_colonne(\"athsma\"))\n# Dénominateur : patients avec un traitement de l'asthme (codes 1 à 8 et 10, code 0 = aucun, 9 = non renseigné exclu par calculer).\nprint(calculer(operation=\"compter\", colonne=\"\", filtre=\"Treatment_of_athsma dans 1,2,3,4,5,6,7,8,10\", colonne2=\"\", par=\"\"))\n# Numérateur : sous biothérapie (codes 6, 7 ou 8).\nprint(calculer(operation=\"compter\", colonne=\"\", filtre=\"Treatment_of_athsma dans 6,7,8\", colonne2=\"\", par=\"\"))\n# Total des patients, pour contrôle des exclusions.\nprint(calculer(operation=\"compter\", colonne=\"\", filtre=\"\", colonne2=\"\", par=\"\"))",
+          "resultat": "Execution logs:\n1 colonne(s) : Treatment_of_athsma (clinique, texte)\n603 patients sur 4271 (filtre : Treatment_of_athsma dans 1,2,3,4,5,6,7,8,10).\n27 patients sur 4271 (filtre : Treatment_of_athsma dans 6,7,8).\n4271 patients sur 4271 (tous les patients).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# 27 patients sous biothérapie (codes 6, 7, 8) sur 603 patients traités pour l'asthme (codes 1 à 8 et 10, hors 0 et 9).\nprint(round(27 / 603 * 100, 2))\nfinal_answer({\"statut\": \"reponse\", \"valeur\": 4.48, \"justification\": \"Sur 603 patients traités pour l'asthme (codes 1 à 8 et 10 de Treatment_of_athsma, code 0 et code 9 non renseigné exclus), 27 sont sous biothérapie (codes 6, 7 ou 8), soit 4,48 %. Le numérateur ne compte que 27 patients, effectif faible qui rend le taux instable.\"})",
+          "resultat": "Execution logs:\n4.48\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 4.48, 'justification': \"Sur 603 patients traités pour l'asthme (codes 1 à 8 et 10 de Treatment_of_athsma, code 0 et code 9 non renseigné exclus), 27 sont sous biothérapie (codes 6, 7 ou 8), soit 4,48 %. Le numérateur ne compte que 27 patients, effectif faible qui rend le taux instable.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 30739,
+        "sortie": 3953
+      },
+      "cout_estime": 0.0050504,
+      "duree_s": 17.72,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F11",
+      "texte": "Quel est l'écart d'âge moyen entre les hommes et les femmes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 8.49,
+        "justification": "Les femmes (Gender=0, n=2070) ont un âge moyen de 27,40 ans contre 18,91 ans pour les hommes (Gender=1, n=2139), soit un écart de 8,49 ans en faveur d'un âge plus élevé chez les femmes. 62 patients sans sexe renseigné ont été écartés, et l'écart est une différence de moyennes, sans test statistique."
+      },
+      "etapes": [
+        {
+          "code": "# Vérifier les noms exacts des colonnes Age et Gender\nprint(chercher_colonne(\"age\"))\nprint(chercher_colonne(\"gender\"))",
+          "resultat": "Execution logs:\n2 colonne(s) : Age (clinique, nombre) ; Age_of_onsets (clinique, texte)\n1 colonne(s) : Gender (clinique, nombre)\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Moyenne d'âge par groupe de sexe (Gender : 0=féminin, 1=masculin)\nres = calculer(operation=\"moyenne\", colonne=\"Age\", filtre=\"\", colonne2=\"\", par=\"Gender\")\nprint(res)",
+          "resultat": "Execution logs:\nPar Gender (62 patients sans valeur écartés) :\n0 : Moyenne de Age : 27.3952 (calculée sur 2070 patients, 0 sans valeur ignorés ; tous les patients).\n1 : Moyenne de Age : 18.907 (calculée sur 2139 patients, 0 sans valeur ignorés ; tous les patients).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Écart = moyenne féminine (0) moins moyenne masculine (1)\necart = round(27.3952 - 18.907, 2)\nfinal_answer({\"statut\": \"reponse\", \"valeur\": ecart, \"justification\": \"Les femmes (Gender=0, n=2070) ont un âge moyen de 27,40 ans contre 18,91 ans pour les hommes (Gender=1, n=2139), soit un écart de 8,49 ans en faveur d'un âge plus élevé chez les femmes. 62 patients sans sexe renseigné ont été écartés, et l'écart est une différence de moyennes, sans test statistique.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 8.49, 'justification': \"Les femmes (Gender=0, n=2070) ont un âge moyen de 27,40 ans contre 18,91 ans pour les hommes (Gender=1, n=2139), soit un écart de 8,49 ans en faveur d'un âge plus élevé chez les femmes. 62 patients sans sexe renseigné ont été écartés, et l'écart est une différence de moyennes, sans test statistique.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 25680,
+        "sortie": 1151
+      },
+      "cout_estime": 0.0031435000000000005,
+      "duree_s": 8.98,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F14",
+      "texte": "Quelle région compte le moins de patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "regionN",
+        "justification": "regionN est la valeur la moins fréquente de French_Region, avec 2 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1573,
+        "sortie": 147
+      },
+      "cout_estime": 0.0002308,
+      "duree_s": 1.36,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F15",
+      "texte": "Combien de patients sont sensibilisés sans présenter de symptôme cutané ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 2545,
+        "justification": "2545 patients portent les codes 1 de Sensitization. 586 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1587,
+        "sortie": 131
+      },
+      "cout_estime": 0.00022420000000000003,
+      "duree_s": 1.31,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F16",
+      "texte": "Combien de patients sont à la fois sensibilisés et sous biothérapie ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 21,
+        "justification": "21 patients portent les codes 1 de Sensitization. 6 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1586,
+        "sortie": 179
+      },
+      "cout_estime": 0.0002481,
+      "duree_s": 1.27,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F17",
+      "texte": "Quel est le taux de sensibilisation chez les patients de plus de 65 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 63.3,
+        "justification": "63,3 % des patients de plus de 65 ans sont sensibilisés (moyenne de Sensitization = 0,6331 ; n = 139 patients retenus sur 4271, 0 valeur manquante ignorée). Le dictionnaire ne donne pas la définition clinique de Sensitization, et l'effectif est suffisant pour lire ce taux sans réserve particulière."
+      },
+      "etapes": [
+        {
+          "code": "# Vérifier le nom exact de la colonne de sensibilisation et de l'âge\nprint(chercher_colonne(\"sensitization\"))\nprint(chercher_colonne(\"age\"))",
+          "resultat": "Execution logs:\n1 colonne(s) : Sensitization (clinique, nombre)\n2 colonne(s) : Age (clinique, nombre) ; Age_of_onsets (clinique, texte)\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Taux de sensibilisation chez les patients de plus de 65 ans : moyenne de la colonne 0/1 sur le sous-groupe\n# (la moyenne d'une variable 0/1 est une proportion ; le code 9 et les manquants sont écartés par calculer)\nres_moy = calculer(operation=\"moyenne\", colonne=\"Sensitization\", filtre=\"Age>65\", colonne2=\"\", par=\"\")\nprint(res_moy)\nres_n = calculer(operation=\"compter\", colonne=\"\", filtre=\"Age>65\", colonne2=\"\", par=\"\")\nprint(res_n)",
+          "resultat": "Execution logs:\nMoyenne de Sensitization : 0.6331 (calculée sur 139 patients, 0 sans valeur ignorés ; filtre : Age>65).\n139 patients sur 4271 (filtre : Age>65).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Taux = moyenne de Sensitization (0/1) sur les patients de plus de 65 ans, calculée à 139 patients ; le code 9 et les manquants sont déjà écartés par calculer.\nfinal_answer({\"statut\": \"reponse\", \"valeur\": 63.3, \"justification\": \"63,3 % des patients de plus de 65 ans sont sensibilisés (moyenne de Sensitization = 0,6331 ; n = 139 patients retenus sur 4271, 0 valeur manquante ignorée). Le dictionnaire ne donne pas la définition clinique de Sensitization, et l'effectif est suffisant pour lire ce taux sans réserve particulière.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 63.3, 'justification': \"63,3 % des patients de plus de 65 ans sont sensibilisés (moyenne de Sensitization = 0,6331 ; n = 139 patients retenus sur 4271, 0 valeur manquante ignorée). Le dictionnaire ne donne pas la définition clinique de Sensitization, et l'effectif est suffisant pour lire ce taux sans réserve particulière.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 25866,
+        "sortie": 1791
+      },
+      "cout_estime": 0.0034821,
+      "duree_s": 11.46,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F18",
+      "texte": "Quelle est la proportion de femmes parmi les patients sous biothérapie ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 40.7,
+        "justification": "11 sur 27 portent Gender = 0, soit 40.7 %. Les lignes sans groupe ou sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1586,
+        "sortie": 194
+      },
+      "cout_estime": 0.00025560000000000003,
+      "duree_s": 1.51,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F20",
+      "texte": "Combien de patients n'ont aucun traitement renseigné pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 897,
+        "justification": "897 patients portent les codes 0 de Treatment_of_athsma. 3374 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1587,
+        "sortie": 192
+      },
+      "cout_estime": 0.0002547,
+      "duree_s": 1.49,
+      "erreur": null,
+      "verdict": "juste"
+    }
+  ]
+}

@@ -201,9 +201,28 @@ def _normaliser(question):
     return " ".join(sans_ponctuation.split())
 
 
+# Le fichier nomme 241 molécules sans dire à quel aliment elles correspondent :
+# « Ara_h_1 » n'y est pas « arachide ». Une question posée en aliments ne peut donc
+# pas être répondue honnêtement, et le modèle, lui, croit le savoir — mesuré sur
+# D06 : un tableau de scores inventés pour 0,009 $ et 36 s, molécules « anacarde »
+# et « arachide » comprises. Sauf si la question nomme une molécule : là, le
+# fichier répond.
+# Comparés mot entier, jamais en sous-chaîne : « ble » dans « tableau » refusait
+# une question légitime (« combien de patients compte le tableau ? »).
+ALIMENTS = (
+    "arachide", "arachides", "cajou", "anacarde", "noisette", "noisettes", "noix", "amande",
+    "lait", "oeuf", "oeufs", "œuf", "œufs", "ble", "soja", "poisson", "crevette", "crevettes",
+    "moutarde", "sesame", "kiwi", "alimentaire", "alimentaires", "aliment", "aliments",
+)
+MOLECULE = ("ara_", "bet_", "act_", "ana_", "ory_", "profiline", "lpt", "pr-10")
+
+
 def examiner(question):
     """Une abstention motivée si la question est hors sujet, sinon None."""
     plat = _normaliser(question)
+    mots = set(plat.split())
+    if any(mot in mots for mot in ALIMENTS) and not any(mot in plat for mot in MOLECULE):
+        return _refus_aliment()
     if _contient(plat, FORT):
         return _refus()
     if _contient(plat, DOMAINE):
@@ -211,6 +230,19 @@ def examiner(question):
     if not _contient(plat, HORS_SUJET):
         return None
     return _refus()
+
+
+def _refus_aliment():
+    """L'abstention propre aux questions posées en aliments, pas en molécules."""
+    return {
+        "statut": "abstention",
+        "valeur": None,
+        "justification": (
+            "Le fichier nomme les molécules (Ara_h_1, Bet_v_1…) mais ne dit pas à quel aliment "
+            "ou à quelle famille chacune correspond : une question posée en aliments ne peut pas "
+            "être tranchée sur ce tableau."
+        ),
+    }
 
 
 def _refus():

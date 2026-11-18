@@ -46,3 +46,17 @@ def test_une_question_du_domaine_passe(question):
 
 def test_le_justificatif_tient_en_trois_phrases():
     assert examiner("Quand est né LeBron James ?")["justification"].count(".") <= 3
+
+
+def test_une_question_posee_en_aliments_s_abstient():
+    """Le fichier nomme des molécules sans dire à quel aliment elles correspondent."""
+    from equipe import hors_sujet
+
+    refus = hors_sujet.examiner("Quelle molécule est la plus fortement associée aux allergies alimentaires ?")
+    assert refus is not None and refus["statut"] == "abstention"
+    assert "aliment" in refus["justification"]
+
+    # Nommer la molécule change tout : là, le fichier répond.
+    assert hors_sujet.examiner("Combien de patients sont sensibilisés à Ara_h_1 ?") is None
+    # Et une question sur les patients n'est pas touchée par cette règle.
+    assert hors_sujet.examiner("Combien de patients ont plus de 60 ans ?") is None

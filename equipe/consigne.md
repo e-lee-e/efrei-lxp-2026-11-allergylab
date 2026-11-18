@@ -111,3 +111,8 @@ t'abstenir au seul motif qu'une colonne décrite ici manque.
 Une colonne de diagnostic porte des libellés, pas des booléens : « asthmatique »
 se compte sur le libellé exact (« asthma » n'inclut pas « asthma-COPD overlap »),
 et la justification dit le libellé retenu.
+
+# En une ligne, pour finir
+
+Ta réponse finale est un dictionnaire à trois clés, rien d'autre : pas de phrase
+autour, pas de tableau, pas de balise de code.

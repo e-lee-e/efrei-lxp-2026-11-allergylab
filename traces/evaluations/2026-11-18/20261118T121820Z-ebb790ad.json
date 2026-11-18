@@ -1,0 +1,109 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T12:18:20Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "4956ca25144bc449",
+  "commit": "fb08f1867d4c3e8b61fe0ebed0c0646820889faa",
+  "modifie": true,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "~/.allergylab/benchmark/fraiches-lecture.toml",
+    "empreinte": "1de05782425f27d1",
+    "questions": 3
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": null,
+  "abstention": null,
+  "verdicts": null,
+  "frugalite": {
+    "questions": 3,
+    "total": {
+      "jetons": {
+        "entree": 29818,
+        "sortie": 3168
+      },
+      "cout_estime": 0.0045658,
+      "duree_s": 18.41
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 9939.3,
+        "sortie": 1056.0
+      },
+      "cout_estime": 0.00152193,
+      "duree_s": 6.14
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "F12",
+      "texte": "Les patients ruraux sont-ils moins souvent sensibilisés que les urbains ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "81.5 % contre 83.2 %",
+        "justification": "Premier groupe : 265 sur 325 (81.5 %) ; second groupe : 804 sur 966 (83.2 %). La définition de Sensitization n'est pas donnée."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1715,
+        "sortie": 348
+      },
+      "cout_estime": 0.0003455,
+      "duree_s": 2.2,
+      "erreur": null,
+      "verdict": null
+    },
+    {
+      "id": "F13",
+      "texte": "Comparez le taux de sensibilisation des hommes et des femmes de plus de 50 ans.",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "67.8 % contre 76.6 %",
+        "justification": "Premier groupe : 196 sur 289 (67.8 %) ; second groupe : 144 sur 188 (76.6 %). La définition de Sensitization n'est pas donnée."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1717,
+        "sortie": 385
+      },
+      "cout_estime": 0.00036420000000000007,
+      "duree_s": 2.17,
+      "erreur": null,
+      "verdict": null
+    },
+    {
+      "id": "F19",
+      "texte": "Les femmes sont-elles plus souvent traitées pour une rhinite que les hommes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "non",
+        "justification": "Non : 31,9 % des femmes (194 sur 609) sont traitées pour une rhinite, contre 33,5 % des hommes (236 sur 704) ; l'écart de 1,7 point est faible et aucun test statistique n'a été fait. Les 62 patients sans sexe renseigné sont exclus, ainsi que les traitements non renseignés (code 9)."
+      },
+      "etapes": [
+        {
+          "code": "# Taux de patients traités pour une rhinite (Treatment_of_rhinitis différent de 0), par sexe.\n# Le code 9 (non renseigné) et les cellules à plusieurs codes sont gérés par calculer.\nres = calculer(operation=\"pourcentage\", colonne=\"\", filtre=\"Treatment_of_rhinitis!=0\", colonne2=\"\", par=\"Gender\")\nprint(res)",
+          "resultat": "Execution logs:\nPar Gender (62 patients sans valeur écartés) :\n0 : 31.8555 % des patients (194 sur 609, 1461 sans valeur ignorés ; filtre : Treatment_of_rhinitis!=0).\n1 : 33.5227 % des patients (236 sur 704, 1435 sans valeur ignorés ; filtre : Treatment_of_rhinitis!=0).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": null,
+          "resultat": "Erreur : Error in code parsing:\nYour code snippet is invalid, because the regex pattern <code>(.*?)</code> was not found in it.\n                Here is your code snippet:\n                <4>\nfinal_answer({\"statut\": \"reponse\", \"valeur\": \"non\", \"justification\": \"Non : 31,9 % des femmes (194 sur 609) sont traitées pour une rhinite contre 33,5 % des hommes (236 sur 704). L'écart de 1,7 point est faible et aucun test statistique n'a été réalisé. Les patients sans sexe renseigné (62) et les valeurs non renseignées du traitement (code 9) sont exclus.\"})\n</code>\n                It seems like you're trying to return the final answer, you can do it as follows:\n                <code>\n                final_answer(\"YOUR FINAL ANSWER HERE\")\n                </code>\nMake sure to provide correct code blobs."
+        },
+        {
+          "code": "final_answer({\"statut\": \"reponse\", \"valeur\": \"non\", \"justification\": \"Non : 31,9 % des femmes (194 sur 609) sont traitées pour une rhinite, contre 33,5 % des hommes (236 sur 704) ; l'écart de 1,7 point est faible et aucun test statistique n'a été fait. Les 62 patients sans sexe renseigné sont exclus, ainsi que les traitements non renseignés (code 9).\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 'non', 'justification': \"Non : 31,9 % des femmes (194 sur 609) sont traitées pour une rhinite, contre 33,5 % des hommes (236 sur 704) ; l'écart de 1,7 point est faible et aucun test statistique n'a été fait. Les 62 patients sans sexe renseigné sont exclus, ainsi que les traitements non renseignés (code 9).\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 26386,
+        "sortie": 2435
+      },
+      "cout_estime": 0.0038561000000000003,
+      "duree_s": 14.04,
+      "erreur": null,
+      "verdict": null
+    }
+  ]
+}

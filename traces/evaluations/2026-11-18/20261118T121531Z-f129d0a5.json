@@ -1,0 +1,362 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T12:15:31Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "4956ca25144bc449",
+  "commit": "fb08f1867d4c3e8b61fe0ebed0c0646820889faa",
+  "modifie": true,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "~/.allergylab/benchmark/fraiches-complete.toml",
+    "empreinte": "069c517e51b105b2",
+    "questions": 17
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 17,
+    "sur": 17
+  },
+  "abstention": {
+    "fondees": 0,
+    "sur": 0
+  },
+  "verdicts": {
+    "juste": 17,
+    "faux": 0,
+    "abstention-fondee": 0,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 17,
+    "total": {
+      "jetons": {
+        "entree": 22183,
+        "sortie": 2507
+      },
+      "cout_estime": 0.0034718,
+      "duree_s": 21.05
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 1304.9,
+        "sortie": 147.5
+      },
+      "cout_estime": 0.00020422,
+      "duree_s": 1.24
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "F01",
+      "texte": "Quel pourcentage des femmes est sensibilisé ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 80.9,
+        "justification": "1674 sur 2070 portent Sensitization = 1, soit 80.9 %. Les lignes sans groupe ou sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1705,
+        "sortie": 232
+      },
+      "cout_estime": 0.0002865,
+      "duree_s": 2.18,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F02",
+      "texte": "Quelle proportion des hommes est sensibilisée ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 88.5,
+        "justification": "1892 sur 2139 portent Sensitization = 1, soit 88.5 %. Les lignes sans groupe ou sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1704,
+        "sortie": 234
+      },
+      "cout_estime": 0.0002874,
+      "duree_s": 1.62,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F03",
+      "texte": "Quel est l'âge médian des femmes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 24.0,
+        "justification": "La valeur médiane de Age est 24.00, calculée sur 2070 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1700,
+        "sortie": 34
+      },
+      "cout_estime": 0.000187,
+      "duree_s": 0.82,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F04",
+      "texte": "Quel est l'âge médian des hommes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 12.0,
+        "justification": "La valeur médiane de Age est 12.00, calculée sur 2139 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1700,
+        "sortie": 66
+      },
+      "cout_estime": 0.000203,
+      "duree_s": 0.96,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F05",
+      "texte": "Combien de patients cumulent une rhinite et un asthme traité ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 280,
+        "justification": "280 patients sont traités pour une rhinite. 323 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1708,
+        "sortie": 424
+      },
+      "cout_estime": 0.00038280000000000003,
+      "duree_s": 2.16,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F06",
+      "texte": "Quel mois compte le plus de prélèvements ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "7",
+        "justification": "7 est la valeur la plus fréquente de Blood_Month_sample, avec 641 patients sur 4146 renseignés. Les 125 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1702,
+        "sortie": 105
+      },
+      "cout_estime": 0.00022270000000000002,
+      "duree_s": 3.51,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F07",
+      "texte": "Combien de patients ont été prélevés en janvier ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 367,
+        "justification": "367 patients ont un mois de prélèvement égal à 1 (colonne Blood_Month_sample) sur 4271 patients au total. Le calcul porte sur le code 1 de la colonne, interprété comme janvier."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F08",
+      "texte": "Quelle puce est la plus utilisée ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "ISAC_V1",
+        "justification": "ISAC_V1 est la valeur la plus fréquente de Chip_Type, avec 2351 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1700,
+        "sortie": 101
+      },
+      "cout_estime": 0.0002205,
+      "duree_s": 1.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F09",
+      "texte": "Combien de patients cumulent rhinite, asthme traité et symptômes cutanés ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 135,
+        "justification": "135 patients sont traités pour une rhinite. 122 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1715,
+        "sortie": 452
+      },
+      "cout_estime": 0.0003975,
+      "duree_s": 2.14,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F10",
+      "texte": "Quelle est la proportion de patients sous biothérapie parmi ceux qui sont traités pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4.48,
+        "justification": "Sur 603 patients traités pour l'asthme (codes 1 à 8 et 10 de Treatment_of_athsma, code 0 et code 9 non renseigné exclus), 27 sont sous biothérapie (codes 6, 7 ou 8), soit 4,48 %. Le numérateur ne compte que 27 patients, effectif faible qui rend le taux instable."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F11",
+      "texte": "Quel est l'écart d'âge moyen entre les hommes et les femmes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 8.49,
+        "justification": "Les femmes (Gender=0, n=2070) ont un âge moyen de 27,40 ans contre 18,91 ans pour les hommes (Gender=1, n=2139), soit un écart de 8,49 ans en faveur d'un âge plus élevé chez les femmes. 62 patients sans sexe renseigné ont été écartés, et l'écart est une différence de moyennes, sans test statistique."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F14",
+      "texte": "Quelle région compte le moins de patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "regionN",
+        "justification": "regionN est la valeur la moins fréquente de French_Region, avec 2 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1699,
+        "sortie": 122
+      },
+      "cout_estime": 0.0002309,
+      "duree_s": 1.04,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F15",
+      "texte": "Combien de patients sont sensibilisés sans présenter de symptôme cutané ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 2545,
+        "justification": "2545 patients portent les codes 1 de Sensitization. 586 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1713,
+        "sortie": 127
+      },
+      "cout_estime": 0.00023480000000000002,
+      "duree_s": 1.19,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F16",
+      "texte": "Combien de patients sont à la fois sensibilisés et sous biothérapie ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 21,
+        "justification": "21 patients portent les codes 1 de Sensitization. 6 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1712,
+        "sortie": 217
+      },
+      "cout_estime": 0.0002797,
+      "duree_s": 1.59,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F17",
+      "texte": "Quel est le taux de sensibilisation chez les patients de plus de 65 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 63.3,
+        "justification": "63,3 % des patients de plus de 65 ans sont sensibilisés (moyenne de Sensitization = 0,6331 ; n = 139 patients retenus sur 4271, 0 valeur manquante ignorée). Le dictionnaire ne donne pas la définition clinique de Sensitization, et l'effectif est suffisant pour lire ce taux sans réserve particulière."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F18",
+      "texte": "Quelle est la proportion de femmes parmi les patients sous biothérapie ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 40.7,
+        "justification": "11 sur 27 portent Gender = 0, soit 40.7 %. Les lignes sans groupe ou sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1712,
+        "sortie": 174
+      },
+      "cout_estime": 0.00025820000000000004,
+      "duree_s": 1.37,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F20",
+      "texte": "Combien de patients n'ont aucun traitement renseigné pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 897,
+        "justification": "897 patients portent les codes 0 de Treatment_of_athsma. 3374 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1713,
+        "sortie": 219
+      },
+      "cout_estime": 0.0002808,
+      "duree_s": 1.47,
+      "erreur": null,
+      "verdict": "juste"
+    }
+  ]
+}

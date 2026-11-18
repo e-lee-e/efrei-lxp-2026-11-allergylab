@@ -13,7 +13,7 @@ from smolagents.models import ChatMessage, ChatMessageToolCall, ChatMessageToolC
 
 from equipe import agent
 from equipe.outils import calculer, chercher_colonne
-from garde_fous import sans_fichier_reel, sans_reseau, sans_vraie_cle  # noqa: F401  (actifs d'office)
+from garde_fous import sans_fichier_reel, sans_reseau, sans_vrai_cache, sans_vraie_cle  # noqa: F401  (actifs d'office)
 from kit import modele, reponse
 from kit.donnees import RACINE, charger
 
@@ -81,7 +81,7 @@ def test_les_deux_lignes_d_acces_restent_visibles():
     """CLAUDE.md : les deux lignes qui ouvrent l'accès aux données restent commentées et faciles à retirer."""
     source = (RACINE / "equipe" / "agent.py").read_text(encoding="utf-8")
     assert "# Accès aux données (1/2)" in source and 'options["additional_authorized_imports"] = ["pandas"]' in source
-    assert "# Accès aux données (2/2)" in source and 'arguments["tableau"] = cache.tableau()' in source
+    assert "# Accès aux données (2/2)" in source and 'arguments["tableau"] = cache.tableau().copy()' in source
 
 
 def test_garde_fous_actifs():
@@ -201,3 +201,14 @@ Voilà."""
     assert _relire(habillee)["statut"] == "abstention"
     # Une réponse qui n'a rien d'un dictionnaire reste illisible : on ne l'invente pas.
     assert _relire("Je ne sais pas.") is None
+
+
+def test_le_code_du_modele_ne_peut_pas_abimer_le_tableau_partage(mini, monkeypatch):
+    """Ouvert : le code reçoit une copie. Modifié en place, le tableau du cache fausserait les questions suivantes."""
+    avant = mini.copy()
+    jouer(monkeypatch, "ouvert", code(
+        "tableau.drop(columns=['Age'], inplace=True)",
+        "tableau['Age'] = 0",
+        "final_answer({'statut': 'reponse', 'valeur': 12, 'justification': 'Douze lignes.'})",
+    ))
+    assert mini.equals(avant)

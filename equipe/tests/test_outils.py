@@ -13,7 +13,7 @@ import pytest
 from equipe.outils import calculer
 from equipe.outils.champs import codes, texte
 from equipe.outils.positives import chiffres
-from garde_fous import sans_fichier_reel, sans_reseau, sans_vraie_cle  # noqa: F401  (actifs d'office)
+from garde_fous import sans_fichier_reel, sans_reseau, sans_vrai_cache, sans_vraie_cle  # noqa: F401  (actifs d'office)
 
 
 @pytest.fixture
@@ -103,3 +103,11 @@ def test_par_refuse_trop_de_groupes():
 def test_par_colonne_inconnue_dit_quoi_faire(tableau):
     with pytest.raises(ValueError, match="chercher_colonne"):
         calculer.calculer_sur(tableau, "compter", par="Sexe")
+
+
+def test_different_de_n_exclut_que_la_valeur_nommee(tableau):
+    """« != » garde les 9 : Sensitization!=1 compte les 0 et le 9, pas seulement les 0."""
+    assert calculer.calculer_sur(tableau, "compter", filtre="Sensitization!=1").startswith("4 patients")  # 0, 0, 0 et 9
+    assert calculer.calculer_sur(tableau, "compter", filtre="Sensitization=0").startswith("3 patients")
+    phrase = calculer.calculer_sur(tableau, "pourcentage", filtre="Sensitization!=1")
+    assert phrase.startswith("40 % des patients (4 sur 10")  # le dénominateur garde aussi le 9

@@ -51,3 +51,11 @@ def sans_fichier_reel(monkeypatch):
         return LECTURE_REELLE(chemin, *arguments, **options)
 
     monkeypatch.setattr(pd, "read_csv", lire)
+
+
+@pytest.fixture(autouse=True)
+def sans_vrai_cache(tmp_path, monkeypatch):
+    """Le cache de réponses vit dans un dossier jetable : un test n'écrit pas dans ~/.allergylab/cache."""
+    from equipe import cache
+
+    monkeypatch.setattr(cache, "DOSSIER", tmp_path / "cache")

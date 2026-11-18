@@ -1,9 +1,20 @@
 """Cache local de l'agent : le tableau lu une fois, et les réponses déjà obtenues.
 
 Rien n'est écrit dans le dépôt : tout vit dans ~/.allergylab/cache/, à côté de la
-clé. Une réponse n'est gardée que si elle respecte le contrat du kit, et la clé
-de cache dépend de la question, du texte de la consigne et du fichier de
-données : modifier la consigne ou changer de fichier invalide le cache de fait.
+clé.
+
+Le cache est un risque de pollution : une réponse fausse du modèle, gardée, est
+resservie à 0 $ et passe pour établie. Cinq garde-fous :
+- seules les réponses de l'agent complet sont gardées (agent.py consulte le cache
+  APRÈS le portier et le routeur, qui calculent sans modèle et ont toujours
+  raison sur lui) ;
+- une abstention n'est jamais gardée : une abstention à tort se réessaie ;
+- la clé suit tout ce qui change la réponse : question (opérateurs compris, voir
+  normaliser_pour_cle), consigne, code des outils et de l'agent, variante,
+  plafond d'étapes, modèle, fichier de données. Corriger un outil invalide donc
+  les anciennes réponses ;
+- à la lecture, la réponse est revalidée par le contrat du kit ;
+- ALLERGYLAB_SANS_CACHE=1 coupe la lecture ET l'écriture, pour mesurer.
 
 ALLERGYLAB_SANS_CACHE=1 désactive la lecture : la question repart au modèle.
 `ALLERGYLAB_SANS_CACHE=1` mais une réponse déjà gardée : elle est ignorée, pas
@@ -14,11 +25,12 @@ import hashlib
 import json
 import os
 import pickle
+import re
 import unicodedata
 from pathlib import Path
 
 from equipe import reglages
-from kit import donnees, modele as modele_du_kit
+from kit import donnees, modele as modele_du_kit, reponse as contrat
 from kit.donnees import FICHIER, charger, colonnes
 
 DOSSIER = Path.home() / ".allergylab" / "cache"
@@ -280,9 +292,37 @@ def empreinte_donnees():
     return _empreinte
 
 
-def cle(question):
-    """L'empreinte de (question, consigne, données, moteur) : deux formulations différentes donnent deux clés."""
-    texte = "\n".join((normaliser(question), consigne(), moteur(), empreinte_donnees()))
+_code = None
+
+
+def code():
+    """L'empreinte du code qui fabrique une réponse : agent, outils, format du kit.
+
+    Lue une fois par processus. Sans elle, corriger un outil laissait servir les
+    anciennes réponses, calculées avec le défaut qu'on venait de corriger.
+    """
+    global _code
+    if _code is None:
+        equipe = Path(__file__).parent
+        fichiers = [equipe / "agent.py", *sorted((equipe / "outils").glob("*.py")), Path(contrat.__file__)]
+        h = hashlib.sha256()
+        for fichier_code in fichiers:
+            try:
+                # Fins de ligne ramenées à LF : la même empreinte sous Windows et ailleurs.
+                h.update(fichier_code.read_bytes().replace(b"\r\n", b"\n"))
+            except OSError:
+                h.update(b"?")
+        _code = h.hexdigest()
+    return _code
+
+
+def cle(question, contexte=""):
+    """L'empreinte de tout ce qui détermine la réponse : deux questions différentes ne partagent jamais une entrée.
+
+    `contexte` est ce que l'appelant sait et que le cache ignore (la variante et
+    le plafond d'étapes de l'agent).
+    """
+    texte = "\n".join((normaliser_pour_cle(question), consigne(), code(), contexte, moteur(), empreinte_donnees()))
     return hashlib.sha256(texte.encode("utf-8")).hexdigest()
 
 
@@ -309,25 +349,46 @@ def normaliser(question):
     return " ".join(sans_ponctuation.split())
 
 
-def lire(question):
-    """La réponse déjà gardée pour cette question, ou None."""
+def normaliser_pour_cle(question):
+    """Comme `normaliser`, mais sans perdre ce qui change le sens : < > = % + -.
+
+    `normaliser` efface la ponctuation, donc « Age<18 » et « Age>18 » donnaient la
+    même clé : le cache aurait répondu à l'une avec la réponse de l'autre. Pour une
+    clé de cache, deux questions confondues sont pires que deux questions séparées
+    à tort (le pire cas d'une séparation est un appel de plus).
+    """
+    decompose = unicodedata.normalize("NFKD", question.lower())
+    texte = "".join(c for c in decompose if not unicodedata.combining(c))
+    texte = re.sub(r"(?<=\d),(?=\d)", ".", texte)  # 0,3 et 0.3 : même nombre
+    texte = re.sub(r"[^\w<>=%+\-.]", " ", texte)  # on garde les opérateurs
+    texte = re.sub(r"(?<!\d)\.|\.(?!\d)", " ", texte)  # un point n'est utile qu'entre deux chiffres
+    return " ".join(texte.split())
+
+
+def lire(question, contexte=""):
+    """La réponse déjà gardée pour cette question, ou None. Elle est revalidée à la lecture."""
     if not actif():
         return None
-    chemin = DOSSIER / f"{cle(question)}.json"
+    chemin = DOSSIER / f"{cle(question, contexte)}.json"
     try:
-        return json.loads(chemin.read_text(encoding="utf-8"))["reponse"]
-    except (OSError, ValueError, KeyError):
+        gardee = json.loads(chemin.read_text(encoding="utf-8"))["reponse"]
+        return contrat.valider(gardee)  # un fichier abîmé ou édité à la main ne passe pas
+    except Exception:
         return None
 
 
-def ecrire(question, reponse):
-    """Garde une réponse déjà validée par le contrat du kit. Rend le chemin écrit."""
-    if not actif():
+def ecrire(question, reponse, contexte=""):
+    """Garde une réponse validée par le contrat du kit. Rend le chemin écrit, ou None si rien n'est gardé.
+
+    Une abstention n'est pas gardée : si elle était fausse, la resservir la
+    rendrait définitive.
+    """
+    if not actif() or reponse.get("statut") != "reponse":
         return None
     DOSSIER.mkdir(mode=0o700, parents=True, exist_ok=True)
-    chemin = DOSSIER / f"{cle(question)}.json"
+    chemin = DOSSIER / f"{cle(question, contexte)}.json"
     provisoire = chemin.with_name(f".{chemin.name}.{os.getpid()}")
-    texte = json.dumps({"question": question, "reponse": reponse}, ensure_ascii=False, indent=2) + "\n"
+    texte = json.dumps({"question": question, "reponse": reponse, "moteur": moteur()}, ensure_ascii=False, indent=2) + "\n"
     provisoire.write_text(texte, encoding="utf-8")
     os.chmod(provisoire, 0o600)
     provisoire.replace(chemin)

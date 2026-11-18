@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from equipe.outils import calculer, chercher_colonne
-from garde_fous import sans_fichier_reel, sans_reseau, sans_vraie_cle  # noqa: F401  (actifs d'office)
+from garde_fous import sans_fichier_reel, sans_reseau, sans_vrai_cache, sans_vraie_cle  # noqa: F401  (actifs d'office)
 from kit.donnees import RACINE, charger
 
 EQUIPE = RACINE / "equipe"

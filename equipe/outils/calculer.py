@@ -98,7 +98,7 @@ def calculer(operation: str, colonne: str = "", filtre: str = "", colonne2: str 
     """Calcule une statistique sur les patients du tableau et rend une phrase : le résultat, le nombre de patients retenus et le nombre de valeurs manquantes ignorées.
     Si la phrase commence par « ABSTENTION », ne donne aucun chiffre : réponds par une abstention en reprenant la raison.
     Les noms de colonnes s'écrivent exactement : cherche-les d'abord avec `chercher_colonne`.
-    Elle lit seule les cellules à plusieurs codes (« 1,3 ») et écarte le code 9 : ne refais pas ce travail à la main.
+    Elle lit seule les cellules à plusieurs codes (« 1,3 ») et écarte le code 9 (sauf avec !=) : ne refais pas ce travail à la main.
 
     Args:
         operation: « compter » (nombre de patients), « moyenne », « mediane », « pourcentage » (part des patients qui vérifient le filtre, sur tous les patients), « manquants » (patients sans valeur dans la colonne) ou « correlation » (Pearson entre colonne et colonne2).

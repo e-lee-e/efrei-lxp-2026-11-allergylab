@@ -9,7 +9,10 @@ Trois règles de lecture du fichier sont appliquées ici, une fois pour toutes
   « 1 » ne se trouve pas dans « 10 » ;
 - dans les colonnes cliniques codées, 9 veut dire non renseigné ; ailleurs
   (Age, mois, dosages) 9 est une valeur ;
-- une case vide ne vérifie jamais une condition, ni son contraire.
+- une case vide ne vérifie jamais une condition, ni son contraire ;
+- exception voulue : « != » n'exclut que la valeur nommée. « Sensitization!=1 »
+  garde les 0 ET les 9 (mesuré : l'écarter donnait 500 patients au lieu de
+  2 545). Les autres comparaisons écartent le 9, qui n'est pas une réponse.
 
 Sécurité : le filtre est un texte venu du modèle. Il est lu par une expression
 régulière, puis appliqué par des comparaisons pandas. Jamais d'eval, d'exec
@@ -63,12 +66,17 @@ def codes_de(cellule):
     return {morceau.strip().casefold() for morceau in brut.replace(";", ",").split(",") if morceau.strip()}
 
 
-def renseignes(tab, nom):
-    """Qui a une vraie valeur dans cette colonne : ni vide, ni 9 dans une colonne codée."""
+def renseignes(tab, nom, neuf_est_valeur=False):
+    """Qui a une vraie valeur dans cette colonne : ni vide, ni 9 dans une colonne codée.
+
+    `neuf_est_valeur` garde le 9 : c'est le cas de « != » (voir plus haut).
+    """
     colonne = colonne_connue(tab, nom)
+    ecarte_le_9 = nom in CODEES and not neuf_est_valeur
     if pd.api.types.is_numeric_dtype(colonne):
-        return colonne.notna() & (colonne != 9) if nom in CODEES else colonne.notna()
-    return colonne.map(lambda cellule: codes_de(cellule) not in (set(), {NON_RENSEIGNE}))
+        return colonne.notna() & (colonne != 9) if ecarte_le_9 else colonne.notna()
+    vide = (set(),) + (({NON_RENSEIGNE},) if ecarte_le_9 else ())
+    return colonne.map(lambda cellule: codes_de(cellule) not in vide)
 
 
 def analyser(condition):
@@ -103,7 +111,7 @@ def masque(tab, condition):
         cherches = {v.casefold() for v in valeurs}
         porte = colonne.map(lambda cellule: bool(codes_de(cellule) & cherches))  # le code exact, dans une cellule à plusieurs codes
         vrai = ~porte if comparaison == "!=" else porte
-    return renseignes(tab, nom) & vrai
+    return renseignes(tab, nom, neuf_est_valeur=comparaison == "!=") & vrai
 
 
 def conditions(filtre):
@@ -121,7 +129,8 @@ def appliquer(tab, filtre):
 def base(tab, filtre):
     """Les patients dont les colonnes du filtre sont toutes renseignées : le dénominateur d'un pourcentage."""
     for condition in conditions(filtre):
-        tab = tab[renseignes(tab, analyser(condition)[0])]
+        nom, comparaison, _ = analyser(condition)
+        tab = tab[renseignes(tab, nom, neuf_est_valeur=comparaison == "!=")]
     return tab
 
 
@@ -130,7 +139,8 @@ def groupes(tab, par):
     par = par.strip()
     if DANS.match(par) or CONDITION.match(par):
         vrai = masque(tab, par)
-        return [("oui", tab[vrai]), ("non", tab[renseignes(tab, analyser(par)[0]) & ~vrai])]
+        nom, comparaison, _ = analyser(par)
+        return [("oui", tab[vrai]), ("non", tab[renseignes(tab, nom, comparaison == "!=") & ~vrai])]
     ok = renseignes(tab, par)
     etiquettes = tab[par].map(texte)
     noms = sorted(etiquettes[ok].unique())

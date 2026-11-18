@@ -1,8 +1,8 @@
 """L'agent de l'équipe. Le kit n'en appelle qu'une fonction : repondre(question).
 
-Autour du modèle, trois couches gratuites s'essaient d'abord, dans cet ordre :
-le cache, le portier hors sujet, puis le routeur. Ce qui n'est pas reconnu passe
-au traducteur (une requête canonique, dix fois moins chère qu'une analyse) et, en
+Autour du modèle, trois couches s'essaient d'abord, dans cet ordre : le portier
+hors sujet, le routeur (qui calculent sans modèle), puis le cache des réponses de
+l'agent complet. Ce qui n'est pas reconnu passe au traducteur (une requête canonique, dix fois moins chère qu'une analyse) et, en
 dernier recours, à l'agent complet. Aucun modèle local : le reformulateur a été
 mesuré puis retiré, voir plus bas.
 
@@ -26,7 +26,9 @@ Ce que les traces ont montré, à relire avant de « simplifier » quoi que ce s
   renvoyé à chaque fois ;
 - un outil offert mais non utilisé coûte quand même sa description à chaque
   étape : le modèle réécrit du pandas par réflexe, la consigne doit le router ;
-- le cache (equipe/cache.py) ramène à zéro le coût d'une question déjà posée.
+- le cache (equipe/cache.py) ramène à zéro le coût d'une question déjà posée, mais
+  une réponse fausse gardée est resservie : il ne garde que les réponses de l'agent
+  complet, jamais une abstention, et sa clé suit le code (voir cache.py).
 
 Avant de modifier ce fichier, lis la rubrique « Ce qu'un agent ouvert peut
 faire » du README.
@@ -50,7 +52,7 @@ CONSIGNE = (Path(__file__).parent / "consigne.md").read_text(encoding="utf-8")
 NOTE_OUTILS = """
 
 Outils : pour tout calcul sur les patients, cherche le nom exact de la colonne avec chercher_colonne, puis calcule avec calculer. Ne refais pas à la main un calcul que calculer sait faire.
-calculer lit seul les cellules à plusieurs codes (« 1,3 ») et écarte le code 9.
+calculer lit seul les cellules à plusieurs codes (« 1,3 ») et écarte le code 9 (sauf avec !=, qui n'exclut que la valeur nommée).
 Si calculer répond « ABSTENTION », reprends sa raison dans la justification et rends le statut "abstention" sans valeur."""
 
 VARIANTE = os.environ.get("ALLERGYLAB_VARIANTE", "ouvert")  # "ouvert", "ferme" ou "outils"
@@ -217,17 +219,13 @@ def repondre(question):
         )
 
 
+def _contexte():
+    """Ce qui change la réponse de l'agent complet sans changer la question : entre dans la clé du cache."""
+    return f"{VARIANTE}|{ETAPES_MAX}|{SORTIE_MAX}"
+
+
 def _repondre(question):
-
     if raccourcis():
-        # Question déjà posée, même consigne, même fichier : la réponse est relue
-        # au lieu d'être recalculée. La trace dit d'où elle vient (moteur « cache »).
-        gardee = cache.lire(question)
-        if gardee is not None:
-            modele.journal["moteur"] = "cache"
-            modele.journal["modele"] = "cache"
-            return gardee
-
         # Question hors sujet : aucune variable du fichier n'y figure, un autre sujet
         # y est nommé. Abstention locale, zéro jeton, et la question n'entre pas dans
         # le cache (elle ne dépend d'aucune donnée).
@@ -243,6 +241,17 @@ def _repondre(question):
             modele.journal["moteur"] = "routeur"
             modele.journal["modele"] = "local"
             return locale
+
+        # Le cache vient APRÈS les deux couches qui calculent sans modèle : une
+        # réponse du modèle gardée par le passé ne doit jamais l'emporter sur elles.
+        # Il ne garde que les réponses de l'agent complet (voir equipe/cache.py), et
+        # sa clé suit le code, la variante et le plafond d'étapes, pas seulement la
+        # question. Une réponse relue est donc une réponse que ce code aurait pu donner.
+        gardee = cache.lire(question, _contexte())
+        if gardee is not None:
+            modele.journal["moteur"] = "cache"
+            modele.journal["modele"] = "cache"
+            return gardee
 
         # Il y avait ici un reformulateur local (qwen3:0.6b, 522 Mo) : un petit modèle
         # réécrivait la question dans une forme connue du routeur. Mesuré sur la
@@ -265,10 +274,12 @@ def _repondre(question):
     if VARIANTE == "ouvert":
         # Accès aux données (2/2) : le code écrit par le modèle reçoit le tableau,
         # et c'est celui de cache.tableau() — pas charger() seul, qui ignore le
-        # fichier choisi dans la fenêtre. Mesuré : sur une table inventée sans la
+        # fichier choisi dans la fenêtre. Une COPIE : le tableau du cache vit aussi longtemps que la
+        # fenêtre, et un code du modèle qui le modifie en place (drop, colonne ajoutée) fausserait
+        # toutes les questions suivantes, outils compris. Mesuré : sur une table inventée sans la
         # colonne Sensitization, l'agent répondait 80,9 %, les chiffres du vrai
         # fichier, sans que rien ne le signale.
-        arguments["tableau"] = cache.tableau()
+        arguments["tableau"] = cache.tableau().copy()
     try:
         sortie = construire(VARIANTE).run(question, additional_args=arguments or None)
     except DelaiDepasse:
@@ -289,5 +300,5 @@ def _repondre(question):
         validee = _relire(sortie)
         if validee is None:
             return sortie
-    cache.ecrire(question, validee)
+    cache.ecrire(question, validee, _contexte())
     return validee

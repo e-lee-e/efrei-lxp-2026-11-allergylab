@@ -6,7 +6,7 @@ Une traduction acceptée à tort coûterait une réponse fausse, dite avec aplom
 
 import pandas as pd
 
-from equipe.traducteur import _valider, executer
+from equipe.traducteur import _valider, executer, filtre_en_francais
 
 
 def tableau():
@@ -111,3 +111,16 @@ def test_un_filtre_sur_une_colonne_inconnue_est_refuse():
 def test_un_filtre_avec_une_comparaison_interdite_est_refuse():
     requete = {"operation": "compter_lignes", "filtre": "Gender ~ 1"}
     assert _valider(requete, tableau_a_filtres()) is None
+
+
+def test_un_filtre_se_dit_en_francais():
+    """La justification s'adresse à un chercheur : « Gender=0 » ne lui parle pas."""
+    assert (
+        filtre_en_francais("Age>=18 et Age<=30 et Gender=0 et Rural_or_urban_area=1")
+        == "âgés de 18 à 30 ans, de sexe féminin, résidant en zone urbaine"
+    )
+    assert filtre_en_francais("Age>60 et Treatment_of_athsma dans 6,7,8") == "de plus de 60 ans, sous biothérapie"
+    assert filtre_en_francais("Blood_Month_sample=7") == "prélevés en juillet"
+    # Une condition inconnue rend None : mieux vaut le filtre brut qu'un français faux.
+    assert filtre_en_francais("Gender=2") is None
+    assert filtre_en_francais("Age>=18 et Colonne_Inventee=1") is None

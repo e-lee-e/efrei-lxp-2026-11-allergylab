@@ -204,6 +204,105 @@ def _tableau():
     return cache.tableau()
 
 
+MOIS = {
+    1: "janvier", 2: "février", 3: "mars", 4: "avril", 5: "mai", 6: "juin",
+    7: "juillet", 8: "août", 9: "septembre", 10: "octobre", 11: "novembre", 12: "décembre",
+}
+
+# Un filtre se dit d'abord en français : « de sexe féminin » plutôt que « Gender=0 ».
+# Seules les conditions dont la tournure est certaine sont traduites ; une
+# condition inconnue fait rendre None, et la justification garde alors le filtre
+# brut — du technique exact vaut mieux qu'un français approximatif.
+PHRASES = {
+    ("Gender", "0"): "de sexe féminin",
+    ("Gender", "1"): "de sexe masculin",
+    ("Rural_or_urban_area", "0"): "résidant en zone rurale",
+    ("Rural_or_urban_area", "1"): "résidant en zone urbaine",
+    ("Sensitization", "1"): "sensibilisés",
+    ("Sensitization", "0"): "non sensibilisés",
+    ("Skin_Symptoms", "1"): "présentant des symptômes cutanés",
+    ("Skin_Symptoms", "0"): "sans symptôme cutané",
+}
+
+GROUPES = {
+    ("Treatment_of_athsma", frozenset({"6", "7", "8"})): "sous biothérapie",
+    ("Treatment_of_rhinitis", frozenset({"1", "2", "3", "4"})): "traités pour une rhinite",
+}
+
+
+def _phrase_age(conditions):
+    """« âgés de 18 à 30 ans », « de plus de 60 ans », « âgés de 25 ans »."""
+    basses = [(o, n) for o, n in conditions if o in (">=", ">")]
+    hautes = [(o, n) for o, n in conditions if o in ("<=", "<")]
+    exactes = [n for o, n in conditions if o == "="]
+    if basses and hautes:
+        (ob, nb), (oh, nh) = basses[0], hautes[0]
+        debut = nb if ob == ">=" else nb + 1
+        fin = nh if oh == "<=" else nh - 1
+        return f"âgés de {debut} à {fin} ans"
+    if basses:
+        operateur, nombre = basses[0]
+        return f"de plus de {nombre} ans" if operateur == ">" else f"âgés de {nombre} ans ou plus"
+    if hautes:
+        operateur, nombre = hautes[0]
+        return f"de moins de {nombre} ans" if operateur == "<" else f"âgés de {nombre} ans ou moins"
+    if exactes:
+        return f"âgés de {exactes[0]} ans"
+    return None
+
+
+def filtre_en_francais(filtre):
+    """Le filtre dit en français, ou None si une condition n'a pas de tournure connue."""
+    conditions = [c.strip() for c in re.split(r"\s+et\s+", str(filtre or "").strip(), flags=re.IGNORECASE) if c.strip()]
+    if not conditions:
+        return None
+
+    ages, autres = [], []
+    for condition in conditions:
+        dans = re.fullmatch(r"([A-Za-z_]+)\s+dans\s+([\d,\s]+)", condition, re.IGNORECASE)
+        if dans:
+            colonne = dans.group(1)
+            codes = frozenset(c.strip() for c in dans.group(2).split(",") if c.strip())
+            phrase = GROUPES.get((colonne, codes))
+            if phrase is None:
+                return None
+            autres.append(phrase)
+            continue
+
+        simple = re.fullmatch(r"([A-Za-z_]+)\s*(>=|<=|!=|>|<|=)\s*([\w]+)", condition)
+        if not simple:
+            return None
+        colonne, operateur, valeur = simple.group(1), simple.group(2), simple.group(3)
+
+        if colonne == "Age" and operateur != "!=":
+            try:
+                ages.append((operateur, int(float(valeur))))
+            except ValueError:
+                return None
+        elif colonne == "Blood_Month_sample" and operateur == "=":
+            try:
+                mois = MOIS.get(int(float(valeur)))
+            except ValueError:
+                return None
+            if mois is None:
+                return None
+            autres.append(f"prélevés en {mois}")
+        elif colonne == "Chip_Type" and operateur == "=":
+            autres.append(f"sur la puce {valeur}")
+        else:
+            phrase = PHRASES.get((colonne, valeur)) if operateur in ("=", "==") else None
+            if phrase is None:
+                return None
+            autres.append(phrase)
+
+    if ages:
+        phrase = _phrase_age(ages)
+        if phrase is None:
+            return None
+        autres.insert(0, phrase)
+    return ", ".join(autres) or None
+
+
 def _lignes_du_groupe(tableau, colonne, codes_du_groupe):
     """Le masque des patients du groupe, non-renseignés exclus."""
     bruts = tableau[colonne].map(_texte)
@@ -220,6 +319,9 @@ def executer(requete, tableau):
     if operation == "compter_lignes":
         total = len(tableau)
         if requete.get("filtre"):
+            en_clair = filtre_en_francais(requete["filtre"])
+            if en_clair:
+                return _reponse(total, f"{total} patients réunissent ces conditions : {en_clair}.")
             return _reponse(total, f"{total} patients vérifient le filtre « {requete['filtre']} ».")
         return _reponse(total, f"Le tableau compte {total} lignes au total, sans filtrage.")
 

@@ -111,3 +111,16 @@ def test_different_de_n_exclut_que_la_valeur_nommee(tableau):
     assert calculer.calculer_sur(tableau, "compter", filtre="Sensitization=0").startswith("3 patients")
     phrase = calculer.calculer_sur(tableau, "pourcentage", filtre="Sensitization!=1")
     assert phrase.startswith("40 % des patients (4 sur 10")  # le dénominateur garde aussi le 9
+
+
+def test_le_9_d_une_colonne_codee_n_entre_pas_dans_une_moyenne(tableau):
+    """Sensitization vaut 0/1 et 9 = non renseigné : la moyenne n'est faite que sur les 0 et 1."""
+    phrase = calculer.calculer_sur(tableau, "moyenne", "Sensitization")
+    assert phrase.startswith("Moyenne de Sensitization : 0.6667") and "(calculée sur 9 patients" in phrase
+    assert "1 sans valeur" in phrase
+
+
+def test_manquants_compte_le_9_a_part(tableau):
+    phrase = calculer.calculer_sur(tableau, "manquants", "Sensitization")
+    assert phrase.startswith("1 patients sans valeur dans Sensitization (dont 1 codés 9)")
+    assert calculer.calculer_sur(tableau, "manquants", "Bet_v_1").startswith("2 patients sans valeur dans Bet_v_1,")

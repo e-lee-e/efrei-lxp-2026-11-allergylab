@@ -51,7 +51,7 @@ CONSIGNE = (Path(__file__).parent / "consigne.md").read_text(encoding="utf-8")
 # Ajouté à la consigne de l'équipe, sans la modifier : comment se servir des outils.
 NOTE_OUTILS = """
 
-Outils : pour tout calcul sur les patients, cherche le nom exact de la colonne avec chercher_colonne, puis calcule avec calculer. Ne refais pas à la main un calcul que calculer sait faire.
+Outils : pour tout calcul sur les patients, utilise calculer. Les colonnes cliniques sont nommées dans la consigne : ne cherche pas leur nom. N'appelle chercher_colonne que pour une molécule ou un nom dont tu doutes, dans le même bloc de code que calculer (une étape de moins, ~7 000 jetons). Ne refais pas à la main un calcul que calculer sait faire.
 calculer lit seul les cellules à plusieurs codes (« 1,3 ») et écarte le code 9 (sauf avec !=, qui n'exclut que la valeur nommée).
 Si calculer répond « ABSTENTION », reprends sa raison dans la justification et rends le statut "abstention" sans valeur."""
 
@@ -139,7 +139,7 @@ def noter_appels(etape):
 def construire(variante):
     """L'agent de la variante demandée, prêt à répondre."""
     options = dict(
-        model=modele_du_jour(),  # Haiku, ou qwen3:8b local avec ALLERGYLAB_MODELE=local
+        model=modele_du_jour(),  # Haiku 5.5, le modèle de développement du kit
         tools=OUTILS,
         instructions=reponse.consigne(CONSIGNE + NOTE_OUTILS),  # la consigne, puis le format du kit
         max_steps=ETAPES_MAX,
@@ -253,12 +253,8 @@ def _repondre(question):
             modele.journal["modele"] = "cache"
             return gardee
 
-        # Il y avait ici un reformulateur local (qwen3:0.6b, 522 Mo) : un petit modèle
-        # réécrivait la question dans une forme connue du routeur. Mesuré sur la
-        # batterie extérieure de quarante questions, il n'en a fait router aucune de
-        # plus que le normaliseur seul (0 sur 40), pour 522 Mo, douze secondes de
-        # délai au pire et une dépendance à Ollama. Retiré. equipe/reformulateur.py
-        # reste, avec sa mesure, pour qui voudra refaire l'essai sur d'autres questions.
+        # Un reformulateur local (qwen3:0.6b) a été essayé ici puis retiré : 0 question
+        # gagnée sur 40, pour 522 Mo et 12 s de délai (voir equipe/NOTES.md).
 
         # Traduction en requête canonique : le modèle ne calcule rien, il choisit une
         # opération et ses paramètres dans une liste fermée ; le code exécute. Dix fois

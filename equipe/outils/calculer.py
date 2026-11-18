@@ -26,7 +26,7 @@ Le filtre vient du modèle : il est lu et appliqué par _filtre.py, sans eval.
 import pandas as pd
 from smolagents import tool
 
-from equipe.outils._filtre import appliquer, base, colonne_connue, groupes
+from equipe.outils._filtre import appliquer, base, colonne_connue, groupes, renseignes
 from equipe.outils._tableau import tableau
 
 OPERATIONS = ("compter", "moyenne", "mediane", "pourcentage", "manquants", "correlation")
@@ -67,8 +67,11 @@ def calculer_sur(tab, operation, colonne="", filtre="", colonne2="", par=""):
         ignores = f", {len(tab) - total} sans valeur ignorés" if total < len(tab) else ""
         return f"{nombre(100 * n / total)} % des patients ({n} sur {total}{ignores} ; {cadre})."
     if operation == "manquants":
-        vides = int(colonne_connue(groupe, colonne).isna().sum())
-        return f"{vides} patients sans valeur dans {colonne}, sur {n} ({cadre})."
+        colonne_connue(groupe, colonne)
+        sans = int((~renseignes(groupe, colonne)).sum())  # case vide, ou code 9 d'une colonne codée
+        neuf = sans - int(groupe[colonne].isna().sum())
+        codes_9 = f" (dont {neuf} codés 9)" if neuf else ""
+        return f"{sans} patients sans valeur dans {colonne}{codes_9}, sur {n} ({cadre})."
 
     # Trois statistiques : une colonne en nombre (deux pour la corrélation).
     if operation == "correlation" and not colonne2:
@@ -76,7 +79,9 @@ def calculer_sur(tab, operation, colonne="", filtre="", colonne2="", par=""):
     noms = [colonne] + ([colonne2] if operation == "correlation" else [])
     for nom in noms:
         colonne_connue(tab, nom, numerique=True)
-    utiles = groupe[noms].dropna()  # les valeurs manquantes ne comptent pas
+    # Ni les cases vides ni le code 9 d'une colonne codée ne comptent : un 9 dans une
+    # moyenne de Sensitization la fausserait sans erreur visible.
+    utiles = groupe[noms][pd.concat([renseignes(groupe, nom) for nom in noms], axis=1).all(axis=1)]
     if n == 0:
         return f"ABSTENTION : aucun patient ne vérifie le filtre ({filtre.strip()})."
     if utiles.empty:
@@ -97,7 +102,7 @@ def calculer_sur(tab, operation, colonne="", filtre="", colonne2="", par=""):
 def calculer(operation: str, colonne: str = "", filtre: str = "", colonne2: str = "", par: str = "") -> str:
     """Calcule une statistique sur les patients du tableau et rend une phrase : le résultat, le nombre de patients retenus et le nombre de valeurs manquantes ignorées.
     Si la phrase commence par « ABSTENTION », ne donne aucun chiffre : réponds par une abstention en reprenant la raison.
-    Les noms de colonnes s'écrivent exactement : cherche-les d'abord avec `chercher_colonne`.
+    Les noms de colonnes s'écrivent exactement. Les colonnes cliniques sont dans la consigne ; n'appelle `chercher_colonne` que pour une molécule ou un doute, dans la même étape que `calculer`.
     Elle lit seule les cellules à plusieurs codes (« 1,3 ») et écarte le code 9 (sauf avec !=) : ne refais pas ce travail à la main.
 
     Args:

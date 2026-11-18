@@ -6,6 +6,7 @@ filtrage, aucune colonne retirée ou renommée, aucune valeur manquante
 comblée. Ce que les valeurs veulent dire reste à la charge de l'équipe.
 """
 
+from contextlib import contextmanager
 from pathlib import Path
 
 import pandas as pd
@@ -14,6 +15,13 @@ RACINE = Path(__file__).resolve().parent.parent
 NOM_FICHIER = "allergenchipchallenge-data-corrected-final-hdh-sfa.csv"
 FICHIER = RACINE / "donnees" / NOM_FICHIER
 DICTIONNAIRE = RACINE / "kit" / "colonnes.csv"
+
+# La table inventée de douze lignes, pour les tests et les démonstrations.
+EXEMPLE = RACINE / "kit" / "exemple" / "mini.csv"
+
+# Le fichier que lit charger() appelé sans argument. `uv run kit evaluer
+# --exemple` le remplace un moment par la table inventée (voir utiliser).
+en_cours = FICHIER
 
 # Les quinze premières colonnes forment le bloc clinique ; toutes les
 # suivantes forment le bloc dosage.
@@ -26,8 +34,25 @@ COLONNE_PUCE = "Chip_Type"
 VIRGULE_OU_LETTRE = r",|[^\W\d_]"
 
 
-def charger(chemin=FICHIER):
+@contextmanager
+def utiliser(chemin):
+    """Le temps du bloc with, charger() appelé sans argument lit chemin au lieu du fichier publié.
+
+    C'est ainsi que la batterie d'exemple porte sur la table inventée sans
+    que l'agent de l'équipe, qui appelle charger(), change une ligne.
+    """
+    global en_cours
+    avant, en_cours = en_cours, chemin
+    try:
+        yield
+    finally:
+        en_cours = avant
+
+
+def charger(chemin=None):
     """Rend le tableau complet, une colonne par colonne du fichier.
+
+    Sans chemin, le fichier publié (ou la table que utiliser() a mise à sa place).
 
     Règles de lecture :
     - séparateur « ; », encodage UTF-8 (le BOM éventuel est retiré du nom
@@ -40,7 +65,7 @@ def charger(chemin=FICHIER):
     # Tout est d'abord lu en texte, pour décider ensuite colonne par colonne.
     # keep_default_na=False : un texte comme « NA » reste un texte.
     tableau = pd.read_csv(
-        chemin,
+        chemin or en_cours,
         sep=";",
         encoding="utf-8-sig",
         dtype=str,

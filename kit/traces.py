@@ -1,9 +1,11 @@
 """Les traces : ce que le kit écrit seul, à chaque exécution, dans traces/.
 
-Deux sortes d'écrits (SPEC § 7) :
+Trois sortes d'écrits (SPEC § 7) :
 - la trace d'un appel : un fichier JSON par exécution, dans
   traces/appels/<jour>/, nommé par l'horodatage UTC et un suffixe tiré au
   hasard. Aucun fichier commun : deux machines ne se gênent jamais ;
+- la trace d'une évaluation : un fichier JSON par batterie, nommé de la
+  même façon, dans traces/evaluations/<jour>/ ;
 - l'état du travail de l'équipe : une copie de equipe/ dans
   traces/etats/<empreinte>/, faite une seule fois par empreinte.
 
@@ -51,6 +53,19 @@ CHAMPS_APPEL = (
     "format", "horodatage", "equipe", "kit", "etat", "commit", "modifie", "moteur",
     "modele", "question", "reponse", "etapes", "jetons", "cout_estime", "duree_s", "erreur",
 )
+
+# Version du format des traces d'évaluation : elle change avec la liste des champs.
+FORMAT_EVALUATION = 1
+
+# La liste fermée des champs d'une trace d'évaluation, puis celle de chaque
+# question. Aucune valeur attendue, aucun type de question, aucune tolérance :
+# un corrigé ne doit pas pouvoir se lire dans un dépôt d'équipe. Un champ
+# nouveau se décide dans SPEC.md, pas ici.
+CHAMPS_EVALUATION = (
+    "format", "horodatage", "equipe", "kit", "etat", "commit", "modifie", "officielle", "modele",
+    "batterie", "table", "justesse", "abstention", "verdicts", "frugalite", "erreur", "questions",
+)
+CHAMPS_QUESTION = ("id", "texte", "reponse", "etapes", "jetons", "cout_estime", "duree_s", "erreur", "verdict")
 
 # Ce qui, dans equipe/, fait l'état du travail de l'équipe.
 CONTENU_ETAT = ("agent.py", "consigne.md", "outils", "questions")
@@ -218,8 +233,8 @@ def enregistrer_etat(racine=RACINE):
 # --- La trace d'un appel ------------------------------------------------------
 
 
-def verifier_champs(champs):
-    hors_liste = [nom for nom in champs if nom not in CHAMPS_APPEL]
+def verifier_champs(champs, liste=CHAMPS_APPEL):
+    hors_liste = [nom for nom in champs if nom not in liste]
     if hors_liste:
         raise ValueError(
             f"Champ de trace hors liste : {', '.join(hors_liste)}. La liste des champs est "
@@ -233,9 +248,27 @@ def ecrire_appel(champs, racine=RACINE, instant=None):
     instant = instant or maintenant()
     trace = {nom: nettoyer(champs.get(nom)) for nom in CHAMPS_APPEL}
     trace["format"] = FORMAT_APPEL
+    return ecrire(trace, racine / "traces" / "appels", instant)
+
+
+def ecrire_evaluation(champs, racine=RACINE, instant=None):
+    """Écrit la trace d'une évaluation et rend son chemin. Un champ absent vaut null, à chaque niveau."""
+    verifier_champs(champs, CHAMPS_EVALUATION)
+    questions = champs.get("questions") or []
+    for question in questions:
+        verifier_champs(question, CHAMPS_QUESTION)
+    instant = instant or maintenant()
+    trace = {nom: nettoyer(champs.get(nom)) for nom in CHAMPS_EVALUATION}
+    trace["format"] = FORMAT_EVALUATION
+    trace["questions"] = [{nom: nettoyer(question.get(nom)) for nom in CHAMPS_QUESTION} for question in questions]
+    return ecrire(trace, racine / "traces" / "evaluations", instant)
+
+
+def ecrire(trace, dossier, instant):
+    """Écrit trace dans dossier/<jour>/, dans un fichier neuf nommé par l'horodatage. Rend son chemin."""
     trace["horodatage"] = f"{instant:%Y-%m-%dT%H:%M:%SZ}"
     texte = json.dumps(trace, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
-    dossier = racine / "traces" / "appels" / f"{instant:%Y-%m-%d}"
+    dossier = dossier / f"{instant:%Y-%m-%d}"
     dossier.mkdir(parents=True, exist_ok=True)
     while True:
         # Un suffixe tiré à chaque fichier : rien qui désigne une machine ou une personne.
@@ -252,6 +285,8 @@ def ecrire_appel(champs, racine=RACINE, instant=None):
 class Trace:
     """Les champs d'une trace d'appel, notés au fil de l'exécution."""
 
+    liste = CHAMPS_APPEL
+
     def __init__(self, **champs):
         self.champs = {}
         self.chemin = None  # le fichier de la trace, une fois écrit
@@ -259,8 +294,14 @@ class Trace:
 
     def noter(self, **champs):
         """Ajoute des champs. Un champ hors de la liste fermée est refusé tout de suite."""
-        verifier_champs(champs)
+        verifier_champs(champs, self.liste)
         self.champs.update(champs)
+
+
+class TraceEvaluation(Trace):
+    """Les champs d'une trace d'évaluation ; les questions s'ajoutent une à une à champs["questions"]."""
+
+    liste = CHAMPS_EVALUATION
 
 
 def decrire(erreur):
@@ -269,16 +310,37 @@ def decrire(erreur):
     return f"{type(erreur).__name__} : {erreur}"
 
 
+def situer(trace, racine):
+    """Note dans la trace l'équipe, la version du kit, le commit et l'état du travail."""
+    trace.noter(equipe=lire_equipe(racine), kit=version_kit())
+    commit, modifie = lire_git(racine)
+    trace.noter(commit=commit, modifie=modifie)
+    trace.noter(etat=enregistrer_etat(racine))
+
+
+@contextmanager
+def evaluation(racine=RACINE, **champs):
+    """Trace l'évaluation faite dans le bloc with. La trace s'écrit en sortie, quoi qu'il arrive."""
+    debut = maintenant()
+    trace = TraceEvaluation(questions=[], **champs)
+    try:
+        situer(trace, racine)
+        yield trace
+    except BaseException as erreur:  # BaseException : Ctrl+C compris
+        if trace.champs.get("erreur") is None:
+            trace.noter(erreur=decrire(erreur))
+        raise
+    finally:
+        trace.chemin = ecrire_evaluation(trace.champs, racine, debut)
+
+
 @contextmanager
 def appel(question, moteur, modele, racine=RACINE):
     """Trace l'appel fait dans le bloc with. La trace s'écrit en sortie, quoi qu'il arrive."""
     debut, chrono = maintenant(), time.monotonic()
     trace = Trace(question=question, moteur=moteur, modele=modele)
     try:
-        trace.noter(equipe=lire_equipe(racine), kit=version_kit())
-        commit, modifie = lire_git(racine)
-        trace.noter(commit=commit, modifie=modifie)
-        trace.noter(etat=enregistrer_etat(racine))
+        situer(trace, racine)
         yield trace
     except BaseException as erreur:  # BaseException : Ctrl+C compris
         if trace.champs.get("erreur") is None:

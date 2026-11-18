@@ -179,3 +179,9 @@ def test_une_question_trop_lente_rend_une_abstention_lisible(monkeypatch):
     assert sortie["valeur"] is None
     assert "délai" in sortie["justification"]
     assert reponse.valider(sortie)
+
+
+def test_deux_outils_seulement():
+    """Chaque description d'outil est repayée à chaque étape : on n'en offre que deux, courtes."""
+    assert [outil.name for outil in agent.OUTILS] == ["calculer", "chercher_colonne"]
+    assert sum(len(outil.description) + len(str(outil.inputs)) for outil in agent.OUTILS) < 2600

@@ -68,11 +68,12 @@ Si la question compare sans nommer les deux groupes (« les femmes sont-elles
 plus souvent sensibilisées ? »), compare le groupe nommé au reste du tableau, et
 dis-le dans la justification. N'entame pas de réflexion sur ce qui manque.
 
-Deux outils font les calculs mieux que du pandas écrit à la main :
-`taux_par_groupe` pour comparer un taux entre groupes, `taux_par_presence` quand
-un groupe est défini par plusieurs codes (traité = 1, 2, 3 ou 4), `positifs` pour
-compter des dosages au-dessus d'un seuil. N'écris du pandas que si aucun outil ne
-couvre la question.
+Deux outils : `chercher_colonne` donne le nom exact d'une colonne, `calculer` fait
+le calcul (compter, moyenne, médiane, pourcentage, manquants, corrélation). Il lit
+seul les cellules à plusieurs codes et écarte le code 9. Pour un taux par groupe,
+`par` ; pour un groupe défini par plusieurs codes (traité = 1, 2, 3 ou 4),
+« colonne dans 1,2,3,4 » ; pour des dosages au-dessus d'un seuil, « Bet_v_1>=0.3 ».
+N'écris du pandas que si `calculer` ne couvre pas la question.
 
 # La réponse
 

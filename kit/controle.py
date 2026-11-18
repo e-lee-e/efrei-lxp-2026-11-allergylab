@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 import tomllib
 
-from kit import cle, donnees
+from kit import cle, donnees, pousser
 
 RACINE = donnees.RACINE
 EQUIPE_VALIDE = re.compile(r"accueil|equipe-[1-9]")
@@ -137,6 +137,16 @@ def verifier_traces(racine):
     return True, "traces : dossier traces/ inscriptible", None
 
 
+def signaler_traces_non_poussees(racine):
+    """Une ligne d'information, qui ne fait jamais échouer le contrôle (SPEC § 7.4).
+
+    Sans git, ou sans dépôt d'équipe auquel comparer, elle ne dit rien.
+    """
+    non_poussees = pousser.decompte(pousser.traces_non_poussees(racine) or [])
+    if non_poussees:
+        print(f"  INFO   traces non poussées : {non_poussees} ; pour les envoyer, uv run kit pousser")
+
+
 def fichiers_du_depot(racine):
     """Les fichiers suivis par git, et ceux qu'un `git add .` ajouterait. None sans git ou hors d'un dépôt."""
     try:
@@ -218,6 +228,7 @@ def controler(racine=RACINE, hors_ligne=False):
     ]
     for ligne in suite:
         afficher(*ligne)
+    signaler_traces_non_poussees(racine)
     lignes += suite
     lignes.append(verifier_cle_hors_depot(racine))
     afficher(*lignes[-1])

@@ -184,3 +184,12 @@ jobs:
           if defauts:
               sys.exit("ÉCHEC : " + " ; ".join(defauts) + ".")
           print(f"RÉUSSITE : une trace valide, {fichiers[0].name}")
+
+      # La batterie d'exemple : trois questions sur la table inventée, notées
+      # aussitôt. Le code 0 dit que chacune a reçu une réponse conforme au
+      # contrat, juste ou non.
+      - name: uv run kit evaluer --exemple
+        if: inputs.avec_cle
+        env:
+          ALLERGYLAB_CLE: ${{ secrets.ALLERGYLAB_CLE }}
+        run: uv run kit evaluer --exemple

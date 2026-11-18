@@ -1,6 +1,6 @@
 # SPEC : kit de démarrage AllergyLab
 
-Semaine du 16 au 20 novembre 2026. Version 2, du 13 novembre 2026. Remplace celle du 11 novembre.
+Semaine du 16 au 20 novembre 2026. Version 3, du 16 novembre 2026. Remplace celle du 13 novembre.
 
 **Marqueurs.** [Décision] et [Fait] renvoient au dossier de passation, version du 13 novembre. [Hypothèse] marque ce qui reste à confirmer. Tout le reste est une proposition du chef de projet, qui devient décision quand Adrien valide cette spec.
 
@@ -16,6 +16,13 @@ Semaine du 16 au 20 novembre 2026. Version 2, du 13 novembre 2026. Remplace cell
 - Le `.devcontainer` et le générateur du dictionnaire passent au lot 2 [Décision]. Un lot 3 porte deux options pour le mercredi (§ 10).
 - La clé d'API se range hors du dépôt (§ 4) [Décision].
 - De cinq à sept équipes, et trois cagnottes par équipe au lieu d'une enveloppe unique [Décision] (§§ 7.2 et 8).
+
+**Ce qui change depuis le 13 novembre.**
+
+- Une commande `uv run kit pousser` envoie les traces vers le dépôt de l'équipe (§§ 4 et 7.4).
+- Le harnais d'évaluation mesure aussi la frugalité, et la notation peut se faire après coup, par une commande à part (§ 5.4).
+- Les lots 2 et suivants ne touchent ni à `equipe/`, ni à `equipe.toml`, ni à `README.md`, ni à `JOURNAL.md` : ces fichiers appartiennent aux équipes (§ 8).
+- Le calendrier des lots est revu (§ 10).
 
 ## 1. Le scénario qui juge
 
@@ -64,7 +71,9 @@ Une seule entrée, `uv run kit`. `uv run kit` seul affiche cette liste.
 | `uv run kit cle` | Enregistre ou remplace la clé d'API. L'étudiant colle la clé dans le terminal, il n'édite aucun fichier. | 1 |
 | `uv run kit controle` | Vérifie l'installation point par point. Chaque ligne en échec dit quoi faire. Dernière ligne : `RÉUSSITE` (code 0) ou `ÉCHEC` (code 1). `--hors-ligne` saute l'appel au modèle. | 1 |
 | `uv run kit agent "question"` | Pose une question à l'agent de l'équipe. Affiche la réponse, les jetons consommés et leur coût estimé. Écrit une trace. | 1 |
-| `uv run kit evaluer` | Fait passer une batterie de questions à l'agent. Affiche les deux scores. Écrit une trace. | 2 |
+| `uv run kit pousser` | Envoie les traces vers le dépôt de l'équipe : les enregistre, récupère le travail des coéquipiers, pousse. Ne touche à aucun autre fichier. | 2 |
+| `uv run kit evaluer` | Fait passer une batterie de questions à l'agent. Affiche la justesse, l'abstention et la frugalité. Écrit une trace. | 2 |
+| `uv run kit noter` | Note après coup une trace d'évaluation, à partir d'un corrigé. | 2 |
 | `uv run kit bilan` | Tableau des exécutions passées et consommation estimée de l'équipe. | 2 |
 
 **La clé vit hors du dépôt**, dans un fichier du dossier personnel de l'étudiant. Une clé qui n'est pas dans l'arbre de travail ne peut pas partir dans un commit, même par `git add .`. C'est la seule prévention disponible : la protection de GitHub contre la publication de secrets ne couvre pas les dépôts privés d'un plan gratuit [Fait, documentation GitHub].
@@ -144,7 +153,7 @@ Le test qui rejoue ces constats n'entre dans le dépôt qu'après relecture par 
 
 ### 5.4 Le squelette du harnais d'évaluation (lot 2)
 
-`uv run kit evaluer` lit une batterie, appelle `repondre` pour chaque question, compare et note.
+`uv run kit evaluer <batterie.toml>` lit une batterie, appelle `repondre` pour chaque question, compare et note. Sans argument, il fait passer toutes les batteries de `equipe/questions/`.
 
 Une question, en TOML :
 
@@ -159,8 +168,11 @@ tolerance = 0
 
 - Sept verdicts : juste, faux, abstention fondée, abstention à tort, réponse inventée, illisible, erreur.
 - Deux scores, jamais fondus en un seul [Décision 2]. **Justesse** : réponses justes sur questions qui ont une réponse. **Abstention** : abstentions fondées sur questions sans réponse.
+- Une mesure de **frugalité**, affichée à côté des scores et jamais fondue avec eux : jetons lus et écrits, coût estimé et durée, au total et par question.
+- Le modèle se choisit par `--modele`, parmi ceux de `kit/reglages.toml`. Par défaut, celui du développement.
+- Une limite de dépense atteinte arrête la batterie à la question en cours : la trace garde ce qui a été fait.
 - La comparaison est mécanique. Aucun modèle ne juge les réponses : cela coûterait des jetons et changerait d'une exécution à l'autre.
-- Une batterie peut arriver sans corrigé, déposée dans le dépôt sans mise à jour du kit. Le harnais d'évaluation exécute et enregistre ; la notation vient ensuite avec `--corrige`. On peut ainsi distribuer des questions sans dire lesquelles sont sans réponse.
+- Une batterie peut arriver sans corrigé : un identifiant et un texte par question, rien d'autre. Le harnais d'évaluation exécute et enregistre, sans noter. La notation vient ensuite : `uv run kit noter <trace> --corrige <corrigé.toml>` relit la trace, affiche les verdicts et les scores, et n'appelle pas le modèle. On peut ainsi distribuer des questions sans dire lesquelles sont sans réponse.
 - `--exemple` fait tourner trois questions sur une table inventée de douze lignes (`kit/exemple/`), pour montrer le format sans toucher au fichier réel.
 - `--officielle` refuse de tourner si le travail n'est pas enregistré et poussé, puis marque la trace. L'état d'une passe officielle existe donc toujours sur GitHub.
 
@@ -225,10 +237,13 @@ Ce que cela donne :
 
 Un fichier par exécution, nommé par son horodatage et un suffixe aléatoire. Aucun fichier commun que chacun complète : quatre machines poussent leurs traces sans jamais se gêner. Les tableaux de synthèse se calculent à la demande (`kit bilan`), ils ne se stockent pas.
 
+Sans conflit ne veut pas dire sans ordre : un push est refusé tant qu'on n'a pas récupéré celui des coéquipiers. `uv run kit pousser` fait les gestes dans le bon ordre, et recommence si un coéquipier a poussé entre-temps.
+
 ### 7.4 Jusqu'à Adrien
 
 `traces/` est versionné et part à chaque `git push`. Le maillon faible est là : pousser reste un geste humain. Trois parades.
 
+- `uv run kit pousser` ramène l'envoi des traces à une commande.
 - À partir du lot 2, `controle` et `bilan` signalent les traces qui n'ont pas été poussées.
 - Une passe officielle exige un état poussé (§ 5.4).
 - Un rituel de fin de demi-journée, à la main d'Adrien.
@@ -256,7 +271,7 @@ Le README explique en clair ce que le kit enregistre, où, et à quoi cela servi
 
 **La frontière** [Décision]. Rien du dépôt privé de production pédagogique n'entre dans `sprint-dojo` : ni corrigé, ni sujet, ni remote partagé.
 
-**Les correctifs en cours de semaine.** Adrien les pousse dans les dépôts d'équipe ; les équipes n'ont qu'un `git pull` à faire. Cela passe sans conflit tant qu'elles ne touchent pas à `kit/`. `controle` le vérifie à partir du lot 2.
+**Les correctifs en cours de semaine.** Adrien les fusionne dans les dépôts d'équipe ; les équipes n'ont qu'un `git pull` à faire. Cela passe sans conflit parce que chacun reste chez soi : les équipes ne touchent pas à `kit/`, et le kit ne touche plus à `equipe/`, `equipe.toml`, `README.md` ni `JOURNAL.md`.
 
 **Les clés.** Un workspace et une clé par équipe [Décision]. Lundi à 9h30 les équipes n'existent pas encore : il faut une clé d'accueil, sur un workspace à part plafonné à quelques dollars, commune aux vingt étudiants et révoquée lundi soir. Une clé se colle, elle ne se recopie pas : prévoir le canal qui la diffuse. Un agent ouvert peut lire la clé comme n'importe quel fichier du compte (§ 5.3) : le plafond du workspace et la révocation sont la vraie protection.
 
@@ -296,10 +311,13 @@ Les tests couvrent quatre pièges d'environnement : un chemin avec espaces et ac
 | Lot | Contenu | Accepté au plus tard |
 |---|---|---|
 | 1 | Installation, contrôle, données, dictionnaire figé, agent minimal et repli, clé, traces d'appels et d'états, tests, matrice | dimanche 15 novembre au soir |
-| 2 | Harnais d'évaluation, batterie d'exemple, `bilan`, option `--officielle`, `.devcontainer`, générateur du dictionnaire, contrôle de `kit/` et des traces non poussées | lundi 16 novembre au soir |
+| 2a | `pousser`, signalement des traces non poussées, portée de `CLAUDE.md` dans un dépôt d'équipe | mardi 17 novembre |
+| 2b | Harnais d'évaluation, batterie d'exemple, `noter`, `bilan`, option `--officielle` | mercredi 18 novembre au matin |
 | 3 | `--donnees <fichier>` pour interroger l'agent sur un autre fichier que celui du dépôt ; `--adversaire <equipe>` pour marquer dans la trace qui a posé la question, quinze questions au plus par adversaire et par jour, la seizième est refusée [Décision] | mardi 17 novembre au soir |
 
-Si le temps manque, on sacrifie dans cet ordre : l'option `--officielle`, puis `bilan`, puis le `.devcontainer`. Jamais `controle`, jamais les traces d'appels.
+Si le temps manque, on sacrifie dans cet ordre : l'option `--officielle`, puis `bilan`. Jamais `controle`, jamais les traces d'appels.
+
+Reportés sans date : le `.devcontainer`, le générateur du dictionnaire, le contrôle de `kit/` intact.
 
 ## 11. Hypothèses encore ouvertes
 

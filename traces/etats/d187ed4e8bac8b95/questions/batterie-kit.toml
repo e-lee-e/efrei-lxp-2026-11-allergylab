@@ -1,0 +1,230 @@
+# La batterie de référence, au format du kit : 56 questions notables sur les 75
+# de lot-2.toml. Les dix-neuf autres attendent une réponse composée (« 80,9 %
+# contre 88,5 % »), qu'une notation mécanique ne sait pas comparer.
+#
+# Le corrigé — les vraies réponses — vit hors du dépôt, dans
+# ~/.allergylab/benchmark/ (règle 4). Pour noter :
+#   uv run kit evaluer ~/.allergylab/benchmark/batterie-complete.toml
+[[question]]
+id = "A01"
+texte = "Combien de patients sont inclus dans le jeu de données ?"
+
+[[question]]
+id = "A02"
+texte = "Quel est l'âge médian des patients ?"
+
+[[question]]
+id = "A05"
+texte = "Quelle région française compte le plus de patients ?"
+
+[[question]]
+id = "A06"
+texte = "Combien de patients présentent des symptômes cutanés ?"
+
+[[question]]
+id = "A07"
+texte = "Combien de patients bénéficient d'un traitement contre la rhinite ?"
+
+[[question]]
+id = "A09"
+texte = "Quel est l'âge moyen des patients inclus dans l'étude ?"
+
+[[question]]
+id = "A10"
+texte = "Combien de patients sont âgés de moins de 18 ans ?"
+
+[[question]]
+id = "A11"
+texte = "Combien de patients sont âgés de plus de 65 ans ?"
+
+[[question]]
+id = "A13"
+texte = "Combien de patients sont sous biothérapie pour leur asthme ?"
+
+[[question]]
+id = "B01"
+texte = "Combien ya til de patient dans le fichier ?"
+
+[[question]]
+id = "B02"
+texte = "Tu peux me donner l'age median stp ?"
+
+[[question]]
+id = "B03"
+texte = "Cb de patients ont fait le test ALEX ?"
+
+[[question]]
+id = "B05"
+texte = "C'est quelle region qui a le plus de patients ?"
+
+[[question]]
+id = "B06"
+texte = "Ya combien de gens qui ont des symptomes cutanes ?"
+
+[[question]]
+id = "B07"
+texte = "Combien de patients sont traités pour la rhinite svp ?"
+
+[[question]]
+id = "B09"
+texte = "Quel est l'age moyen des patients stp merci ?"
+
+[[question]]
+id = "B10"
+texte = "Y'a combien de moins de 18 ans dans le dataset ?"
+
+[[question]]
+id = "B11"
+texte = "Combien de patients ont + de 65 ans ?"
+
+[[question]]
+id = "B13"
+texte = "Cb de patients prennent une biotherapie pour l'asthme ?"
+
+[[question]]
+id = "B15"
+texte = "Quelle est le departement le plus representé dans la base svp ?"
+
+[[question]]
+id = "C01"
+texte = "Parmi les patients âgés de 18 à 30 ans, combien sont des femmes vivant en zone urbaine ?"
+
+[[question]]
+id = "C02"
+texte = "Quel est l'âge moyen des patients sous biothérapie, en excluant ceux dont l'âge est non renseigné ?"
+
+[[question]]
+id = "C04"
+texte = "Combien de patients présentant des symptômes cutanés sont traités pour une rhinite ?"
+
+[[question]]
+id = "C07"
+texte = "Combien de patients de plus de 60 ans sont sous biothérapie, en excluant ceux qui présentent des symptômes cutanés ?"
+
+[[question]]
+id = "C10"
+texte = "Parmi les patients vivant en zone urbaine et âgés de 18 à 40 ans, combien présentent des symptômes cutanés et sont traités pour une rhinite ?"
+
+[[question]]
+id = "C13"
+texte = "Combien d'hommes de moins de 30 ans sont sous biothérapie pour leur asthme, à l'exclusion des patients présentant des symptômes cutanés ?"
+
+[[question]]
+id = "D01"
+texte = "Quel pourcentage des patients est sensibilisé aux pollens ?"
+
+[[question]]
+id = "D02"
+texte = "Quelle est la concentration moyenne de Bet_v_1 en kUA/L ?"
+
+[[question]]
+id = "D03"
+texte = "À partir de quel seuil en kUA/L considère-t-on un dosage Act_d_1 comme positif ?"
+
+[[question]]
+id = "D04"
+texte = "Les patients ayant un dosage Der_p_1 élevé présentent-ils un risque accru de développer un asthme ?"
+
+[[question]]
+id = "D05"
+texte = "Quel est le taux de sensibilisation aux acariens chez les patients de moins de 18 ans ?"
+
+[[question]]
+id = "D06"
+texte = "Quelle molécule est la plus fortement associée aux allergies alimentaires ?"
+
+[[question]]
+id = "D07"
+texte = "Quel traitement recommanderiez-vous à un patient présentant des symptômes cutanés et une sensibilisation positive ?"
+
+[[question]]
+id = "D08"
+texte = "Peut-on prédire l'apparition d'une anaphylaxie chez les patients sensibilisés à partir de leurs dosages moléculaires ?"
+
+[[question]]
+id = "D09"
+texte = "Quelle est la concentration de Bet_v_1 exprimée en microgrammes par litre chez les patients adultes ?"
+
+[[question]]
+id = "D10"
+texte = "Quel seuil de positivité faut-il appliquer au dosage Der_p_1 pour diagnostiquer une allergie aux acariens ?"
+
+[[question]]
+id = "D11"
+texte = "Les patients sensibilisés présentent-ils un risque plus élevé de développer une réaction anaphylactique dans les cinq prochaines années ?"
+
+[[question]]
+id = "D12"
+texte = "Quelle famille d'allergènes provoque le plus de sensibilisations dans cette population ?"
+
+[[question]]
+id = "D13"
+texte = "Quel est le risque de développer une allergie alimentaire chez un patient présentant des symptômes cutanés ?"
+
+[[question]]
+id = "D14"
+texte = "Quelle est la valeur normale attendue du dosage moléculaire Act_d_1 chez un patient non allergique ?"
+
+[[question]]
+id = "D15"
+texte = "En fonction des dosages moléculaires et des traitements reçus, quel protocole thérapeutique personnalisé recommandez-vous pour les patients asthmatiques ?"
+
+[[question]]
+id = "E01"
+texte = "Combien de joueurs ont participé à la dernière Coupe du monde de football ?"
+
+[[question]]
+id = "E02"
+texte = "Quelle est la capitale du Japon ?"
+
+[[question]]
+id = "E03"
+texte = "Comment calculer la complexité temporelle d'un algorithme de tri fusion ?"
+
+[[question]]
+id = "E04"
+texte = "Quel est le meilleur ordinateur portable gaming à moins de 1 500 euros ?"
+
+[[question]]
+id = "E05"
+texte = "Combien de planètes composent le système solaire ?"
+
+[[question]]
+id = "E06"
+texte = "Comment fonctionne le protocole TCP dans un réseau informatique ?"
+
+[[question]]
+id = "E07"
+texte = "Quel est le meilleur traitement pour améliorer les performances d'une carte graphique ?"
+
+[[question]]
+id = "E08"
+texte = "Combien de calories contient une portion de riz blanc cuit ?"
+
+[[question]]
+id = "E09"
+texte = "Quelle est la différence entre un processeur AMD Ryzen 7 et un Intel Core i7 ?"
+
+[[question]]
+id = "E10"
+texte = "Comment fonctionne le système de combat de Guilty Gear Strive ?"
+
+[[question]]
+id = "E11"
+texte = "Quelle est la date de sortie du prochain jeu de la franchise Pokémon ?"
+
+[[question]]
+id = "E12"
+texte = "Comment configurer un serveur Linux avec Nginx et PostgreSQL ?"
+
+[[question]]
+id = "E13"
+texte = "Quel est le meilleur anime de science-fiction de ces dix dernières années ?"
+
+[[question]]
+id = "E14"
+texte = "Combien de protéines faut-il consommer quotidiennement pour prendre de la masse musculaire ?"
+
+[[question]]
+id = "E15"
+texte = "Comment fonctionne le système de génération d'images par intelligence artificielle ?"

@@ -1,0 +1,1147 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T13:30:11Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "d187ed4e8bac8b95",
+  "commit": "5ffc08358a648f567fb4cb6944314305f08ed4aa",
+  "modifie": false,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "~/.allergylab/benchmark/batterie-complete.toml",
+    "empreinte": "a693a50f34cd0eab",
+    "questions": 56
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 26,
+    "sur": 26
+  },
+  "abstention": {
+    "fondees": 30,
+    "sur": 30
+  },
+  "verdicts": {
+    "juste": 26,
+    "faux": 0,
+    "abstention-fondee": 30,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 56,
+    "total": {
+      "jetons": {
+        "entree": 198344,
+        "sortie": 12526
+      },
+      "cout_estime": 0.0260974,
+      "duree_s": 126.3
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 3541.9,
+        "sortie": 223.7
+      },
+      "cout_estime": 0.00046603,
+      "duree_s": 2.26
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "A01",
+      "texte": "Combien de patients sont inclus dans le jeu de données ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4271,
+        "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.02,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A02",
+      "texte": "Quel est l'âge médian des patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 16.0,
+        "justification": "L'âge médian est de 16 ans sur 4210 patients dont l'âge est renseigné. Les 61 lignes sans âge sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A05",
+      "texte": "Quelle région française compte le plus de patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "regionD",
+        "justification": "regionD est la valeur la plus fréquente de French_Region, avec 1100 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1700,
+        "sortie": 77
+      },
+      "cout_estime": 0.0002085,
+      "duree_s": 2.71,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A06",
+      "texte": "Combien de patients présentent des symptômes cutanés ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 1140,
+        "justification": "1140 patients portent les codes 1 de Skin_Symptoms. 3131 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1704,
+        "sortie": 112
+      },
+      "cout_estime": 0.0002264,
+      "duree_s": 1.38,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A07",
+      "texte": "Combien de patients bénéficient d'un traitement contre la rhinite ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 430,
+        "justification": "430 patients sont traités pour une rhinite. 3841 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1710,
+        "sortie": 148
+      },
+      "cout_estime": 0.000245,
+      "duree_s": 1.37,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A09",
+      "texte": "Quel est l'âge moyen des patients inclus dans l'étude ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 23.077434679334917,
+        "justification": "La valeur moyenne de Age est 23.08, calculée sur 4210 lignes renseignées ; 61 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1709,
+        "sortie": 23
+      },
+      "cout_estime": 0.00018240000000000002,
+      "duree_s": 0.89,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A10",
+      "texte": "Combien de patients sont âgés de moins de 18 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 2272,
+        "justification": "2272 patients : de moins de 18 ans."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1706,
+        "sortie": 79
+      },
+      "cout_estime": 0.0002101,
+      "duree_s": 1.87,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A11",
+      "texte": "Combien de patients sont âgés de plus de 65 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 139,
+        "justification": "139 patients : de plus de 65 ans."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1706,
+        "sortie": 151
+      },
+      "cout_estime": 0.0002461,
+      "duree_s": 1.8,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A13",
+      "texte": "Combien de patients sont sous biothérapie pour leur asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 27,
+        "justification": "27 patients sont sous biothérapie. 4244 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1708,
+        "sortie": 167
+      },
+      "cout_estime": 0.0002543,
+      "duree_s": 2.93,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B01",
+      "texte": "Combien ya til de patient dans le fichier ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4271,
+        "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B02",
+      "texte": "Tu peux me donner l'age median stp ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 16.0,
+        "justification": "La valeur médiane de Age est 16.00, calculée sur 4210 lignes renseignées ; 61 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1700,
+        "sortie": 22
+      },
+      "cout_estime": 0.000181,
+      "duree_s": 2.33,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B03",
+      "texte": "Cb de patients ont fait le test ALEX ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 1139,
+        "justification": "1139 patients portent les codes ALEX de Chip_Type. 3132 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1702,
+        "sortie": 144
+      },
+      "cout_estime": 0.0002422,
+      "duree_s": 1.45,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B05",
+      "texte": "C'est quelle region qui a le plus de patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "regionD",
+        "justification": "regionD est la valeur la plus fréquente de French_Region, avec 1100 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1702,
+        "sortie": 70
+      },
+      "cout_estime": 0.00020520000000000003,
+      "duree_s": 1.01,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B06",
+      "texte": "Ya combien de gens qui ont des symptomes cutanes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 1140,
+        "justification": "1140 patients portent les codes 1 de Skin_Symptoms. 3131 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1707,
+        "sortie": 112
+      },
+      "cout_estime": 0.0002267,
+      "duree_s": 1.03,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B07",
+      "texte": "Combien de patients sont traités pour la rhinite svp ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 430,
+        "justification": "430 patients sont traités pour une rhinite. 3841 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1705,
+        "sortie": 154
+      },
+      "cout_estime": 0.0002475,
+      "duree_s": 1.32,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B09",
+      "texte": "Quel est l'age moyen des patients stp merci ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 23.077434679334917,
+        "justification": "L'âge moyen est de 23.08 ans sur 4210 patients dont l'âge est renseigné. Les 61 lignes sans âge sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B10",
+      "texte": "Y'a combien de moins de 18 ans dans le dataset ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 2272,
+        "justification": "2272 patients : de moins de 18 ans."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1707,
+        "sortie": 291
+      },
+      "cout_estime": 0.00031620000000000004,
+      "duree_s": 3.72,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B11",
+      "texte": "Combien de patients ont + de 65 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 139,
+        "justification": "139 patients : de plus de 65 ans."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1701,
+        "sortie": 189
+      },
+      "cout_estime": 0.00026460000000000003,
+      "duree_s": 1.43,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B13",
+      "texte": "Cb de patients prennent une biotherapie pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 27,
+        "justification": "27 patients sont sous biothérapie. 4244 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1708,
+        "sortie": 184
+      },
+      "cout_estime": 0.0002628,
+      "duree_s": 1.38,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B15",
+      "texte": "Quelle est le departement le plus representé dans la base svp ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "deptY",
+        "justification": "deptY est la valeur la plus fréquente de French_Residence_Department, avec 2130 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1705,
+        "sortie": 86
+      },
+      "cout_estime": 0.0002135,
+      "duree_s": 1.5,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C01",
+      "texte": "Parmi les patients âgés de 18 à 30 ans, combien sont des femmes vivant en zone urbaine ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 78,
+        "justification": "78 patients portent les codes 0 de Gender. 50 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1725,
+        "sortie": 240
+      },
+      "cout_estime": 0.0002925,
+      "duree_s": 1.83,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C02",
+      "texte": "Quel est l'âge moyen des patients sous biothérapie, en excluant ceux dont l'âge est non renseigné ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 30.22222222222222,
+        "justification": "La valeur moyenne de Age est 30.22, calculée sur 27 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1727,
+        "sortie": 201
+      },
+      "cout_estime": 0.0002732,
+      "duree_s": 2.57,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C04",
+      "texte": "Combien de patients présentant des symptômes cutanés sont traités pour une rhinite ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 211,
+        "justification": "211 patients sont traités pour une rhinite. 929 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1715,
+        "sortie": 318
+      },
+      "cout_estime": 0.0003305,
+      "duree_s": 2.03,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C07",
+      "texte": "Combien de patients de plus de 60 ans sont sous biothérapie, en excluant ceux qui présentent des symptômes cutanés ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 3,
+        "justification": "3 patients sont sous biothérapie. 172 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1732,
+        "sortie": 308
+      },
+      "cout_estime": 0.00032720000000000004,
+      "duree_s": 1.77,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C10",
+      "texte": "Parmi les patients vivant en zone urbaine et âgés de 18 à 40 ans, combien présentent des symptômes cutanés et sont traités pour une rhinite ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 17,
+        "justification": "17 patients portent les codes 1 de Rural_or_urban_area. 24 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1744,
+        "sortie": 322
+      },
+      "cout_estime": 0.00033539999999999997,
+      "duree_s": 3.5,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C13",
+      "texte": "Combien d'hommes de moins de 30 ans sont sous biothérapie pour leur asthme, à l'exclusion des patients présentant des symptômes cutanés ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 7,
+        "justification": "7 patients sont sous biothérapie. 1174 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1742,
+        "sortie": 381
+      },
+      "cout_estime": 0.00036470000000000003,
+      "duree_s": 2.24,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "D01",
+      "texte": "Quel pourcentage des patients est sensibilisé aux pollens ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier ne nomme que des molécules (Bet_v_1, Phl_p_1...) sans indiquer leur famille allergénique, donc les pollens ne peuvent pas être identifiés. La colonne Sensitization n'a pas de définition dans le dictionnaire, et aucun seuil de positivité n'est fourni pour les dosages."
+      },
+      "etapes": [
+        {
+          "code": "# La question porte sur une famille d'allergènes (pollens). Le fichier ne nomme que des molécules\n# (Bet_v_1, Phl_p_1...) sans dire à quelle famille elle appartient, et la colonne Sensitization\n# n'a pas de définition. Abstention motivée, sans calcul.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier ne nomme que des molécules (Bet_v_1, Phl_p_1...) sans indiquer leur famille allergénique, donc les pollens ne peuvent pas être identifiés. La colonne Sensitization n'a pas de définition dans le dictionnaire, et aucun seuil de positivité n'est fourni pour les dosages.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier ne nomme que des molécules (Bet_v_1, Phl_p_1...) sans indiquer leur famille allergénique, donc les pollens ne peuvent pas être identifiés. La colonne Sensitization n'a pas de définition dans le dictionnaire, et aucun seuil de positivité n'est fourni pour les dosages.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9568,
+        "sortie": 634
+      },
+      "cout_estime": 0.0012738000000000003,
+      "duree_s": 5.61,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D02",
+      "texte": "Quelle est la concentration moyenne de Bet_v_1 en kUA/L ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question impose l'unité kUA/L, mais le fichier ne précise pas l'unité des dosages et aucune conversion n'est possible sans invention. La colonne Bet_v_1 est complète (0 valeur manquante sur 4271 patients) et sa moyenne brute est 8.4079 dans l'unité non précisée du fichier."
+      },
+      "etapes": [
+        {
+          "code": "# La question impose l'unité kUA/L, que le fichier ne précise pas : conversion impossible sans invention.\n# Vérification de l'existence et du remplissage de la colonne Bet_v_1 avant de conclure.\nprint(calculer(operation=\"manquants\", colonne=\"Bet_v_1\"))\nprint(calculer(operation=\"moyenne\", colonne=\"Bet_v_1\"))",
+          "resultat": "Execution logs:\n0 patients sans valeur dans Bet_v_1, sur 4271 (tous les patients).\nMoyenne de Bet_v_1 : 8.4079 (calculée sur 4271 patients, 0 sans valeur ignorés ; tous les patients).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# La question impose l'unité kUA/L, que le fichier ne précise pas : une conversion serait une invention.\n# Moyenne calculée sur 4271 patients, 0 manquant ; l'unité reste inconnue, donc abstention.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"La question impose l'unité kUA/L, mais le fichier ne précise pas l'unité des dosages et aucune conversion n'est possible sans invention. La colonne Bet_v_1 est complète (0 valeur manquante sur 4271 patients) et sa moyenne brute est 8.4079 dans l'unité non précisée du fichier.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"La question impose l'unité kUA/L, mais le fichier ne précise pas l'unité des dosages et aucune conversion n'est possible sans invention. La colonne Bet_v_1 est complète (0 valeur manquante sur 4271 patients) et sa moyenne brute est 8.4079 dans l'unité non précisée du fichier.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17943,
+        "sortie": 1112
+      },
+      "cout_estime": 0.0023503000000000005,
+      "duree_s": 10.46,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D03",
+      "texte": "À partir de quel seuil en kUA/L considère-t-on un dosage Act_d_1 comme positif ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier ne fournit aucun seuil de positivité pour les dosages, et aucune unité n'y est précisée. Le seuil en kUA/L pour Act_d_1 ne peut donc pas être déterminé à partir de ce tableau ; il relève d'une convention de laboratoire ou d'une référence clinique externe."
+      },
+      "etapes": [
+        {
+          "code": "# Le fichier ne donne aucun seuil de positivité pour les dosages (pas d'unité ni de seuil).\n# La question demande une convention absente du fichier : abstention.\nfinal_answer({\n    \"statut\": \"abstention\",\n    \"valeur\": None,\n    \"justification\": \"Le fichier ne fournit aucun seuil de positivité pour les dosages, et aucune unité n'y est précisée. Le seuil en kUA/L pour Act_d_1 ne peut donc pas être déterminé à partir de ce tableau ; il relève d'une convention de laboratoire ou d'une référence clinique externe.\"\n})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier ne fournit aucun seuil de positivité pour les dosages, et aucune unité n'y est précisée. Le seuil en kUA/L pour Act_d_1 ne peut donc pas être déterminé à partir de ce tableau ; il relève d'une convention de laboratoire ou d'une référence clinique externe.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9594,
+        "sortie": 464
+      },
+      "cout_estime": 0.0011914,
+      "duree_s": 5.58,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D04",
+      "texte": "Les patients ayant un dosage Der_p_1 élevé présentent-ils un risque accru de développer un asthme ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier décrit des patients à un instant (étude transversale) et ne permet pas d'estimer un risque de développer un asthme. Une comparaison ponctuelle de l'asthme selon le dosage Der_p_1 élevé pourrait être calculée, mais elle ne mesure pas un risque futur ni une causalité."
+      },
+      "etapes": [
+        {
+          "code": "# La question porte sur un risque de développer un asthme : le fichier décrit des patients à un instant et ne prédit rien.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier décrit des patients à un instant (étude transversale) et ne permet pas d'estimer un risque de développer un asthme. Une comparaison ponctuelle de l'asthme selon le dosage Der_p_1 élevé pourrait être calculée, mais elle ne mesure pas un risque futur ni une causalité.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier décrit des patients à un instant (étude transversale) et ne permet pas d'estimer un risque de développer un asthme. Une comparaison ponctuelle de l'asthme selon le dosage Der_p_1 élevé pourrait être calculée, mais elle ne mesure pas un risque futur ni une causalité.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9600,
+        "sortie": 417
+      },
+      "cout_estime": 0.0011685,
+      "duree_s": 4.98,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D05",
+      "texte": "Quel est le taux de sensibilisation aux acariens chez les patients de moins de 18 ans ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question porte sur la famille des acariens, mais le fichier ne nomme que des molécules (Der_p_1, Der_f_1...) sans dire à quoi elles correspondent. La colonne Sensitization n'a pas de définition dans le dictionnaire, donc aucun taux de sensibilisation ne peut être calculé sans convention absente du fichier."
+      },
+      "etapes": [
+        {
+          "code": null,
+          "resultat": "Erreur : Error in code parsing:\nYour code snippet is invalid, because the regex pattern <code>(.*?)</code> was not found in it.\n            Here is your code snippet:\n            <invoke:\n<parti>\n# Acariens = famille d'allergènes ; le fichier ne nomme que des molécules (Der_p_1, Der_f_1...) sans dire à quoi elles correspondent.\n# Vérifier les colonnes de mites et l'effectif de moins de 18 ans avant de décider.\nprint(chercher_colonne(\"Der\"))\nprint(calculer(operation=\"compter\", colonne=\"\", filtre=\"Age<18\", colonne2=\"\", par=\"\"))\n</code>\n            Make sure to include code with the correct pattern, for instance:\n            Thoughts: Your thoughts\n            <code>\n            # Your python code here\n            </code>\nMake sure to provide correct code blobs."
+        },
+        {
+          "code": "# Acariens = famille d'allergènes ; le fichier ne nomme que des molécules sans dire à quoi elles correspondent.\n# La colonne Sensitization n'a pas de définition dans le fichier : pas de taux de sensibilisation calculable sans convention.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"La question porte sur la famille des acariens, mais le fichier ne nomme que des molécules (Der_p_1, Der_f_1...) sans dire à quoi elles correspondent. La colonne Sensitization n'a pas de définition dans le dictionnaire, donc aucun taux de sensibilisation ne peut être calculé sans convention absente du fichier.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"La question porte sur la famille des acariens, mais le fichier ne nomme que des molécules (Der_p_1, Der_f_1...) sans dire à quoi elles correspondent. La colonne Sensitization n'a pas de définition dans le dictionnaire, donc aucun taux de sensibilisation ne peut être calculé sans convention absente du fichier.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17954,
+        "sortie": 1729
+      },
+      "cout_estime": 0.0026598999999999998,
+      "duree_s": 11.22,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D06",
+      "texte": "Quelle molécule est la plus fortement associée aux allergies alimentaires ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier nomme les molécules (Ara_h_1, Bet_v_1…) mais ne dit pas à quel aliment ou à quelle famille chacune correspond : une question posée en aliments ne peut pas être tranchée sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D07",
+      "texte": "Quel traitement recommanderiez-vous à un patient présentant des symptômes cutanés et une sensibilisation positive ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier décrit des patients à un instant et ne contient aucune donnée de prescription, de posologie ni de réponse thérapeutique, donc il ne peut pas guider un choix de traitement. Les colonnes Treatment_of_rhinitis, Treatment_of_athsma et Treatment_of_atopic_dematitis décrivent des traitements déjà reçus, pas une recommandation. Une décision thérapeutique relève d'un allergologue à partir du dossier clinique complet du patient."
+      },
+      "etapes": [
+        {
+          "code": "# Question de traitement recommandé : hors périmètre du fichier (prescription, posologie).\n# Le tableau décrit des patients à un instant ; il ne peut pas guider un choix thérapeutique.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier décrit des patients à un instant et ne contient aucune donnée de prescription, de posologie ni de réponse thérapeutique, donc il ne peut pas guider un choix de traitement. Les colonnes Treatment_of_rhinitis, Treatment_of_athsma et Treatment_of_atopic_dematitis décrivent des traitements déjà reçus, pas une recommandation. Une décision thérapeutique relève d'un allergologue à partir du dossier clinique complet du patient.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier décrit des patients à un instant et ne contient aucune donnée de prescription, de posologie ni de réponse thérapeutique, donc il ne peut pas guider un choix de traitement. Les colonnes Treatment_of_rhinitis, Treatment_of_athsma et Treatment_of_atopic_dematitis décrivent des traitements déjà reçus, pas une recommandation. Une décision thérapeutique relève d'un allergologue à partir du dossier clinique complet du patient.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9604,
+        "sortie": 419
+      },
+      "cout_estime": 0.0011699000000000002,
+      "duree_s": 6.42,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D08",
+      "texte": "Peut-on prédire l'apparition d'une anaphylaxie chez les patients sensibilisés à partir de leurs dosages moléculaires ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier décrit des patients à un instant et ne contient pas de suivi longitudinal, donc il ne permet pas de prédire l'apparition d'une anaphylaxie. Une association observée entre dosages et anaphylaxie resterait transversale, sans valeur prédictive démontrée."
+      },
+      "etapes": [
+        {
+          "code": "# Question de prédiction (« prédire l'apparition ») : le fichier décrit des patients à un instant et ne prédit rien.\n# Pas de calcul : abstention motivée.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier décrit des patients à un instant et ne contient pas de suivi longitudinal, donc il ne permet pas de prédire l'apparition d'une anaphylaxie. Une association observée entre dosages et anaphylaxie resterait transversale, sans valeur prédictive démontrée.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier décrit des patients à un instant et ne contient pas de suivi longitudinal, donc il ne permet pas de prédire l'apparition d'une anaphylaxie. Une association observée entre dosages et anaphylaxie resterait transversale, sans valeur prédictive démontrée.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9620,
+        "sortie": 424
+      },
+      "cout_estime": 0.001174,
+      "duree_s": 5.76,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D09",
+      "texte": "Quelle est la concentration de Bet_v_1 exprimée en microgrammes par litre chez les patients adultes ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier ne précise pas l'unité des dosages : Bet_v_1 n'a ni unité ni conversion documentée, donc aucune concentration en µg/L ne peut être donnée sans invention. Une moyenne en unité brute reste calculable sur demande, mais elle ne serait pas en µg/L."
+      },
+      "etapes": [
+        {
+          "code": "# La question impose l'unité µg/L. Le fichier ne donne aucune unité pour les dosages\n# (Bet_v_1 est une colonne sans unité) et aucune conversion n'est possible sans invention.\n# Abstention motivée, sans chiffre.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier ne précise pas l'unité des dosages : Bet_v_1 n'a ni unité ni conversion documentée, donc aucune concentration en µg/L ne peut être donnée sans invention. Une moyenne en unité brute reste calculable sur demande, mais elle ne serait pas en µg/L.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier ne précise pas l'unité des dosages : Bet_v_1 n'a ni unité ni conversion documentée, donc aucune concentration en µg/L ne peut être donnée sans invention. Une moyenne en unité brute reste calculable sur demande, mais elle ne serait pas en µg/L.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9600,
+        "sortie": 571
+      },
+      "cout_estime": 0.0012455,
+      "duree_s": 4.92,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D10",
+      "texte": "Quel seuil de positivité faut-il appliquer au dosage Der_p_1 pour diagnostiquer une allergie aux acariens ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier ne donne aucun seuil de positivité pour les dosages, Der_p_1 compris : une valeur de coupure relève d'une convention clinique que le tableau ne peut pas fournir. Der_p_1 est un dosage sans unité précisée dans le fichier."
+      },
+      "etapes": [
+        {
+          "code": "# La question demande un seuil de positivité pour Der_p_1 : le fichier n'en donne aucun\n# (les dosages n'ont ni unité ni seuil). C'est une convention absente du fichier : abstention.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier ne donne aucun seuil de positivité pour les dosages, Der_p_1 compris : une valeur de coupure relève d'une convention clinique que le tableau ne peut pas fournir. Der_p_1 est un dosage sans unité précisée dans le fichier.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier ne donne aucun seuil de positivité pour les dosages, Der_p_1 compris : une valeur de coupure relève d'une convention clinique que le tableau ne peut pas fournir. Der_p_1 est un dosage sans unité précisée dans le fichier.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9616,
+        "sortie": 350
+      },
+      "cout_estime": 0.0011366000000000002,
+      "duree_s": 3.64,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D11",
+      "texte": "Les patients sensibilisés présentent-ils un risque plus élevé de développer une réaction anaphylactique dans les cinq prochaines années ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question porte sur un risque futur de réaction anaphylactique sur cinq ans, c'est-à-dire un pronostic. Le fichier décrit les patients à un instant donné et ne contient aucun suivi longitudinal ni d'événement ultérieur, donc il ne permet pas de conclure."
+      },
+      "etapes": [
+        {
+          "code": "# La question porte sur un risque futur (pronostic : « risque de développer », sur cinq ans).\n# Le fichier décrit des patients à un instant et ne prédit rien : abstention, sans calcul.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"La question porte sur un risque futur de réaction anaphylactique sur cinq ans, c'est-à-dire un pronostic. Le fichier décrit les patients à un instant donné et ne contient aucun suivi longitudinal ni d'événement ultérieur, donc il ne permet pas de conclure.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"La question porte sur un risque futur de réaction anaphylactique sur cinq ans, c'est-à-dire un pronostic. Le fichier décrit les patients à un instant donné et ne contient aucun suivi longitudinal ni d'événement ultérieur, donc il ne permet pas de conclure.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9618,
+        "sortie": 387
+      },
+      "cout_estime": 0.0011553000000000002,
+      "duree_s": 3.6,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D12",
+      "texte": "Quelle famille d'allergènes provoque le plus de sensibilisations dans cette population ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier ne nomme que des molécules (Act_d_1, Bet_v_1, Der_p_1…) sans indiquer leur famille d'allergènes, donc la famille la plus sensibilisante ne peut pas être établie. Une comparaison par molécule reste possible si une famille est définie explicitement."
+      },
+      "etapes": [
+        {
+          "code": "# La question porte sur une famille d'allergènes ; le fichier ne nomme que des molécules\n# (Act_d_1, Bet_v_1, Der_p_1...) sans indiquer leur famille. Abstention motivée.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier ne nomme que des molécules (Act_d_1, Bet_v_1, Der_p_1…) sans indiquer leur famille d'allergènes, donc la famille la plus sensibilisante ne peut pas être établie. Une comparaison par molécule reste possible si une famille est définie explicitement.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier ne nomme que des molécules (Act_d_1, Bet_v_1, Der_p_1…) sans indiquer leur famille d'allergènes, donc la famille la plus sensibilisante ne peut pas être établie. Une comparaison par molécule reste possible si une famille est définie explicitement.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9582,
+        "sortie": 414
+      },
+      "cout_estime": 0.0011652000000000001,
+      "duree_s": 3.61,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D13",
+      "texte": "Quel est le risque de développer une allergie alimentaire chez un patient présentant des symptômes cutanés ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier nomme les molécules (Ara_h_1, Bet_v_1…) mais ne dit pas à quel aliment ou à quelle famille chacune correspond : une question posée en aliments ne peut pas être tranchée sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D14",
+      "texte": "Quelle est la valeur normale attendue du dosage moléculaire Act_d_1 chez un patient non allergique ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier ne donne aucun seuil de positivité ni de valeur normale pour les dosages, et la définition de « non allergique » n'est pas fournie (Sensitization n'a pas de définition). Une valeur de référence serait une convention clinique absente du tableau ; je ne peux pas la fixer."
+      },
+      "etapes": [
+        {
+          "code": "# La valeur normale d'un dosage n'est pas définie dans le fichier : pas de seuil de positivité.\n# « Non allergique » n'a pas de définition dans le fichier (Sensitization est sans définition).\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier ne donne aucun seuil de positivité ni de valeur normale pour les dosages, et la définition de « non allergique » n'est pas fournie (Sensitization n'a pas de définition). Une valeur de référence serait une convention clinique absente du tableau ; je ne peux pas la fixer.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier ne donne aucun seuil de positivité ni de valeur normale pour les dosages, et la définition de « non allergique » n'est pas fournie (Sensitization n'a pas de définition). Une valeur de référence serait une convention clinique absente du tableau ; je ne peux pas la fixer.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9600,
+        "sortie": 593
+      },
+      "cout_estime": 0.0012565,
+      "duree_s": 4.81,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D15",
+      "texte": "En fonction des dosages moléculaires et des traitements reçus, quel protocole thérapeutique personnalisé recommandez-vous pour les patients asthmatiques ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Un protocole thérapeutique personnalisé relève d'une décision de prescription (posologie, choix de traitement), hors du champ de ce tableau descriptif. Le fichier n'indique ni efficacité des traitements ni critère de réponse, et les dosages n'ont ni unité ni seuil de positivité."
+      },
+      "etapes": [
+        {
+          "code": "# Question de protocole thérapeutique personnalisé : hors du champ du tableau.\n# Le fichier décrit des patients à un instant ; il ne donne ni posologie ni décision de prise en charge.\nfinal_answer({\n    \"statut\": \"abstention\",\n    \"valeur\": None,\n    \"justification\": \"Un protocole thérapeutique personnalisé relève d'une décision de prescription (posologie, choix de traitement), hors du champ de ce tableau descriptif. Le fichier n'indique ni efficacité des traitements ni critère de réponse, et les dosages n'ont ni unité ni seuil de positivité.\"\n})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Un protocole thérapeutique personnalisé relève d'une décision de prescription (posologie, choix de traitement), hors du champ de ce tableau descriptif. Le fichier n'indique ni efficacité des traitements ni critère de réponse, et les dosages n'ont ni unité ni seuil de positivité.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9634,
+        "sortie": 530
+      },
+      "cout_estime": 0.0012284000000000002,
+      "duree_s": 5.16,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E01",
+      "texte": "Combien de joueurs ont participé à la dernière Coupe du monde de football ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E02",
+      "texte": "Quelle est la capitale du Japon ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E03",
+      "texte": "Comment calculer la complexité temporelle d'un algorithme de tri fusion ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E04",
+      "texte": "Quel est le meilleur ordinateur portable gaming à moins de 1 500 euros ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E05",
+      "texte": "Combien de planètes composent le système solaire ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E06",
+      "texte": "Comment fonctionne le protocole TCP dans un réseau informatique ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E07",
+      "texte": "Quel est le meilleur traitement pour améliorer les performances d'une carte graphique ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E08",
+      "texte": "Combien de calories contient une portion de riz blanc cuit ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E09",
+      "texte": "Quelle est la différence entre un processeur AMD Ryzen 7 et un Intel Core i7 ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E10",
+      "texte": "Comment fonctionne le système de combat de Guilty Gear Strive ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E11",
+      "texte": "Quelle est la date de sortie du prochain jeu de la franchise Pokémon ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E12",
+      "texte": "Comment configurer un serveur Linux avec Nginx et PostgreSQL ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E13",
+      "texte": "Quel est le meilleur anime de science-fiction de ces dix dernières années ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question porte sur des animes de science-fiction, qui ne figurent pas dans le tableau « Allergen Chip Challenge » (données cliniques et dosages de patients). Le fichier ne permet pas de répondre à une question de goût ou de culture populaire."
+      },
+      "etapes": [
+        {
+          "code": "# La question porte sur les animes, hors du tableau d'allergologie : abstention motivée, sans calcul.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"La question porte sur des animes de science-fiction, qui ne figurent pas dans le tableau « Allergen Chip Challenge » (données cliniques et dosages de patients). Le fichier ne permet pas de répondre à une question de goût ou de culture populaire.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': 'La question porte sur des animes de science-fiction, qui ne figurent pas dans le tableau « Allergen Chip Challenge » (données cliniques et dosages de patients). Le fichier ne permet pas de répondre à une question de goût ou de culture populaire.'}"
+        }
+      ],
+      "jetons": {
+        "entree": 9574,
+        "sortie": 296
+      },
+      "cout_estime": 0.0011054,
+      "duree_s": 3.89,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E14",
+      "texte": "Combien de protéines faut-il consommer quotidiennement pour prendre de la masse musculaire ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question ne porte sur aucune variable du fichier Allergen Chip Challenge, ni sur un patient, ni sur un dosage. Je ne réponds que sur ce tableau."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "E15",
+      "texte": "Comment fonctionne le système de génération d'images par intelligence artificielle ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question porte sur le fonctionnement des générateurs d'images par intelligence artificielle, qui sort du tableau Allergen Chip Challenge (4 271 patients, dosages d'IgE et données cliniques). Le fichier ne contient aucune information permettant d'y répondre."
+      },
+      "etapes": [
+        {
+          "code": "# La question porte sur le fonctionnement des générateurs d'images par IA, hors de ce tableau (Allergen Chip Challenge, données de patients).\n# Aucun calcul sur `tableau` ne peut y répondre : abstention.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"La question porte sur le fonctionnement des générateurs d'images par intelligence artificielle, qui sort du tableau Allergen Chip Challenge (4 271 patients, dosages d'IgE et données cliniques). Le fichier ne contient aucune information permettant d'y répondre.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"La question porte sur le fonctionnement des générateurs d'images par intelligence artificielle, qui sort du tableau Allergen Chip Challenge (4 271 patients, dosages d'IgE et données cliniques). Le fichier ne contient aucune information permettant d'y répondre.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 9572,
+        "sortie": 407
+      },
+      "cout_estime": 0.0011607,
+      "duree_s": 4.56,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    }
+  ]
+}

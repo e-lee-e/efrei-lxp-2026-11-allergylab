@@ -53,6 +53,12 @@ def test_positifs_avec_seuil(tableau):
     assert "3 mesurés" in reponse["justification"]
 
 
+def test_positifs_au_dessus_de(tableau):
+    """La docstring de la route donne « au-dessus de 0,3 » : le motif doit l'accepter."""
+    assert router("Combien de patients sont positifs à Bet_v_1 au-dessus de 0,3 ?", tableau)["valeur"] == 2
+    assert router("Combien de patients sont positifs à Bet_v_1 supérieurs à 0,3 ?", tableau)["valeur"] == 2
+
+
 def test_positifs_sans_seuil_escalade(tableau):
     # Sans seuil écrit dans la question, la réponse serait un choix que la question ne fait pas.
     assert router("Combien de patients sont positifs à Bet_v_1 ?", tableau) is None
@@ -148,6 +154,24 @@ def test_comparaison_au_reste_du_tableau():
     reponse = router("les femmes sont-elles plus souvent sensibilisées ?", _tableau_comparaison())
     assert reponse["valeur"] == "oui"
     assert "autres patients" in reponse["justification"]
+
+
+def test_une_comparaison_negative_repond_dans_le_bon_sens():
+    """« moins souvent » n'est pas « plus souvent » : le mot était pris pour du bruit."""
+    tableau = _tableau_comparaison()  # femmes 75 %, hommes 50 %
+    assert router("les femmes sont moins souvent sensibilisées que les hommes ?", tableau)["valeur"] == "non"
+    assert router("les hommes sont moins souvent sensibilisés que les femmes ?", tableau)["valeur"] == "oui"
+
+
+def test_une_comparaison_negative_au_reste_donne_le_bon_sens():
+    assert router("les femmes sont moins souvent sensibilisées ?", _tableau_comparaison())["valeur"] == "non"
+    assert router("les hommes sont moins souvent sensibilisés ?", _tableau_comparaison())["valeur"] == "oui"
+
+
+def test_un_au_moins_n_est_pas_un_moins():
+    """« au moins aussi souvent » n'est pas un comparatif négatif."""
+    reponse = router("les femmes sont au moins aussi souvent sensibilisées que les hommes ?", _tableau_comparaison())
+    assert reponse["valeur"] == "oui"
 
 
 def test_escalade_un_groupe_inconnu():

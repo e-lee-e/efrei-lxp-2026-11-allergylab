@@ -21,8 +21,10 @@ l'agent complet, qui coûte plus cher mais sait se débrouiller.
 import json
 import re
 
+import pandas as pd
+
 from equipe.cache import normaliser
-from equipe.outils._filtre import appliquer, colonne_connue
+from equipe.outils._filtre import appliquer, codes_de, colonne_connue, renseignes
 from equipe.outils.champs import NON_RENSEIGNE, codes as _codes, texte as _texte
 from kit import modele
 
@@ -38,6 +40,10 @@ OPERATIONS = (
     "valeur_dominante",
     "effectifs_deux",
 )
+
+# Le traducteur répond en 0,8 à 2,1 s. Un plafond explicite borne un appel bloqué
+# côté API ; sans lui, cette couche n'avait aucun délai.
+DELAI_MAX = 20.0
 
 CONSIGNE = """Tu traduis une question en une requête JSON. Tu ne réponds à aucune
 question et tu ne calcules rien.
@@ -101,14 +107,25 @@ d'allergènes, seuil de positivité, recommandation, pronostic), réponds
 
 
 def _extraire_json(texte):
-    """Le premier objet JSON de la réponse, ou None."""
-    trouve = re.search(r"\{.*\}", str(texte), re.S)
-    if not trouve:
-        return None
-    try:
-        return json.loads(trouve.group(0))
-    except json.JSONDecodeError:
-        return None
+    """Le premier objet JSON de la réponse, ou None.
+
+    `raw_decode` est essayé à chaque accolade : une réponse qui contient deux
+    objets, ou un objet dans du texte, rend le premier objet valide au lieu de
+    rien. Un motif gourmand `\\{.*\\}` prenait le premier « { » et le dernier
+    « } », ce qui ne parse pas et faisait escalader une question déjà traduite.
+    """
+    texte = str(texte)
+    decodeur = json.JSONDecoder()
+    for position, caractere in enumerate(texte):
+        if caractere != "{":
+            continue
+        try:
+            objet, _ = decodeur.raw_decode(texte[position:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(objet, dict):
+            return objet
+    return None
 
 
 # Colonnes numériques : les traiter comme des groupes de codes fabriquerait des
@@ -152,6 +169,36 @@ def _filtrer(tableau, filtre):
     return tableau
 
 
+def _codes_observes(tableau, colonne):
+    """Les codes réellement présents dans la colonne, 9 compris, en minuscules."""
+    observes = set()
+    for portes in tableau[colonne].map(codes_de):
+        observes |= {str(code).strip().casefold() for code in portes}
+    return observes
+
+
+def _codes_existent(tableau, colonne, codes):
+    """Chaque code demandé existe dans la colonne, et aucun n'est le 9.
+
+    Le 9 est refusé comme groupe : `_lignes_du_groupe` l'écarte par principe,
+    donc une requête le demandant rendrait « 0 patient » avec aplomb. Une
+    question sur le non-renseigné escalade vers l'agent, qui sait la traiter.
+    """
+    demandes = [str(code).strip() for code in codes]
+    if not demandes or NON_RENSEIGNE in demandes:
+        return False
+    observes = _codes_observes(tableau, colonne)
+    return bool(observes) and all(code.casefold() in observes for code in demandes)
+
+
+def _codes_du_filtre(filtre):
+    """Les couples (colonne, codes) des seules conditions « colonne dans … »."""
+    for condition in re.split(r"\s+et\s+", str(filtre), flags=re.IGNORECASE):
+        lue = re.fullmatch(r"\s*(\w+)\s+dans\s+(.+?)\s*", condition, re.IGNORECASE)
+        if lue:
+            yield lue.group(1), [morceau for morceau in re.split(r"[,;/\s]+", lue.group(2)) if morceau]
+
+
 def _valider(requete, tableau):
     """Vérifie que la requête ne désigne que des choses qui existent. Rend None si non."""
     if not isinstance(requete, dict):
@@ -162,15 +209,34 @@ def _valider(requete, tableau):
 
     # Un filtre se vérifie en l'appliquant : une colonne inconnue ou une
     # comparaison interdite fait escalader, elle ne produit pas une réponse fausse.
+    # Les codes d'un « dans » et d'un « = » sur une colonne codée se vérifient
+    # contre la colonne : un code inventé donnerait un compte de zéro.
     filtre = requete.get("filtre")
     if filtre not in (None, ""):
         try:
             _filtrer(tableau, filtre)
         except (ValueError, TypeError, KeyError):
             return None
+        for nom, codes in _codes_du_filtre(filtre):
+            # « dans » sur une colonne numérique est un jeu de valeurs (des âges,
+            # des seuils) : une valeur absente vaut zéro patient, ce n'est pas un
+            # code inventé. Sur une colonne codée, un code absent est refusé.
+            if nom in tableau.columns and not pd.api.types.is_numeric_dtype(tableau[nom]):
+                if not _codes_existent(tableau, nom, codes):
+                    return None
+        for condition in re.split(r"\s+et\s+", str(filtre), flags=re.IGNORECASE):
+            simple = re.fullmatch(r"\s*(\w+)\s*(=|!=)\s*(\w+)\s*", condition)
+            if simple:
+                nom, _, valeur = simple.groups()
+                if nom in tableau.columns and not pd.api.types.is_numeric_dtype(tableau[nom]):
+                    if not _codes_existent(tableau, nom, [valeur]):
+                        return None
 
     def colonne_valide(nom):
         return isinstance(nom, str) and nom in tableau.columns
+
+    def codes_valides(nom, codes):
+        return colonne_valide(nom) and isinstance(codes, list) and _codes_existent(tableau, nom, codes)
 
     if operation in ("compter_lignes",):
         return requete
@@ -181,9 +247,9 @@ def _valider(requete, tableau):
     if operation == "effectifs_deux":
         if not colonne_valide(requete.get("colonne")) or requete.get("colonne") in COLONNES_NUMERIQUES:
             return None
-        if not isinstance(requete.get("codes"), list) or not requete["codes"]:
+        if not codes_valides(requete.get("colonne"), requete.get("codes")):
             return None
-        if not isinstance(requete.get("codes_b"), list) or not requete["codes_b"]:
+        if not codes_valides(requete.get("colonne"), requete.get("codes_b")):
             return None
         return requete
     if operation in ("effectif_groupe", "taux_groupe", "comparer_groupes"):
@@ -191,18 +257,20 @@ def _valider(requete, tableau):
             return None
         if requete.get("colonne") in COLONNES_NUMERIQUES:
             return None  # un seuil sur un âge n'est pas un groupe de codes
-        codes_du_groupe = requete.get("codes")
-        if not isinstance(codes_du_groupe, list) or not codes_du_groupe:
+        if not codes_valides(requete.get("colonne"), requete.get("codes")):
             return None
         if operation == "comparer_groupes":
             if not colonne_valide(requete.get("colonne_b")):
                 return None
             if requete.get("colonne_b") in COLONNES_NUMERIQUES:
                 return None
-            if not isinstance(requete.get("codes_b"), list) or not requete.get("codes_b"):
+            if not codes_valides(requete.get("colonne_b"), requete.get("codes_b")):
                 return None
-        if operation == "taux_groupe" and not colonne_valide(requete.get("cible")):
-            return None
+        if operation == "taux_groupe":
+            if not colonne_valide(requete.get("cible")):
+                return None
+            if not _codes_existent(tableau, requete["cible"], [requete.get("code_cible", "1")]):
+                return None
         return requete
     return None
 
@@ -270,43 +338,86 @@ def _rappeler_les_groupes(question, requete, dico=None):
 # Conditions que le modèle ajoute pour « exclure les âges non renseignés » : elles
 # jettent des patients réels (26 nouveau-nés à 0 an, 157 enfants de 9 ans) et
 # faussent la valeur. Mesuré sur C02 : 31,04 au lieu de 30,22.
-CONDITIONS_FAUTIVES = {"age>0", "age>=0", "age!=9", "age<9"}
+# « Age>0 » et « Age>=0 » ne peuvent être qu'un manquant déguisé : aucune question
+# réelle ne demande « plus de 0 an ». « Age!=9 » et « Age<9 » sont ambigus : ce sont
+# aussi de vraies questions (« moins de 9 ans »), et les retirer seuls faisait
+# répondre sur tout le tableau (4 271 au lieu de 1 000, mesuré). Ils ne partent que
+# si une autre borne d'âge rend la condition redondante ou contradictoire.
+MANQUANT_DEGUISE = {"age>0", "age>=0"}
+BORNE_AGE = re.compile(r"^age(<=|>=|<|>|=)(\d+)$")
+
+
+def _exclut_neuf(condition):
+    """Vrai si cette condition d'âge écarte déjà les patients de 9 ans."""
+    lue = BORNE_AGE.fullmatch(condition)
+    if not lue:
+        return False
+    operateur, nombre = lue.group(1), int(lue.group(2))
+    if operateur == ">":
+        return nombre >= 9
+    if operateur == ">=":
+        return nombre > 9
+    if operateur == "<":
+        return nombre <= 9
+    if operateur == "<=":
+        return nombre < 9
+    return nombre != 9  # « = N »
+
+
+def _au_moins_neuf(condition):
+    """Vrai si cette condition impose déjà au moins 9 ans."""
+    lue = BORNE_AGE.fullmatch(condition)
+    if not lue:
+        return False
+    operateur, nombre = lue.group(1), int(lue.group(2))
+    return (operateur == ">=" and nombre >= 9) or (operateur == ">" and nombre >= 8)
 
 
 def _retirer_conditions_fautives(filtre):
-    """Enlève du filtre les conditions qui n'excluent pas un manquant mais un âge réel."""
+    """Enlève les conditions d'âge qui ne peuvent pas être une vraie question, ou qui doublent une autre borne."""
     if not isinstance(filtre, str) or not filtre.strip():
         return filtre
-    morceaux = re.split(r"(\s+et\s+)", filtre, flags=re.IGNORECASE)
-    gardes = []
-    for position, morceau in enumerate(morceaux):
-        if position % 2 == 0 and re.sub(r"\s+", "", morceau).lower() in CONDITIONS_FAUTIVES:
+    conditions = [morceau.strip() for morceau in re.split(r"\s+et\s+", filtre, flags=re.IGNORECASE) if morceau.strip()]
+    simples = [re.sub(r"\s+", "", condition).lower() for condition in conditions]
+    gardees = []
+    for condition, simple in zip(conditions, simples):
+        if simple in MANQUANT_DEGUISE:
             continue
-        gardes.append(morceau)
-    # Un séparateur orphelin reste après la dernière condition retirée.
-    while gardes and re.fullmatch(r"\s+et\s+", gardes[-1], flags=re.IGNORECASE):
-        gardes.pop()
-    reste = "".join(gardes).strip()
-    return reste or None
+        autres = [autre for autre in simples if autre != simple]
+        if simple == "age!=9" and any(_exclut_neuf(autre) for autre in autres):
+            continue
+        if simple == "age<9" and any(_au_moins_neuf(autre) for autre in autres):
+            continue
+        gardees.append(condition)
+    return " et ".join(gardees) or None
 
 
-def traduire(question, modele_local=None, dico=None):
+def traduire(question, modele_local=None, dico=None, delai=DELAI_MAX):
     """La requête canonique, vérifiée, ou None si le modèle n'a pas su la produire.
 
     `dico` est le dictionnaire de l'utilisateur : il nomme les codes de son fichier,
     et le prompt le reçoit tel quel. Sans lui, seuls les groupes du projet existent.
+
+    `delai` borne l'appel : le traducteur répond en 0,8 à 2,1 s, et sans plafond
+    un appel bloqué côté API n'était borné par rien — le délai maison de l'agent
+    ne couvre que le `CodeAgent`.
     """
     from smolagents.models import ChatMessage
 
     modele_local = modele_local or modele.ModeleKit()
+    options = {
+        # 700 et non 400 : le raisonnement interne du modèle mange la sortie, et à
+        # 400 le JSON arrivait coupé, ce qui faisait escalader des questions traduisibles.
+        "max_tokens": 700,
+    }
+    if delai:
+        options["timeout"] = float(delai)
     reponse = modele_local.generate(
         [
             ChatMessage(role="system", content=CONSIGNE),
             ChatMessage(role="user", content=question + _bloc_dico(dico)),
         ],
-        # 700 et non 400 : le raisonnement interne du modèle mange la sortie, et à
-        # 400 le JSON arrivait coupé, ce qui faisait escalader des questions traduisibles.
-        max_tokens=700,
+        **options,
     )
     requete = _extraire_json(reponse.content)
     if not requete:
@@ -472,7 +583,10 @@ def executer(requete, tableau):
 
     if operation == "repartition":
         colonne = requete["colonne"]
-        valeurs = tableau[colonne].map(_texte).dropna()
+        # 9 n'est pas une valeur : la répartition porte sur les lignes renseignées,
+        # comme les taux. Sans ça, « la répartition des traitements » affichait
+        # « 9 : 2771 » et la justification disait « 0 ligne sans valeur ».
+        valeurs = tableau[colonne].map(_texte)[renseignes(tableau, colonne)].dropna()
         if valeurs.empty:
             return None
         compte = valeurs.value_counts()
@@ -483,12 +597,12 @@ def executer(requete, tableau):
         return _reponse(
             texte,
             f"Sur {len(valeurs)} lignes renseignées : {texte}. "
-            f"{len(tableau) - len(valeurs)} lignes sans valeur sont exclues.",
+            f"{len(tableau) - len(valeurs)} lignes sans valeur ou non renseignées sont exclues.",
         )
 
     if operation == "valeur_dominante":
         colonne = requete["colonne"]
-        valeurs = tableau[colonne].map(_texte).dropna()
+        valeurs = tableau[colonne].map(_texte)[renseignes(tableau, colonne)].dropna()
         if valeurs.empty:
             return None
         compte = valeurs.value_counts()
@@ -501,7 +615,8 @@ def executer(requete, tableau):
         return _reponse(
             nom,
             f"{nom} est la valeur {superlatif} de {colonne}, avec {nombre} patients sur "
-            f"{len(valeurs)} renseignés. Les {len(tableau) - len(valeurs)} lignes sans valeur sont exclues.",
+            f"{len(valeurs)} renseignés. Les {len(tableau) - len(valeurs)} lignes sans valeur "
+            "ou non renseignées sont exclues.",
         )
 
     if operation == "effectifs_deux":

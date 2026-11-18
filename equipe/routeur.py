@@ -106,7 +106,12 @@ def _positifs(question, tableau):
     if len(molecules) != 1:
         return None
 
-    seuil = re.search(r"seuil (?:de )?(\d+(?:[.,]\d+)?)", question)
+    # Le seuil s'écrit de plusieurs façons : « seuil de 0,3 », « au-dessus de 0,3 »,
+    # « supérieur à 0,3 ». La docstring promet « au-dessus de » depuis le début ;
+    # le motif ne l'acceptait pas, et la question escaladait.
+    seuil = re.search(
+        r"(?:seuil (?:de )?|au[- ]dessus de |sup[ée]rieur(?:e)?s? [àa] )(\d+(?:[.,]\d+)?)", question
+    )
     if seuil is None:
         return None  # sans seuil écrit, la réponse serait un choix que la question ne fait pas
 
@@ -146,13 +151,16 @@ def _repartition_puces(question, tableau):
     )
     if not re.fullmatch(motif, question) or "Chip_Type" not in tableau.columns:
         return None
-    comptes = tableau["Chip_Type"].value_counts()
+    valeurs = tableau["Chip_Type"].map(_texte)
+    comptes = valeurs.dropna().value_counts()
     texte = " ; ".join(f"{nom} : {int(nombre)}" for nom, nombre in comptes.items())
-    return _reponse(
-        texte,
-        f"Les {len(tableau)} patients se répartissent ainsi : {texte}. "
-        "Aucune ligne n'est exclue, la puce est renseignée pour tous.",
+    exclus = int(valeurs.isna().sum())
+    fin = (
+        "Aucune ligne n'est exclue, la puce est renseignée pour tous."
+        if not exclus
+        else f"{exclus} lignes sans puce sont exclues."
     )
+    return _reponse(texte, f"Les {len(tableau)} patients se répartissent ainsi : {texte}. {fin}")
 
 
 def _plus_moins_de_ans(question, tableau):
@@ -418,6 +426,25 @@ def _reste_explique(mots, consommes, tolere):
     )
 
 
+def _sens_du_comparatif(question):
+    """1 pour « plus souvent », -1 pour « moins souvent ».
+
+    « moins » compte dans le bruit retiré avant l'analyse : sans ce relevé, une
+    comparaison négative était calculée comme une positive et rendait l'inverse
+    (« les hommes sont moins souvent sensibilisés que les femmes » → oui, alors
+    qu'ils le sont plus). On ne regarde que devant « sensibilis… » : un « moins
+    de 40 ans » n'est pas un comparatif de fréquence.
+    """
+    mots = question.split()
+    for position, mot in enumerate(mots):
+        if mot.startswith("sensibilis"):
+            avant = " ".join(mots[max(0, position - 4):position])
+            if "au moins" in avant:  # « au moins aussi souvent » n'est pas un « moins »
+                return 1
+            return -1 if "moins" in avant.split() else 1
+    return 1
+
+
 def _sac_comparaison(question, tableau):
     """La comparaison, tolérée aux fautes et à l'ordre : « feme son sensibiler dent le datset »."""
     mots = [mot for mot in question.split() if mot not in BRUIT]
@@ -430,22 +457,24 @@ def _sac_comparaison(question, tableau):
     consommes = noms | {mot for mot in mots if mot.startswith("sensibilis")}
     if not _reste_explique(mots, consommes, VIDES_COMPARAISON):
         return None  # un mot non expliqué : il change peut-être la question, on escalade
+    sens = _sens_du_comparatif(question)
     if len(groupes) >= 2 and groupes[0][1][0] == groupes[1][1][0]:
-        return _comparaison_deux(mots, groupes, tableau)
+        return _comparaison_deux(mots, groupes, tableau, sens)
     if len(groupes) == 1:
-        return _comparaison_reste(groupes[0], tableau)
+        return _comparaison_reste(groupes[0], tableau, sens)
     return None
 
 
-def _comparaison_deux(mots, groupes, tableau):
+def _comparaison_deux(mots, groupes, tableau, sens=1):
     (nom_a, groupe_a), (nom_b, groupe_b) = groupes[0], groupes[1]
     taux_a = _taux_codes(tableau, groupe_a[0], groupe_a[1])
     taux_b = _taux_codes(tableau, groupe_b[0], groupe_b[1])
     if not taux_a or not taux_b:
         return None
     part_a, part_b = 100 * taux_a[0] / taux_a[1], 100 * taux_b[0] / taux_b[1]
+    gagne = part_a < part_b if sens < 0 else part_a > part_b
     return _reponse(
-        "oui" if part_a > part_b else "non",
+        "oui" if gagne else "non",
         f"{nom_a} : {taux_a[0]} sur {taux_a[1]} ({part_a:.1f} %), contre "
         f"{taux_b[0]} sur {taux_b[1]} ({part_b:.1f} %) pour {nom_b}. "
         f"{len(tableau) - taux_a[1] - taux_b[1]} lignes hors de ces deux groupes ou sans valeur "
@@ -453,7 +482,7 @@ def _comparaison_deux(mots, groupes, tableau):
     )
 
 
-def _comparaison_reste(groupe, tableau):
+def _comparaison_reste(groupe, tableau, sens=1):
     nom_a, (colonne, codes_du_groupe) = groupe
     taux_a = _taux_codes(tableau, colonne, codes_du_groupe)
     if not taux_a:
@@ -467,8 +496,9 @@ def _comparaison_reste(groupe, tableau):
     if n_reste < 30:
         return None
     part_a, part_reste = 100 * taux_a[0] / taux_a[1], 100 * touches_reste / n_reste
+    gagne = part_a < part_reste if sens < 0 else part_a > part_reste
     return _reponse(
-        "oui" if part_a > part_reste else "non",
+        "oui" if gagne else "non",
         f"{nom_a} : {taux_a[0]} sur {taux_a[1]} ({part_a:.1f} %), contre "
         f"{touches_reste} sur {n_reste} ({part_reste:.1f} %) chez les autres patients. "
         f"{len(tableau) - n_total} lignes sans groupe ou sans valeur sont exclues ; "

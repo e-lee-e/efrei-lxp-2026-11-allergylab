@@ -137,3 +137,25 @@ def test_un_groupe_nomme_retrouve_ses_codes():
     # Une question qui ne nomme pas le groupe ne touche à rien.
     autre = {"operation": "effectif_groupe", "colonne": "Treatment_of_athsma", "codes": ["6", "7"]}
     assert _rappeler_les_groupes("Combien de patients sont sous anti-IL5 ?", autre)["codes"] == ["6", "7"]
+
+
+def test_un_groupe_nomme_se_corrige_aussi_dans_le_filtre():
+    """Une moyenne porte le groupe dans son filtre : « dans 6,7 » doit devenir « dans 6,7,8 »."""
+    from equipe.traducteur import _rappeler_les_groupes
+
+    requete = {
+        "operation": "moyenne",
+        "colonne": "Age",
+        "filtre": "Treatment_of_athsma dans 6,7",
+    }
+    corrigee = _rappeler_les_groupes("Quel est l'âge moyen des patients sous biothérapie ?", requete)
+    assert corrigee["filtre"] == "Treatment_of_athsma dans 6,7,8"
+
+
+def test_les_conditions_qui_jettent_un_age_reel_disparaissent():
+    """« Age>0 » écarte 26 nouveau-nés et « Age!=9 » 157 enfants : ce n'est pas exclure un manquant."""
+    from equipe.traducteur import _retirer_conditions_fautives
+
+    assert _retirer_conditions_fautives("Treatment_of_athsma dans 6,7,8 et Age>0") == "Treatment_of_athsma dans 6,7,8"
+    assert _retirer_conditions_fautives("Age!=9") is None
+    assert _retirer_conditions_fautives("Age>=18 et Age<=30") == "Age>=18 et Age<=30"

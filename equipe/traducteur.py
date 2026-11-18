@@ -71,7 +71,9 @@ Comparaisons permises : <, <=, >, >=, = sur les nombres ; = et != sur les codes 
 « dans 1,2,3 » pour plusieurs codes ("Treatment_of_athsma dans 6,7,8" = biothérapie).
 Pour exclure un groupe (« en excluant ceux qui… »), écris « colonne!=code » et
 jamais « colonne=0 » : le code 9 veut dire non renseigné, et « =0 » le jetterait
-avec le groupe exclu.
+avec le groupe exclu. Un âge non renseigné est déjà écarté d'une moyenne ou d'une
+médiane : n'ajoute aucune condition pour l'exclure — jamais Age>0 ni Age!=9, un
+âge peut valoir 0 ou 9.
 
 Réponds par un seul objet JSON, sans texte autour :
 {"operation": "...", "colonne": "...", "codes": ["..."], "colonne_b": "...",
@@ -194,13 +196,51 @@ GROUPES_CLINIQUES = {
 
 
 def _rappeler_les_groupes(question, requete):
-    """Remet les codes exacts d'un groupe nommé, quand la question le nomme."""
+    """Remet les codes exacts d'un groupe nommé, quand la question le nomme.
+
+    Le groupe se cache à deux endroits selon l'opération : dans `codes` pour un
+    effectif, et dans le texte du `filtre` pour une moyenne (« Treatment_of_athsma
+    dans 6,7 »). Les deux sont corrigés, sinon la moitié des questions passait.
+    """
     texte = normaliser(question)
     for (mot, colonne), codes in GROUPES_CLINIQUES.items():
-        if mot in texte and requete.get("colonne") == colonne and requete.get("codes"):
+        if mot not in texte:
+            continue
+        if requete.get("colonne") == colonne and requete.get("codes"):
             if list(requete["codes"]) != codes:
                 requete["codes"] = list(codes)
+        filtre = requete.get("filtre")
+        if isinstance(filtre, str) and filtre:
+            morceaux = re.split(r"(\s+et\s+)", filtre, flags=re.IGNORECASE)
+            for position, morceau in enumerate(morceaux):
+                condition = re.fullmatch(r"\s*([A-Za-z_]+)\s+dans\s+([\d,\s]+)\s*", morceau, re.IGNORECASE)
+                if condition and condition.group(1) == colonne:
+                    morceaux[position] = f"{colonne} dans {','.join(codes)}"
+            requete["filtre"] = "".join(morceaux)
     return requete
+
+
+# Conditions que le modèle ajoute pour « exclure les âges non renseignés » : elles
+# jettent des patients réels (26 nouveau-nés à 0 an, 157 enfants de 9 ans) et
+# faussent la valeur. Mesuré sur C02 : 31,04 au lieu de 30,22.
+CONDITIONS_FAUTIVES = {"age>0", "age>=0", "age!=9", "age<9"}
+
+
+def _retirer_conditions_fautives(filtre):
+    """Enlève du filtre les conditions qui n'excluent pas un manquant mais un âge réel."""
+    if not isinstance(filtre, str) or not filtre.strip():
+        return filtre
+    morceaux = re.split(r"(\s+et\s+)", filtre, flags=re.IGNORECASE)
+    gardes = []
+    for position, morceau in enumerate(morceaux):
+        if position % 2 == 0 and re.sub(r"\s+", "", morceau).lower() in CONDITIONS_FAUTIVES:
+            continue
+        gardes.append(morceau)
+    # Un séparateur orphelin reste après la dernière condition retirée.
+    while gardes and re.fullmatch(r"\s+et\s+", gardes[-1], flags=re.IGNORECASE):
+        gardes.pop()
+    reste = "".join(gardes).strip()
+    return reste or None
 
 
 def traduire(question, modele_local=None):
@@ -223,7 +263,10 @@ def traduire(question, modele_local=None):
     requete = _valider(requete, _tableau())
     if requete is None:
         return None
-    return _rappeler_les_groupes(question, requete)
+    requete = _rappeler_les_groupes(question, requete)
+    if requete.get("filtre"):
+        requete["filtre"] = _retirer_conditions_fautives(requete["filtre"])
+    return requete
 
 
 def _tableau():

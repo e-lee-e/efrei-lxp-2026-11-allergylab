@@ -230,6 +230,11 @@ GROUPES = {
 }
 
 
+def groupe_en_francais(colonne, codes):
+    """Le groupe dit en français quand la tournure est connue — sinon None, et l'appelant garde ses codes."""
+    return GROUPES.get((colonne, frozenset(str(c) for c in codes)))
+
+
 def _phrase_age(conditions):
     """« âgés de 18 à 30 ans », « de plus de 60 ans », « âgés de 25 ans »."""
     basses = [(o, n) for o, n in conditions if o in (">=", ">")]
@@ -321,7 +326,10 @@ def executer(requete, tableau):
         if requete.get("filtre"):
             en_clair = filtre_en_francais(requete["filtre"])
             if en_clair:
-                return _reponse(total, f"{total} patients réunissent ces conditions : {en_clair}.")
+                # Une seule condition ne « réunit » rien : « 27 patients : sous biothérapie. »
+                if ", " in en_clair:
+                    return _reponse(total, f"{total} patients réunissent ces conditions : {en_clair}.")
+                return _reponse(total, f"{total} patients : {en_clair}.")
             return _reponse(total, f"{total} patients vérifient le filtre « {requete['filtre']} ».")
         return _reponse(total, f"Le tableau compte {total} lignes au total, sans filtrage.")
 
@@ -383,6 +391,13 @@ def executer(requete, tableau):
     if operation == "effectif_groupe":
         masque = _lignes_du_groupe(tableau, requete["colonne"], requete["codes"])
         n = int(masque.sum())
+        en_clair = groupe_en_francais(requete["colonne"], requete["codes"])
+        if en_clair:
+            return _reponse(
+                n,
+                f"{n} patients sont {en_clair}. {len(tableau) - n} lignes sont hors du groupe "
+                "ou non renseignées.",
+            )
         return _reponse(
             n,
             f"{n} patients portent les codes {'/'.join(map(str, requete['codes']))} de "

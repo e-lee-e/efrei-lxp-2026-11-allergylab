@@ -134,6 +134,18 @@ def _lire_generique(chemin):
         remplies = cellules.dropna()
         if remplies.empty:
             continue
+        # Une cellule qui porte plusieurs codes (« 1,3 », « 1, 2 ») n'est pas un
+        # nombre : la convertir viderait la cellule, et le patient disparaîtrait du
+        # compte. Mesuré sur un jeu de 5 000 patients : 515 rhinites traitées au
+        # lieu de 571, exactement les 56 cellules à deux codes.
+        # On ne la confond pas avec un décimal (« 85,74 ») : des codes sont des
+        # entiers courts, et une colonne codée n'a que quelques valeurs distinctes.
+        # Seules les cellules faites d'entiers courts séparés par une virgule
+        # comptent : « 85,74 » est un décimal, « 1,3 » deux codes.
+        plusieurs = remplies.str.match(r"^\d(\s*,\s*\d)+$")
+        if plusieurs.any() and remplies.nunique() <= 15:
+            continue
+
         # Une colonne se lit en nombres si presque toutes ses cellules en sont.
         # Le seuil laisse passer quelques valeurs textuelles parasites sans
         # transformer une colonne clinique en colonne de chiffres.
@@ -141,6 +153,13 @@ def _lire_generique(chemin):
         if nombres.notna().mean() >= 0.95:
             tableau[nom] = pd.to_numeric(cellules.str.replace(",", ".", regex=False), errors="coerce")
     return tableau
+
+
+def _empreinte_lecteur():
+    """Une marque courte du code de lecture, pour que la copie le suive."""
+    import hashlib
+
+    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()[:8]
 
 
 def tableau():
@@ -159,7 +178,11 @@ def tableau():
     if _tableau is not None and _tableau_de == marque:
         return _tableau
 
-    copie = DOSSIER / f"tableau-{empreinte[:16]}.pkl"
+    # Le lecteur fait partie du résultat : corriger la lecture (par exemple pour
+    # garder une cellule à deux codes) doit refaire la copie. Sans cette marque,
+    # la copie d'avant le correctif était relue et le défaut survivait — vu sur un
+    # jeu de 5 000 patients, où la correction semblait sans effet.
+    copie = DOSSIER / f"tableau-{empreinte[:16]}-{_empreinte_lecteur()}.pkl"
     try:
         with open(copie, "rb") as flux:
             _tableau = pickle.load(flux)

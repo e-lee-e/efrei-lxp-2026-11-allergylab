@@ -120,3 +120,29 @@ def test_une_question_sur_un_fichier_absent_s_abstient(tmp_path):
     sortie = agent.repondre("Combien de patients ?")
     assert sortie["statut"] == "abstention"
     assert "ne se lit pas" in sortie["justification"]
+
+
+def test_une_cellule_a_deux_codes_ne_devient_pas_un_nombre(tmp_path):
+    """« 1,3 » est deux codes, pas un décimal : le convertir perdrait le patient.
+
+    Mesuré sur un jeu synthétique de 5 000 patients : 515 rhinites traitées au
+    lieu de 571, exactement les cellules à deux codes.
+    """
+    from equipe import cache
+
+    fichier = tmp_path / "codes.csv"
+    fichier.write_text(
+        "Patient_ID;Treatment_of_rhinitis;dosage\n"
+        "P1;1;85,74\n"
+        "P2;1,3;0\n"
+        "P3;2;12,4\n"
+        "P4;9;7,25\n",
+        encoding="utf-8",
+    )
+    table = cache._lire_generique(fichier)
+    assert list(table["Treatment_of_rhinitis"]) == ["1", "1,3", "2", "9"], (
+        "la colonne des codes reste en texte, sinon « 1,3 » disparaît"
+    )
+    assert table["dosage"].tolist() == [85.74, 0.0, 12.4, 7.25], (
+        "les dosages à deux décimales restent des nombres"
+    )

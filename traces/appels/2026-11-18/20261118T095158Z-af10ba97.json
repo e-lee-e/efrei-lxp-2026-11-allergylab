@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T09:51:58Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "8d4e3ebececbdc2471e448d450c8d876317ecb9e",
+  "modifie": false,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "le nombre de patient qui ont recu un traitement pour la rhinite.",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 430,
+    "justification": "430 patients sont traités pour une rhinite. 3841 lignes sont hors du groupe ou non renseignées."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1116,
+    "sortie": 190
+  },
+  "cout_estime": 0.00020660000000000003,
+  "duree_s": 1.52,
+  "erreur": null
+}

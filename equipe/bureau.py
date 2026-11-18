@@ -49,11 +49,11 @@ class Api:
         return interface.ajouter_fichiers(chemins)
 
     def choisir_dictionnaire(self):
-        """Ouvre le sélecteur pour un dictionnaire de codes (CSV ou JSON)."""
+        """Ouvre le sélecteur pour un dictionnaire de codes (CSV, JSON ou classeur)."""
         choix = webview.windows[0].create_file_dialog(
             webview.OPEN_DIALOG,
             allow_multiple=False,
-            file_types=("Dictionnaire de codes (*.csv;*.json)", "Tous les fichiers (*.*)"),
+            file_types=("Dictionnaire de codes (*.csv;*.json;*.xls;*.xlsx;*.ods)", "Tous les fichiers (*.*)"),
         )
         if not choix:
             return interface.etat()

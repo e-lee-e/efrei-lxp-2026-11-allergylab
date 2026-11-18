@@ -163,6 +163,17 @@ def choisir_dictionnaire(chemin=None) -> dict:
     if not lu:
         return {**etat(), "erreur": f"{Path(chemin).name} ne contient aucun code."}
     reglages.retenir_dictionnaire(str(chemin))
+    utiles = dictionnaire.colonnes_utiles(lu, list(cache.tableau().columns))
+    if not utiles:
+        # Le fichier est retenu, mais il ne nomme aucune colonne du tableau : les
+        # codes du dictionnaire d'origine (« Sexe ») ne sont pas ceux du fichier
+        # (« Gender »). Le taire laisserait croire que le modèle a été aidé.
+        return {
+            **etat(),
+            "erreur": f"{Path(chemin).name} est lu ({len(lu)} variables) mais aucune de ses "
+            "colonnes ne porte un nom du fichier ouvert : il n'apportera rien au modèle. "
+            "Renomme ses entrées comme les colonnes du fichier.",
+        }
     return etat()
 
 

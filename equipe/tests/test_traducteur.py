@@ -124,3 +124,16 @@ def test_un_filtre_se_dit_en_francais():
     # Une condition inconnue rend None : mieux vaut le filtre brut qu'un français faux.
     assert filtre_en_francais("Gender=2") is None
     assert filtre_en_francais("Age>=18 et Colonne_Inventee=1") is None
+
+
+def test_un_groupe_nomme_retrouve_ses_codes():
+    """« Biothérapie » vaut 6, 7 et 8 : le modèle avait rendu 6 et 7, soit 25 patients au lieu de 27."""
+    from equipe.traducteur import _rappeler_les_groupes
+
+    requete = {"operation": "effectif_groupe", "colonne": "Treatment_of_athsma", "codes": ["6", "7"]}
+    corrigee = _rappeler_les_groupes("Combien de patients prennent une biothérapie pour l'asthme ?", requete)
+    assert corrigee["codes"] == ["6", "7", "8"]
+
+    # Une question qui ne nomme pas le groupe ne touche à rien.
+    autre = {"operation": "effectif_groupe", "colonne": "Treatment_of_athsma", "codes": ["6", "7"]}
+    assert _rappeler_les_groupes("Combien de patients sont sous anti-IL5 ?", autre)["codes"] == ["6", "7"]

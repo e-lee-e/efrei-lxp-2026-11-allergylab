@@ -1,0 +1,132 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T10:44:00Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "63e3f4555df9c3ab",
+  "commit": "607b1cad7bc0e50697a4d46a8966c8fd5ccc5b70",
+  "modifie": false,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "kit/exemple/questions.toml",
+    "empreinte": "154a5a4842b20d6a",
+    "questions": 3
+  },
+  "table": "kit/exemple/mini.csv",
+  "justesse": {
+    "justes": 1,
+    "sur": 2
+  },
+  "abstention": {
+    "fondees": 1,
+    "sur": 1
+  },
+  "verdicts": {
+    "juste": 1,
+    "faux": 1,
+    "abstention-fondee": 1,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 3,
+    "total": {
+      "jetons": {
+        "entree": 44821,
+        "sortie": 3565
+      },
+      "cout_estime": 0.0062646,
+      "duree_s": 20.59
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 14940.3,
+        "sortie": 1188.3
+      },
+      "cout_estime": 0.0020882,
+      "duree_s": 6.86
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "q01",
+      "texte": "Quel est l'âge moyen des patients de la table ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 23.077434679334917,
+        "justification": "L'âge moyen est de 23.08 ans sur 4210 patients dont l'âge est renseigné. Les 61 lignes sans âge sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.02,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q02",
+      "texte": "Quel est le type de puce (Chip_Type) du patient le plus âgé de la table ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "ISAC_V2",
+        "justification": "Le patient le plus âgé du tableau est EX09, âgé de 70 ans, unique au maximum d'âge (aucune égalité). Sa puce (Chip_Type) est ISAC_V2."
+      },
+      "etapes": [
+        {
+          "code": "# Le patient le plus âgé : on prend la ligne au Age maximal (colonne Age, en années).\n# calculer ne rend pas une ligne identifiée, donc pandas est nécessaire ici.\nimport pandas as pd\nidx = tableau['Age'].idxmax()\nligne = tableau.loc[idx, ['Patient_ID', 'Chip_Type', 'Age']]\nprint(ligne.to_dict())\nprint(tableau.loc[tableau['Age'] == tableau['Age'].max(), ['Patient_ID', 'Chip_Type', 'Age']].to_dict('records'))",
+          "resultat": "Execution logs:\n{'Patient_ID': 'EX09', 'Chip_Type': 'ISAC_V2', 'Age': 70}\n[{'Patient_ID': 'EX09', 'Chip_Type': 'ISAC_V2', 'Age': 70}]\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "final_answer({\"statut\": \"reponse\", \"valeur\": \"ISAC_V2\", \"justification\": \"Le patient le plus âgé du tableau est EX09, âgé de 70 ans, unique au maximum d'âge (aucune égalité). Sa puce (Chip_Type) est ISAC_V2.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 'ISAC_V2', 'justification': \"Le patient le plus âgé du tableau est EX09, âgé de 70 ans, unique au maximum d'âge (aucune égalité). Sa puce (Chip_Type) est ISAC_V2.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 16256,
+        "sortie": 773
+      },
+      "cout_estime": 0.0020121,
+      "duree_s": 6.96,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "q03",
+      "texte": "Quel âge a le patient EX13 ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le patient EX13 n'est pas dans le tableau, qui ne contient que les 12 patients EX01 à EX12 (0 patient retenu sur 12 pour le filtre Patient_ID=EX13). La colonne Age existe, mais aucune valeur ne peut être attribuée à un patient absent."
+      },
+      "etapes": [
+        {
+          "code": null,
+          "resultat": "Erreur : Error in code parsing:\nYour code snippet is invalid, because the regex pattern <code>(.*?)</code> was not found in it.\n            Here is your code snippet:\n            <\n<parema>\n</parema>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</parameter_name>\n\n\n<parameter_name>\n</par… [tronqué : 3266 caractères]"
+        },
+        {
+          "code": "# Le patient est identifié par Patient_ID. Je vérifie d'abord le nom exact de la colonne d'âge.\nprint(chercher_colonne(\"age\"))\n# Puis je cherche EX13 avec calculer, en comptant les patients retenus.\nprint(calculer(operation=\"compter\", colonne=\"\", filtre=\"Patient_ID=EX13\", colonne2=\"\", par=\"\"))",
+          "resultat": "Execution logs:\n2 colonne(s) : Age (clinique, nombre) ; Age_of_onsets (clinique, texte)\n0 patients sur 12 (filtre : Patient_ID=EX13).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Le patient EX13 n'existe pas dans le tableau : calculer répond 0 patient sur 12.\n# Le tableau ne contient que EX01 à EX12, donc aucun âge ne peut être rendu.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le patient EX13 n'est pas dans le tableau, qui ne contient que les 12 patients EX01 à EX12 (0 patient retenu sur 12 pour le filtre Patient_ID=EX13). La colonne Age existe, mais aucune valeur ne peut être attribuée à un patient absent.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le patient EX13 n'est pas dans le tableau, qui ne contient que les 12 patients EX01 à EX12 (0 patient retenu sur 12 pour le filtre Patient_ID=EX13). La colonne Age existe, mais aucune valeur ne peut être attribuée à un patient absent.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 28565,
+        "sortie": 2792
+      },
+      "cout_estime": 0.0042525,
+      "duree_s": 13.61,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    }
+  ]
+}

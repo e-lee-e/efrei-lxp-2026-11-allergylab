@@ -21,6 +21,7 @@ l'agent complet, qui coûte plus cher mais sait se débrouiller.
 import json
 import re
 
+from equipe.cache import normaliser
 from equipe.outils._filtre import appliquer, colonne_connue
 from equipe.outils.champs import NON_RENSEIGNE, codes as _codes, texte as _texte
 from kit import modele
@@ -68,6 +69,9 @@ Champ facultatif « filtre » : des conditions sur des colonnes, reliées par
 « et », appliquées AVANT l'opération. Exemple : "Age>=18 et Age<=30 et Gender=0".
 Comparaisons permises : <, <=, >, >=, = sur les nombres ; = et != sur les codes ;
 « dans 1,2,3 » pour plusieurs codes ("Treatment_of_athsma dans 6,7,8" = biothérapie).
+Pour exclure un groupe (« en excluant ceux qui… »), écris « colonne!=code » et
+jamais « colonne=0 » : le code 9 veut dire non renseigné, et « =0 » le jetterait
+avec le groupe exclu.
 
 Réponds par un seul objet JSON, sans texte autour :
 {"operation": "...", "colonne": "...", "codes": ["..."], "colonne_b": "...",
@@ -178,6 +182,27 @@ def _valider(requete, tableau):
     return None
 
 
+# Un groupe clinique nommé dans la question a une définition fixe. Le modèle se
+# trompe parfois d'un code — « biothérapie » rendu en 6, 7 au lieu de 6, 7, 8 —
+# et la réponse est alors fausse sans que rien ne le signale : mesuré sur B13,
+# 25 patients au lieu de 27. Cette table ne devine rien, elle rappelle ce que la
+# consigne dit déjà.
+GROUPES_CLINIQUES = {
+    ("biotherapie", "Treatment_of_athsma"): ["6", "7", "8"],
+    ("rhinite", "Treatment_of_rhinitis"): ["1", "2", "3", "4"],
+}
+
+
+def _rappeler_les_groupes(question, requete):
+    """Remet les codes exacts d'un groupe nommé, quand la question le nomme."""
+    texte = normaliser(question)
+    for (mot, colonne), codes in GROUPES_CLINIQUES.items():
+        if mot in texte and requete.get("colonne") == colonne and requete.get("codes"):
+            if list(requete["codes"]) != codes:
+                requete["codes"] = list(codes)
+    return requete
+
+
 def traduire(question, modele_local=None):
     """La requête canonique, vérifiée, ou None si le modèle n'a pas su la produire."""
     from smolagents.models import ChatMessage
@@ -195,7 +220,10 @@ def traduire(question, modele_local=None):
     requete = _extraire_json(reponse.content)
     if not requete:
         return None
-    return _valider(requete, _tableau())
+    requete = _valider(requete, _tableau())
+    if requete is None:
+        return None
+    return _rappeler_les_groupes(question, requete)
 
 
 def _tableau():
@@ -341,10 +369,10 @@ def executer(requete, tableau):
         if valeurs.empty:
             return None
         resultat = float(valeurs.median() if operation == "mediane" else valeurs.mean())
-        nom = "médian" if operation == "mediane" else "moyen"
+        nom = "médiane" if operation == "mediane" else "moyenne"
         return _reponse(
             resultat,
-            f"La valeur {nom}e de {colonne} est {resultat:.2f}, calculée sur {len(valeurs)} lignes "
+            f"La valeur {nom} de {colonne} est {resultat:.2f}, calculée sur {len(valeurs)} lignes "
             f"renseignées ; {len(tableau) - len(valeurs)} lignes sans valeur sont exclues.",
         )
 

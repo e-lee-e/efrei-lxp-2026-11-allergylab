@@ -38,9 +38,11 @@ dénominateur d'un outil, c'est donc le nombre de patients **mesurés**, pas 4 2
 Environ 5 000 jetons au premier appel, puis ~7 000 par étape, parce que tout le
 contexte est renvoyé à chaque fois. Coût = (entrée × 0,10 + sortie × 0,50) / 1e6.
 
-Poids mesurés au tokenizer : la consigne fait **1 249 jetons** (24 % du premier
-appel) et les deux outils **375 jetons** de description, repayés à chaque étape.
-C'est pour ça qu'un outil non routé coûte plus qu'il ne rapporte.
+Poids mesurés au tokenizer (cl100k_base, 18 novembre) : la consigne fait
+**2 134 jetons** et les deux descriptions d'outils **630 jetons**, repayés à
+chaque étape. Les chiffres de 1 249 et 375 datent d'une consigne plus courte,
+avant les sections « fichier étranger » et « erreurs ». C'est pour ça qu'un
+outil non routé coûte plus qu'il ne rapporte.
 
 ## Cinq pièges qui coûtent une mesure
 

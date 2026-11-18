@@ -16,9 +16,9 @@ Trois formes acceptées, parce que c'est ce que les gens ont sous la main :
 
     {"Sexe": {"0": "Féminin"}}      JSON, la forme la plus directe
 
-Un quatrième cas, volontairement refusé : un classeur Excel. Il n'y a pas de
-lecteur de classeur dans le projet, et en ajouter un pour un fichier que
-l'utilisateur peut exporter en CSV serait une dépendance payée pour rien.
+Un quatrième cas, accepté quand LibreOffice est là : un classeur Excel ou ODS.
+Il est converti en CSV par LibreOffice (`_depuis_classeur`), sans ajouter de
+dépendance Python au projet ; sans LibreOffice, le refus dit comment l'exporter.
 """
 
 from __future__ import annotations

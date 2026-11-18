@@ -33,8 +33,15 @@ OPERATIONS = ("compter", "moyenne", "mediane", "pourcentage", "manquants", "corr
 
 
 def nombre(valeur):
-    """33.0 -> « 33 », 1.50500001 -> « 1.505 » : quatre décimales au plus."""
-    return format(round(float(valeur), 4), "f").rstrip("0").rstrip(".")
+    """33.0 -> « 33 », 1.50500001 -> « 1.505 » : quatre décimales au plus.
+
+    Un vrai petit nombre garde sa forme scientifique : l'arrondi à quatre
+    décimales affichait « 0 » pour une corrélation de 0,000042.
+    """
+    valeur = float(valeur)
+    if valeur and abs(valeur) < 1e-4:
+        return f"{valeur:.4g}"
+    return format(round(valeur, 4), "f").rstrip("0").rstrip(".")
 
 
 def calculer_sur(tab, operation, colonne="", filtre="", colonne2="", par=""):

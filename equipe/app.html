@@ -402,7 +402,7 @@ function heure(iso) {
 }
 
 function nomCourt(chemin) {
-  return String(chemin).split("/").pop();
+  return String(chemin).split(/[\\/]/).pop();
 }
 
 /* ---------- dessin ---------- */
@@ -416,7 +416,7 @@ function dessinerListe() {
     b.className = "element" + (actif ? " actif" : "");
     b.textContent = entree.question;
     b.title = entree.question;
-    b.addEventListener("click", () => afficher(entree));
+    b.addEventListener("click", () => afficher(entree, true));
     liste.appendChild(b);
   }
 }
@@ -472,8 +472,12 @@ function dessinerPied() {
 
 function dessiner() { dessinerListe(); dessinerFichiers(); dessinerDico(); dessinerModele(); dessinerPied(); }
 
-function afficher(entree) {
+function afficher(entree, seule = false) {
   affichee = entree;
+  // Une entrée de l'historique remplace le fil ; une réponse qui vient d'être
+  // posée s'ajoute à la conversation. Sans ça, cliquer trois fois la même
+  // entrée empilait trois copies du même tour.
+  if (seule) $("fil").innerHTML = "";
   $("accueil").hidden = true;
   const refus = entree.statut === "abstention";
   const illisible = entree.statut === "illisible" || entree.statut === "erreur";

@@ -124,3 +124,10 @@ def test_manquants_compte_le_9_a_part(tableau):
     phrase = calculer.calculer_sur(tableau, "manquants", "Sensitization")
     assert phrase.startswith("1 patients sans valeur dans Sensitization (dont 1 codés 9)")
     assert calculer.calculer_sur(tableau, "manquants", "Bet_v_1").startswith("2 patients sans valeur dans Bet_v_1,")
+
+
+def test_un_tres_petit_nombre_n_est_pas_affiche_comme_zero():
+    """4,2e-05 rendu « 0 » faisait passer une corrélation non nulle pour nulle."""
+    assert calculer.nombre(0.000042) != "0"
+    assert calculer.nombre(1.23456) == "1.2346"
+    assert calculer.nombre(100.0) == "100"

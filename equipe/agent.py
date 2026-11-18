@@ -39,7 +39,6 @@ from pathlib import Path
 from smolagents import CodeAgent, ToolCallingAgent
 
 from kit import modele, reponse
-from kit.donnees import charger
 
 from equipe import reglages, cache, hors_sujet, routeur, traducteur
 from equipe.outils.calculer import calculer
@@ -192,8 +191,12 @@ def repondre(question):
 
     arguments = {}
     if VARIANTE == "ouvert":
-        # Accès aux données (2/2) : le code écrit par le modèle reçoit le tableau complet, sous le nom tableau.
-        arguments["tableau"] = charger()
+        # Accès aux données (2/2) : le code écrit par le modèle reçoit le tableau,
+        # et c'est celui de cache.tableau() — pas charger() seul, qui ignore le
+        # fichier choisi dans la fenêtre. Mesuré : sur une table inventée sans la
+        # colonne Sensitization, l'agent répondait 80,9 %, les chiffres du vrai
+        # fichier, sans que rien ne le signale.
+        arguments["tableau"] = cache.tableau()
     try:
         sortie = construire(VARIANTE).run(question, additional_args=arguments or None)
     except DelaiDepasse:

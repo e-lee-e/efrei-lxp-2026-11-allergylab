@@ -1,0 +1,362 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T11:45:22Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "88e1eea72548c276",
+  "commit": "ecec04933524538fecf192d8da195252f3e97e22",
+  "modifie": true,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "~/.allergylab/benchmark/fraiches-complete.toml",
+    "empreinte": "069c517e51b105b2",
+    "questions": 17
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 17,
+    "sur": 17
+  },
+  "abstention": {
+    "fondees": 0,
+    "sur": 0
+  },
+  "verdicts": {
+    "juste": 17,
+    "faux": 0,
+    "abstention-fondee": 0,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 17,
+    "total": {
+      "jetons": {
+        "entree": 14262,
+        "sortie": 1940
+      },
+      "cout_estime": 0.0023962,
+      "duree_s": 13.31
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 838.9,
+        "sortie": 114.1
+      },
+      "cout_estime": 0.00014095,
+      "duree_s": 0.78
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "F01",
+      "texte": "Quel pourcentage des femmes est sensibilisé ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 80.87,
+        "justification": "Sur 2070 femmes (Gender=0) dont la sensibilisation est renseignée, 1674 sont sensibilisées (Sensitization=1) et 396 ne le sont pas. Le taux est de 80.87 %, à comparer aux 49.18 % du calcul précédent qui divisait à tort par tous les patients ; les hommes ne sont pas comparés ici."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.01,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F02",
+      "texte": "Quelle proportion des hommes est sensibilisée ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 88.45,
+        "justification": "Parmi les hommes (Gender=1), 1892 patients sur 2139 ont Sensitization=1, soit 88,45 %. Les 62 patients sans sexe renseigné sont exclus ; aucune valeur manquante pour Sensitization dans ce groupe. La définition clinique de la sensibilisation n'est pas précisée dans le fichier."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F03",
+      "texte": "Quel est l'âge médian des femmes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 24.0,
+        "justification": "La valeur médiane de Age est 24.00, calculée sur 2070 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1420,
+        "sortie": 34
+      },
+      "cout_estime": 0.000159,
+      "duree_s": 1.16,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F04",
+      "texte": "Quel est l'âge médian des hommes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 12.0,
+        "justification": "La valeur médiane de Age est 12.00, calculée sur 2139 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1420,
+        "sortie": 65
+      },
+      "cout_estime": 0.0001745,
+      "duree_s": 0.85,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F05",
+      "texte": "Combien de patients cumulent une rhinite et un asthme traité ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 280,
+        "justification": "280 patients vérifient le filtre « Treatment_of_rhinitis dans 1,2,3,4 et Treatment_of_athsma dans 1,2,3,4,5,6,7,8,10 »."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1428,
+        "sortie": 454
+      },
+      "cout_estime": 0.0003698,
+      "duree_s": 2.27,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F06",
+      "texte": "Quel mois compte le plus de prélèvements ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "7",
+        "justification": "7 est la valeur la plus fréquente de Blood_Month_sample, avec 641 patients sur 4146 renseignés. Les 125 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1422,
+        "sortie": 100
+      },
+      "cout_estime": 0.0001922,
+      "duree_s": 0.95,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F07",
+      "texte": "Combien de patients ont été prélevés en janvier ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 367,
+        "justification": "367 patients sur 4271 ont un mois de prélèvement égal à 1 (janvier) dans la colonne Blood_Month_sample. Le calcul porte sur l'ensemble du tableau, sans exclusion signalée."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F08",
+      "texte": "Quelle puce est la plus utilisée ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "ISAC_V1",
+        "justification": "ISAC_V1 est la valeur la plus fréquente de Chip_Type, avec 2351 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1420,
+        "sortie": 71
+      },
+      "cout_estime": 0.0001775,
+      "duree_s": 0.88,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F09",
+      "texte": "Combien de patients cumulent rhinite, asthme traité et symptômes cutanés ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 135,
+        "justification": "135 patients portent les codes 1 de Skin_Symptoms. 145 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1435,
+        "sortie": 598
+      },
+      "cout_estime": 0.0004425,
+      "duree_s": 2.8,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F10",
+      "texte": "Quelle est la proportion de patients sous biothérapie parmi ceux qui sont traités pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4.48,
+        "justification": "Sur 603 patients traités pour l'asthme (codes 1 à 8 et 10 ; 0 et 9 exclus), 27 sont sous biothérapie (codes 6, 7, 8), soit 4.48 %. Le dénominateur exclut les patients sans traitement (code 0) et les valeurs non renseignées (code 9) ; effectif suffisant."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F11",
+      "texte": "Quel est l'écart d'âge moyen entre les hommes et les femmes ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 8.49,
+        "justification": "Moyenne d'âge : femmes 27,40 ans (n=2070) contre hommes 18,91 ans (n=2139), soit un écart de 8,49 ans en faveur des femmes plus âgées. 62 patients sans sexe renseigné ont été exclus. Il s'agit d'une différence de moyennes observée dans ce tableau, sans portée causale."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F14",
+      "texte": "Quelle région compte le moins de patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "regionN",
+        "justification": "regionN est la valeur la moins fréquente de French_Region, avec 2 patients sur 4271 renseignés. Les 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1419,
+        "sortie": 78
+      },
+      "cout_estime": 0.0001809,
+      "duree_s": 0.79,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F15",
+      "texte": "Combien de patients sont sensibilisés sans présenter de symptôme cutané ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 2545,
+        "justification": "2545 patients portent les codes 1 de Sensitization. 586 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1433,
+        "sortie": 107
+      },
+      "cout_estime": 0.0001968,
+      "duree_s": 0.99,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F16",
+      "texte": "Combien de patients sont à la fois sensibilisés et sous biothérapie ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 21,
+        "justification": "21 patients portent les codes 1 de Sensitization. 6 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1432,
+        "sortie": 243
+      },
+      "cout_estime": 0.00026470000000000004,
+      "duree_s": 1.44,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F17",
+      "texte": "Quel est le taux de sensibilisation chez les patients de plus de 65 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 63.3,
+        "justification": "88 patients sensibilisés sur 139 patients de plus de 65 ans renseignés (51 non sensibilisés ; 0 valeur manquante). Taux de 63.3 % ; effectif modéré mais supérieur à 30."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F18",
+      "texte": "Quelle est la proportion de femmes parmi les patients sous biothérapie ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 40.7,
+        "justification": "Sur 27 patients sous biothérapie (codes 6, 7, 8 de Treatment_of_athsma), 11 sont des femmes (Gender=0), soit 40.7 %. Effectif faible (moins de 30) : le taux est instable. Le dénominateur ne retire pas les patients dont le sexe n'est pas renseigné (code 9), ce qui peut sous-estimer la part des femmes."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "F20",
+      "texte": "Combien de patients n'ont aucun traitement renseigné pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 897,
+        "justification": "897 patients portent les codes 0 de Treatment_of_athsma. 3374 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1433,
+        "sortie": 190
+      },
+      "cout_estime": 0.00023830000000000002,
+      "duree_s": 1.17,
+      "erreur": null,
+      "verdict": "juste"
+    }
+  ]
+}

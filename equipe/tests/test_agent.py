@@ -45,7 +45,7 @@ def mini(monkeypatch):
     tableau = charger(RACINE / "kit" / "exemple" / "mini.csv")
     for module in (calculer, chercher_colonne):
         monkeypatch.setattr(module, "tableau", lambda: tableau)
-    monkeypatch.setattr(agent, "charger", lambda: tableau)
+    monkeypatch.setattr(agent.cache, "tableau", lambda: tableau)
     modele.journal_neuf()
     return tableau
 
@@ -81,7 +81,7 @@ def test_les_deux_lignes_d_acces_restent_visibles():
     """CLAUDE.md : les deux lignes qui ouvrent l'accès aux données restent commentées et faciles à retirer."""
     source = (RACINE / "equipe" / "agent.py").read_text(encoding="utf-8")
     assert "# Accès aux données (1/2)" in source and 'options["additional_authorized_imports"] = ["pandas"]' in source
-    assert "# Accès aux données (2/2)" in source and 'arguments["tableau"] = charger()' in source
+    assert "# Accès aux données (2/2)" in source and 'arguments["tableau"] = cache.tableau()' in source
 
 
 def test_garde_fous_actifs():

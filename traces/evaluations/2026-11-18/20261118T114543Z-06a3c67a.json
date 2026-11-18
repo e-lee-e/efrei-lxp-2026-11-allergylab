@@ -1,0 +1,132 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T11:45:43Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "88e1eea72548c276",
+  "commit": "ecec04933524538fecf192d8da195252f3e97e22",
+  "modifie": true,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "kit/exemple/questions.toml",
+    "empreinte": "154a5a4842b20d6a",
+    "questions": 3
+  },
+  "table": "kit/exemple/mini.csv",
+  "justesse": {
+    "justes": 2,
+    "sur": 2
+  },
+  "abstention": {
+    "fondees": 1,
+    "sur": 1
+  },
+  "verdicts": {
+    "juste": 2,
+    "faux": 0,
+    "abstention-fondee": 1,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 3,
+    "total": {
+      "jetons": {
+        "entree": 42258,
+        "sortie": 1371
+      },
+      "cout_estime": 0.0049113,
+      "duree_s": 11.57
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 14086.0,
+        "sortie": 457.0
+      },
+      "cout_estime": 0.0016371,
+      "duree_s": 3.86
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "q01",
+      "texte": "Quel est l'âge moyen des patients de la table ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 33.0,
+        "justification": "L'âge moyen est de 33.00 ans sur 12 patients dont l'âge est renseigné. Les 0 lignes sans âge sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.02,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "q02",
+      "texte": "Quel est le type de puce (Chip_Type) du patient le plus âgé de la table ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "ISAC_V2",
+        "justification": "Le patient le plus âgé du tableau est EX09, âgé de 70 ans ; l'âge est une donnée renseignée pour tous les patients. Il a été testé sur la puce ISAC_V2."
+      },
+      "etapes": [
+        {
+          "code": "# Colonnes exactes : Age et Chip_Type. Le patient le plus âgé se lit directement.\nprint(chercher_colonne(\"age\"))\nprint(chercher_colonne(\"chip\"))\nligne = tableau.loc[tableau[\"Age\"].idxmax()]\nprint(ligne[\"Patient_ID\"], ligne[\"Age\"], ligne[\"Chip_Type\"])",
+          "resultat": "Execution logs:\n2 colonne(s) : Age (clinique, nombre) ; Age_of_onsets (clinique, texte)\n1 colonne(s) : Chip_Type (clinique, texte)\nEX09 70 ISAC_V2\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "final_answer({\"statut\": \"reponse\", \"valeur\": \"ISAC_V2\", \"justification\": \"Le patient le plus âgé du tableau est EX09, âgé de 70 ans ; l'âge est une donnée renseignée pour tous les patients. Il a été testé sur la puce ISAC_V2.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 'ISAC_V2', 'justification': \"Le patient le plus âgé du tableau est EX09, âgé de 70 ans ; l'âge est une donnée renseignée pour tous les patients. Il a été testé sur la puce ISAC_V2.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 16912,
+        "sortie": 643
+      },
+      "cout_estime": 0.0020127,
+      "duree_s": 5.4,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "q03",
+      "texte": "Quel âge a le patient EX13 ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le patient EX13 n'existe pas dans le tableau : il ne contient que 12 patients, de EX01 à EX12. Aucun âge ne peut donc être rendu pour cet identifiant."
+      },
+      "etapes": [
+        {
+          "code": null,
+          "resultat": "Erreur : Error in code parsing:\nYour code snippet is invalid, because the regex pattern <code>(.*?)</code> was not found in it.\n            Here is your code snippet:\n            <\n<parameter name=\"code\">\n# Recherche directe de EX13 dans le tableau\nligne = tableau[tableau['Patient_ID'].astype(str).str.strip().str.upper() == 'EX13']\nprint(len(tableau), tableau['Patient_ID'].tolist())\nprint(ligne[['Patient_ID', 'Age']] if len(ligne) > 0 else \"EX13 absent\")\n</parameter>\n</invoke>\nelse</code>\n            Make sure to include code with the correct pattern, for instance:\n            Thoughts: Your thoughts\n            <code>\n            # Your python code here\n            </code>\nMake sure to provide correct code blobs."
+        },
+        {
+          "code": "# Recherche de EX13 dans le tableau (identifiants normalisés)\nids = tableau['Patient_ID'].astype(str).str.strip().str.upper()\nligne = tableau[ids == 'EX13']\nprint(len(tableau), ids.tolist())\nprint(ligne[['Patient_ID', 'Age']] if len(ligne) > 0 else \"EX13 absent\")",
+          "resultat": "Execution logs:\n12 ['EX01', 'EX02', 'EX03', 'EX04', 'EX05', 'EX06', 'EX07', 'EX08', 'EX09', 'EX10', 'EX11', 'EX12']\nEX13 absent\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "final_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le patient EX13 n'existe pas dans le tableau : il ne contient que 12 patients, de EX01 à EX12. Aucun âge ne peut donc être rendu pour cet identifiant.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le patient EX13 n'existe pas dans le tableau : il ne contient que 12 patients, de EX01 à EX12. Aucun âge ne peut donc être rendu pour cet identifiant.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 25346,
+        "sortie": 728
+      },
+      "cout_estime": 0.0028986,
+      "duree_s": 6.15,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    }
+  ]
+}

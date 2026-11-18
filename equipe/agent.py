@@ -141,11 +141,49 @@ def construire(variante):
     return CodeAgent(**options)
 
 
+def _essayer(fonction, *arguments):
+    """Un raccourci qui échoue se tait : la question continue vers le modèle.
+
+    Une erreur dans le portier, le routeur ou le traducteur ne doit pas faire
+    tomber la question — le modèle, lui, voit le tableau et saura quoi dire.
+    DonneeIllisible remonte, elle : là, il n'y a rien à demander à personne.
+    """
+    try:
+        return fonction(*arguments)
+    except cache.DonneeIllisible:
+        raise
+    except Exception:
+        return None
+
+
 def repondre(question):
+    """La réponse, ou une abstention motivée. Ne lève jamais pour une question."""
     if VARIANTE not in ("ouvert", "ferme", "outils"):
         raise ValueError(
             f'VARIANTE vaut « {VARIANTE} » ; elle doit valoir "ouvert", "ferme" ou "outils" (equipe/agent.py).'
         )
+    try:
+        return _repondre(question)
+    except cache.DonneeIllisible as souci:
+        modele.journal["moteur"] = "donnees-illisibles"
+        return {
+            "statut": "abstention",
+            "valeur": None,
+            "justification": f"Le fichier de données ne se lit pas : {souci}. Aucun chiffre n'est donné plutôt qu'un chiffre faux.",
+        }
+    except Exception as souci:  # panne d'API, colonne inattendue, outil cassé
+        modele.journal["moteur"] = "erreur"
+        return {
+            "statut": "abstention",
+            "valeur": None,
+            "justification": (
+                f"Le calcul a échoué ({type(souci).__name__} : {str(souci)[:140]}). "
+                "Aucun chiffre n'est donné plutôt qu'un chiffre faux."
+            ),
+        }
+
+
+def _repondre(question):
 
     if raccourcis():
         # Question déjà posée, même consigne, même fichier : la réponse est relue
@@ -159,14 +197,14 @@ def repondre(question):
         # Question hors sujet : aucune variable du fichier n'y figure, un autre sujet
         # y est nommé. Abstention locale, zéro jeton, et la question n'entre pas dans
         # le cache (elle ne dépend d'aucune donnée).
-        refus = hors_sujet.examiner(question)
+        refus = _essayer(hors_sujet.examiner, question)
         if refus is not None:
             modele.journal["moteur"] = "hors-sujet"
             modele.journal["modele"] = "local"
             return refus
 
         # Question reconnaissable : la réponse est calculée ici, sans modèle, zéro jeton.
-        locale = routeur.router(question)
+        locale = _essayer(routeur.router, question)
         if locale is not None:
             modele.journal["moteur"] = "routeur"
             modele.journal["modele"] = "local"
@@ -182,9 +220,9 @@ def repondre(question):
         # Traduction en requête canonique : le modèle ne calcule rien, il choisit une
         # opération et ses paramètres dans une liste fermée ; le code exécute. Dix fois
         # moins cher qu'une analyse complète, et le calcul est déterministe.
-        requete = traducteur.traduire(question)
+        requete = _essayer(traducteur.traduire, question)
         if requete is not None:
-            calculee = traducteur.executer(requete, cache.tableau())
+            calculee = _essayer(traducteur.executer, requete, cache.tableau())
             if calculee is not None:
                 modele.journal["moteur"] = "traducteur"
                 return calculee

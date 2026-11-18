@@ -102,3 +102,12 @@ donne la valeur et dis que l'unité n'est pas précisée — sauf si la question
 impose l'unité (« en kUA/L », « en µg/L ») ou un seuil clinique à choisir : le
 fichier ne peut pas y répondre, une conversion serait une invention. Sinon réponds, et signale
 dans la justification la limite qui change la lecture du résultat.
+
+# Si le tableau n'est pas celui du kit
+
+Les colonnes décrites plus haut sont celles du fichier publié. Un autre fichier
+peut être chargé : lis alors ses colonnes réelles et réponds avec elles, sans
+t'abstenir au seul motif qu'une colonne décrite ici manque.
+Une colonne de diagnostic porte des libellés, pas des booléens : « asthmatique »
+se compte sur le libellé exact (« asthma » n'inclut pas « asthma-COPD overlap »),
+et la justification dit le libellé retenu.

@@ -22,6 +22,14 @@ from kit import donnees, modele as modele_du_kit
 from kit.donnees import FICHIER, charger, colonnes
 
 DOSSIER = Path.home() / ".allergylab" / "cache"
+
+
+class DonneeIllisible(Exception):
+    """Le fichier désigné ne se lit pas comme un tableau de patients.
+
+    Distincte des autres erreurs : c'est la seule qu'on doit dire à l'utilisateur
+    en clair, et la seule pour laquelle aucune question ne peut être répondue.
+    """
 CONSIGNE = Path(__file__).parent / "consigne.md"
 
 _tableau = None
@@ -53,6 +61,60 @@ def actif():
     return os.environ.get("ALLERGYLAB_SANS_CACHE", "").strip().lower() not in ("1", "vrai", "oui", "true")
 
 
+def _lire_generique(chemin):
+    """Lit un fichier de patients quelconque : rien n'est supposé du format.
+
+    charger() applique les règles du fichier publié — séparateur « ; », bloc
+    dosage après la quinzième colonne. Sur une table venue d'ailleurs, ces règles
+    sont fausses : un CSV à virgules y devenait une seule colonne de texte, et
+    les colonnes après la quinzième étaient converties en nombres par-dessus leur
+    contenu clinique. Ici le séparateur se devine sur l'en-tête et chaque colonne
+    se classe par ce qu'elle contient.
+    """
+    import pandas as pd
+
+    try:
+        with open(chemin, "r", encoding="utf-8-sig", errors="replace") as flux:
+            entete = flux.readline()
+    except OSError as souci:
+        raise DonneeIllisible(f"{chemin.name} ne se lit pas ({souci.strerror})") from souci
+
+    scores = {separateur: entete.count(separateur) for separateur in (";", ",", "\t", "|")}
+    separateur = max(scores, key=lambda essai: (scores[essai], essai == ";"))
+    if scores[separateur] == 0:
+        raise DonneeIllisible(f"{chemin.name} n'a pas d'en-tête reconnaissable : aucune colonne à séparer")
+
+    try:
+        tableau = pd.read_csv(
+            chemin,
+            sep=separateur,
+            encoding="utf-8-sig",
+            dtype=str,
+            keep_default_na=False,
+            na_values=[""],
+            on_bad_lines="skip",  # une ligne cassée ne doit pas faire perdre le fichier
+        )
+    except Exception as souci:
+        raise DonneeIllisible(f"{chemin.name} ne se lit pas comme un CSV ({type(souci).__name__})") from souci
+
+    tableau.columns = [str(nom).strip() for nom in tableau.columns]
+    if tableau.shape[1] < 2:
+        raise DonneeIllisible(f"{chemin.name} ne donne qu'une seule colonne : ce n'est pas un tableau de patients")
+
+    for nom in tableau.columns:
+        cellules = tableau[nom].str.strip()
+        remplies = cellules.dropna()
+        if remplies.empty:
+            continue
+        # Une colonne se lit en nombres si presque toutes ses cellules en sont.
+        # Le seuil laisse passer quelques valeurs textuelles parasites sans
+        # transformer une colonne clinique en colonne de chiffres.
+        nombres = pd.to_numeric(remplies.str.replace(",", ".", regex=False), errors="coerce")
+        if nombres.notna().mean() >= 0.95:
+            tableau[nom] = pd.to_numeric(cellules.str.replace(",", ".", regex=False), errors="coerce")
+    return tableau
+
+
 def tableau():
     """Le tableau du kit, lu une fois par processus.
 
@@ -64,22 +126,38 @@ def tableau():
     """
     global _tableau, _tableau_de
     courant = fichier()
-    if _tableau is not None and _tableau_de == courant:
+    empreinte = empreinte_donnees()
+    marque = (str(courant), empreinte)
+    if _tableau is not None and _tableau_de == marque:
         return _tableau
 
-    copie = DOSSIER / f"tableau-{empreinte_donnees()[:16]}.pkl"
+    copie = DOSSIER / f"tableau-{empreinte[:16]}.pkl"
     try:
         with open(copie, "rb") as flux:
             _tableau = pickle.load(flux)
-        _tableau_de = courant
+        _tableau_de = marque
         return _tableau
     except (OSError, pickle.UnpicklingError, ValueError, AttributeError, EOFError):
         pass  # pas de copie, copie d'une autre version de pandas, copie tronquée : on relit le CSV
 
     # Sans argument, charger() suit kit.donnees.en_cours, que `kit evaluer`
     # bascule le temps d'une batterie : passer un chemin explicite l'ignorerait.
-    _tableau = charger(courant)
-    _tableau_de = courant
+    try:
+        # Le fichier publié se lit avec les règles du kit, à la lettre ; tout autre
+        # fichier passe par le lecteur générique, qui ne suppose rien.
+        if FICHIER_CHOISI is None and Path(courant) == Path(FICHIER):
+            _tableau = charger(courant)
+        else:
+            _tableau = _lire_generique(courant)
+    except DonneeIllisible:
+        raise
+    except Exception as souci:  # CSV illisible, séparateur inattendu, fichier binaire
+        raise DonneeIllisible(
+            f"{courant.name} ne se lit pas comme un tableau de patients ({type(souci).__name__})"
+        ) from souci
+    if _tableau is None or len(_tableau) == 0 or len(_tableau.columns) == 0:
+        raise DonneeIllisible(f"{courant.name} ne contient aucune ligne exploitable")
+    _tableau_de = marque
     try:
         DOSSIER.mkdir(mode=0o700, parents=True, exist_ok=True)
         provisoire = copie.with_name(f".{copie.name}.{os.getpid()}")
@@ -111,12 +189,22 @@ def choisir_fichier(chemin=None):
     invalide de fait les réponses de l'ancien, sans rien effacer à la main.
     """
     global FICHIER_CHOISI, _tableau, _tableau_de, _empreinte, _empreinte_de, _dosages
+    ancien = FICHIER_CHOISI
     FICHIER_CHOISI = Path(chemin).expanduser().resolve() if chemin else None
     _tableau = None
     _tableau_de = None
     _empreinte = None
     _empreinte_de = None
     _dosages = None
+    # On essaie tout de suite : un fichier qui ne se lit pas doit se dire à
+    # l'ouverture, pas au milieu d'une question ni par une trace d'exception.
+    try:
+        if FICHIER_CHOISI is not None:
+            tableau()
+    except DonneeIllisible:
+        FICHIER_CHOISI = ancien
+        _tableau = _tableau_de = _empreinte = _empreinte_de = _dosages = None
+        raise
     return fichier()
 
 
@@ -138,16 +226,41 @@ def dosages():
     return _dosages
 
 
+def _signature(chemin):
+    """Ce qui change dès qu'un fichier change : son chemin, sa date, sa taille."""
+    try:
+        etat = chemin.stat()
+    except OSError as souci:
+        raise DonneeIllisible(f"{chemin.name} est introuvable ({souci.strerror})") from souci
+    if not chemin.is_file():
+        raise DonneeIllisible(f"{chemin} n'est pas un fichier")
+    if etat.st_size == 0:
+        raise DonneeIllisible(f"{chemin.name} est vide")
+    return (str(chemin), etat.st_mtime_ns, etat.st_size)
+
+
 def empreinte_donnees():
-    """Le SHA-256 du fichier de données, calculé une fois par fichier."""
+    """Le SHA-256 du fichier de données.
+
+    La signature (chemin, date, taille) est vérifiée à chaque appel : un fichier
+    réécrit sur place — même nom, nouveau contenu — change donc d'empreinte, et
+    tout ce qui en dépend (clé de cache, copie pickle) repart de zéro. Sans ça,
+    un tableau modifié pendant que la fenêtre tourne continuait de répondre avec
+    l'ancien contenu.
+    """
     global _empreinte, _empreinte_de
-    if _empreinte is None or _empreinte_de != fichier():
+    chemin = fichier()
+    signature = _signature(chemin)
+    if _empreinte is None or _empreinte_de != signature:
         h = hashlib.sha256()
-        with open(fichier(), "rb") as flux:
-            for bloc in iter(lambda: flux.read(1 << 20), b""):
-                h.update(bloc)
+        try:
+            with open(chemin, "rb") as flux:
+                for bloc in iter(lambda: flux.read(1 << 20), b""):
+                    h.update(bloc)
+        except OSError as souci:
+            raise DonneeIllisible(f"{chemin.name} ne se lit pas ({souci.strerror})") from souci
         _empreinte = h.hexdigest()
-        _empreinte_de = fichier()
+        _empreinte_de = signature
     return _empreinte
 
 

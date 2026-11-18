@@ -512,10 +512,28 @@ async function poser(question) {
   }
 }
 
+function refusDeFichier(message) {
+  // Le fichier n'a pas été ouvert : l'ancien reste actif, et on le dit ici plutôt
+  // que de laisser croire que le tableau a changé.
+  afficher({
+    question: "Changement de fichier", statut: "erreur", valeur: "",
+    justification: message, duree: 0, cout: 0, etapes: 0, quand: new Date().toISOString(),
+  });
+}
+
 async function activerFichier(chemin) {
   if (chemin === etat.fichier_actif) return;
   const n = natif();
+  const avant = etat.fichier_actif;
   etat = n ? await n.activer_fichier(chemin) : await poster("/api/fichier", { chemin });
+  if (etat.erreur) {
+    const message = etat.erreur;
+    etat = { ...etat, fichier_actif: avant };
+    delete etat.erreur;
+    refusDeFichier(message);
+    dessiner();
+    return;
+  }
   afficherAccueil();
   dessiner();
 }
@@ -523,7 +541,16 @@ async function activerFichier(chemin) {
 async function ajouterFichier() {
   const n = natif();
   if (!n) { alert("Le choix des fichiers se fait dans la fenêtre de bureau."); return; }
+  const avant = etat.fichier_actif;
   etat = await n.choisir_fichier();
+  if (etat.erreur) {
+    const message = etat.erreur;
+    etat = { ...etat, fichier_actif: avant };
+    delete etat.erreur;
+    refusDeFichier(message);
+    dessiner();
+    return;
+  }
   afficherAccueil();
   dessiner();
 }

@@ -135,18 +135,30 @@ def choisir_modele(nom: str) -> dict:
 
 
 def ajouter_fichiers(chemins) -> dict:
-    """Ajoute des fichiers à la liste connue, puis ouvre le premier."""
+    """Ajoute des fichiers à la liste connue, puis ouvre le premier.
+
+    Un fichier qui ne se lit pas n'est pas retenu et l'erreur remonte dans l'état :
+    la fenêtre garde le tableau précédent et le dit, au lieu de se fermer.
+    """
     propres = [chemin for chemin in chemins if chemin]
-    reglages.ajouter_fichiers(propres)
-    if propres:
-        cache.choisir_fichier(propres[0])
-        reglages.retenir_fichier(propres[0])
+    for chemin in propres:
+        try:
+            cache.choisir_fichier(chemin)
+        except cache.DonneeIllisible as souci:
+            return {**etat(), "erreur": str(souci)}
+        reglages.ajouter_fichiers([chemin])
+        reglages.retenir_fichier(chemin)
+        break
     return etat()
 
 
 def activer_fichier(chemin=None) -> dict:
     """Ouvre un fichier déjà connu (None remet celui du kit)."""
-    cache.choisir_fichier(chemin)
+    try:
+        cache.choisir_fichier(chemin)
+    except cache.DonneeIllisible as souci:
+        # choisir_fichier a déjà remis le fichier précédent : rien à défaire.
+        return {**etat(), "erreur": str(souci)}
     reglages.retenir_fichier(cache.fichier() if chemin else None)
     return etat()
 

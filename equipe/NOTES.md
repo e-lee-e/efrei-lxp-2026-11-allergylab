@@ -76,3 +76,37 @@ qu'il rattrape, la mesure se refait en une heure.
 réponses ne sont pas comparables à celles d'Anthropic et il ne passe pas les tests
 notés. Retiré aussi : l'agent ne parle plus qu'à l'API, ce qui rend le dépôt
 transportable — rien à installer, rien à télécharger.
+
+## L'application de bureau (Datallergy)
+
+Pour un chercheur qui ne lit pas de code, la ligne de commande n'est pas une
+interface. `equipe/bureau.py` ouvre la même page dans une fenêtre native
+(pywebview + WebKit) : pas de navigateur à lancer, donc pas de second moteur en
+mémoire, et l'utilisateur n'a ni terminal ni barre d'adresses à connaître.
+
+    uv sync --extra bureau
+    uv pip install --python .venv/bin/python pygobject   # une fois, si « gi » manque
+    uv run --extra bureau python -m equipe.bureau
+
+La page est `equipe/app.html`, la même pour les deux modes. `equipe/interface.py`
+la sert en HTTP local (`uv run python -m equipe.interface`), ce qui reste le repli
+quand WebKit n'est pas disponible : c'est aussi ce qui a permis de vérifier
+l'interface sans souris.
+
+Trois choix qui viennent du public visé :
+
+- **La réponse d'abord**, le vocabulaire interne derrière un lien « Détails
+  techniques » fermé par défaut (couche, coût, durée, étapes, jetons) ;
+- **Une abstention n'est pas une panne** : la page écrit « Pas de réponse » et
+  donne la raison en français, sans jamais afficher le nom des modules ;
+- **Une question, une entrée** : `equipe/historique.py` remplace la réponse et
+  remonte la question en tête au lieu d'empiler un doublon. L'historique vit dans
+  `~/.allergylab/questions.json`, hors du dépôt (règle 4), et il est filtré par
+  fichier de données : une réponse calculée sur un fichier n'a aucun sens sur un
+  autre.
+
+Le fichier de données se change dans la fenêtre (`cache.choisir_fichier`). Son
+empreinte entre dans la clé de cache, donc les réponses de l'ancien fichier ne
+sont jamais resservies sur le nouveau, et le dictionnaire des dosages se déduit
+alors des noms de colonnes (`Act_d…`, `Bet_v…`) faute de `kit/colonnes.csv`
+adapté.

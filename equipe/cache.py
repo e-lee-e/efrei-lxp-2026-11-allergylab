@@ -24,6 +24,8 @@ CONSIGNE = Path(__file__).parent / "consigne.md"
 
 _tableau = None
 _empreinte = None
+# Fichier choisi dans l'interface de bureau ; None = le fichier livré avec le kit.
+FICHIER_CHOISI = None
 _consigne = None
 _dosages = None
 
@@ -55,23 +57,42 @@ def tableau():
 
     copie = DOSSIER / f"tableau-{empreinte_donnees()[:16]}.pkl"
     try:
-        with open(copie, "rb") as fichier:
-            _tableau = pickle.load(fichier)
+        with open(copie, "rb") as flux:
+            _tableau = pickle.load(flux)
         return _tableau
     except (OSError, pickle.UnpicklingError, ValueError, AttributeError, EOFError):
         pass  # pas de copie, copie d'une autre version de pandas, copie tronquée : on relit le CSV
 
-    _tableau = charger()
+    _tableau = charger(fichier())
     try:
         DOSSIER.mkdir(mode=0o700, parents=True, exist_ok=True)
         provisoire = copie.with_name(f".{copie.name}.{os.getpid()}")
-        with open(provisoire, "wb") as fichier:
-            pickle.dump(_tableau, fichier, protocol=5)
+        with open(provisoire, "wb") as flux:
+            pickle.dump(_tableau, flux, protocol=5)
         os.chmod(provisoire, 0o600)
         provisoire.replace(copie)
     except OSError:
         pass  # écrire la copie est un confort, jamais une condition
     return _tableau
+
+
+def fichier():
+    """Le fichier de données lu en ce moment : celui du kit, ou celui choisi dans l'interface."""
+    return FICHIER_CHOISI or FICHIER
+
+
+def choisir_fichier(chemin=None):
+    """Lit un autre fichier que celui du kit ; None remet le fichier livré.
+
+    L'empreinte du fichier entre dans la clé de cache : changer de fichier
+    invalide de fait les réponses de l'ancien, sans rien effacer à la main.
+    """
+    global FICHIER_CHOISI, _tableau, _empreinte, _dosages
+    FICHIER_CHOISI = Path(chemin).expanduser().resolve() if chemin else None
+    _tableau = None
+    _empreinte = None
+    _dosages = None
+    return fichier()
 
 
 def dosages():
@@ -82,8 +103,13 @@ def dosages():
     """
     global _dosages
     if _dosages is None:
-        dico = colonnes()
-        _dosages = set(dico.loc[dico["bloc"] == "dosage", "colonne"])
+        if FICHIER_CHOISI is None:
+            dico = colonnes()
+            _dosages = set(dico.loc[dico["bloc"] == "dosage", "colonne"])
+        else:
+            # Le dictionnaire du kit décrit le fichier du kit : sur un autre fichier,
+            # on se rabat sur la forme des noms de colonnes de dosage.
+            _dosages = {c for c in tableau().columns if c.lower().startswith(("act_d", "bet_v"))}
     return _dosages
 
 
@@ -92,8 +118,8 @@ def empreinte_donnees():
     global _empreinte
     if _empreinte is None:
         h = hashlib.sha256()
-        with open(FICHIER, "rb") as fichier:
-            for bloc in iter(lambda: fichier.read(1 << 20), b""):
+        with open(fichier(), "rb") as flux:
+            for bloc in iter(lambda: flux.read(1 << 20), b""):
                 h.update(bloc)
         _empreinte = h.hexdigest()
     return _empreinte

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datallergy</title>
+<style>
+  :root {
+    --vert: #1f5c46;
+    --vert-sombre: #174534;
+    --vert-pale: #eef4f0;
+    --texte: #16191a;
+    --gris: #6c7570;
+    --gris-fonce: #4b524e;
+    --bord: #e4e2db;
+    --barre: #faf9f6;
+    --ardoise: #5b6470;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: #fff; color: var(--texte);
+    font: 15px/1.55 "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; color: inherit; }
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ---------- barre latérale ---------- */
+  .barre {
+    width: 268px; flex: none; background: var(--barre); border-right: 1px solid var(--bord);
+    display: flex; flex-direction: column;
+  }
+  .marque { padding: 20px 18px 14px; }
+  .marque h1 { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
+  .marque span { display: block; font-size: 11.5px; color: var(--gris); letter-spacing: 0.02em; margin-top: 1px; }
+  .nouvelle {
+    margin: 0 12px 10px; padding: 9px 12px; border: 1px solid var(--bord); background: #fff;
+    border-radius: 6px; text-align: left; font-size: 13.5px; cursor: pointer;
+    display: flex; align-items: center; gap: 9px; transition: border-color .12s, background .12s;
+  }
+  .nouvelle:hover { border-color: #cfccc2; background: #fffdf9; }
+  .nouvelle .plus { color: var(--vert); font-size: 15px; line-height: 1; }
+  .liste { flex: 1; overflow-y: auto; padding: 2px 8px 14px; }
+  .liste:empty::after {
+    content: "Vos questions apparaîtront ici."; display: block; padding: 10px;
+    font-size: 12.5px; color: var(--gris);
+  }
+  .element {
+    display: block; width: 100%; text-align: left; border: 0; background: transparent;
+    padding: 8px 10px; border-radius: 6px; font-size: 13.5px; color: #39403c;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+    transition: background .12s, color .12s;
+  }
+  .element:hover { background: #f1efe9; }
+  .element.actif { background: var(--vert-pale); color: var(--vert); }
+  .pied {
+    border-top: 1px solid var(--bord); padding: 11px 14px 13px;
+    display: flex; flex-direction: column; gap: 7px; font-size: 12px; color: var(--gris);
+  }
+  .fichier {
+    text-align: left; background: none; border: 0; padding: 0; cursor: pointer;
+    max-width: 100%; overflow: hidden;
+  }
+  .fichier .intitule {
+    display: block; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--gris);
+  }
+  .fichier #nom-fichier {
+    display: block; font-size: 12.5px; color: var(--gris-fonce);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .fichier:hover #nom-fichier { color: var(--vert); text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ---------- zone principale ---------- */
+  .principal { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .defilement { flex: 1; overflow-y: auto; padding: 0 34px; }
+  .contenu { max-width: 740px; margin: 0 auto; padding: 44px 0 28px; }
+
+  .accueil h2 { margin: 0 0 6px; font-size: 21px; font-weight: 600; letter-spacing: -0.015em; }
+  .accueil .aide { margin: 0 0 28px; color: var(--gris); font-size: 14px; max-width: 54ch; }
+  .cartes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .carte {
+    border: 1px solid var(--bord); background: #fff; border-radius: 8px; padding: 12px 14px;
+    text-align: left; font-size: 13.5px; color: var(--gris-fonce); cursor: pointer;
+    transition: border-color .12s, color .12s;
+  }
+  .carte:hover { border-color: #b9cfc4; color: var(--vert); }
+
+  .question { margin: 0 0 20px; font-size: 23px; line-height: 1.32; font-weight: 600; letter-spacing: -0.015em; }
+  .reponse { border: 1px solid var(--bord); border-radius: 10px; padding: 22px 24px 20px; }
+  .entete { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .etiquette {
+    font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px;
+    border: 1px solid currentColor; border-radius: 3px; color: var(--vert);
+  }
+  .etiquette.refus, .etiquette.illisible { color: var(--ardoise); }
+  .horodatage { font-size: 12px; color: var(--gris); }
+  .valeur {
+    font-size: 42px; line-height: 1.14; font-weight: 600; letter-spacing: -0.02em;
+    margin: 14px 0 8px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+  }
+  .valeur.longue { font-size: 17px; line-height: 1.6; font-weight: 500; letter-spacing: 0; }
+  .justification { margin: 0; color: var(--gris-fonce); font-size: 14.5px; max-width: 62ch; }
+  .lien {
+    background: none; border: 0; padding: 0; margin-top: 18px; cursor: pointer;
+    font-size: 12.5px; color: var(--gris); text-decoration: underline; text-underline-offset: 3px;
+  }
+  .lien:hover { color: var(--vert); }
+  dl.details {
+    margin: 14px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 26px;
+    font-size: 12.5px; border-top: 1px solid var(--bord); padding-top: 14px;
+  }
+  dl.details dt { color: var(--gris); }
+  dl.details dd { margin: 0; color: var(--texte); font-variant-numeric: tabular-nums; }
+
+  /* ---------- composeur ---------- */
+  .composeur { border-top: 1px solid var(--bord); background: #fff; padding: 14px 34px 16px; }
+  .rangee { max-width: 740px; margin: 0 auto; display: flex; gap: 10px; }
+  #q {
+    flex: 1; min-width: 0; padding: 13px 15px; border: 1px solid var(--bord); border-radius: 8px;
+    font: inherit; font-size: 14.5px; color: var(--texte); background: #fff;
+    transition: border-color .12s;
+  }
+  #q:focus { outline: none; border-color: var(--vert); box-shadow: 0 0 0 3px rgba(31, 92, 70, 0.08); }
+  .bouton {
+    border: 0; background: var(--vert); color: #fff; padding: 13px 20px; border-radius: 8px;
+    font-size: 14.5px; cursor: pointer; transition: background .12s;
+  }
+  .bouton:hover { background: var(--vert-sombre); }
+  .bouton:disabled { opacity: .55; cursor: default; }
+  .note { max-width: 740px; margin: 9px auto 0; font-size: 11.5px; color: var(--gris); }
+  #attente { color: var(--gris); font-size: 13.5px; margin-top: 26px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="barre">
+    <div class="marque">
+      <h1>Datallergy</h1>
+      <span>analyste des données</span>
+    </div>
+    <button class="nouvelle" id="nouvelle" type="button"><span class="plus">+</span> Nouvelle question</button>
+    <nav class="liste" id="liste" aria-label="Questions posées"></nav>
+    <div class="pied">
+      <button class="fichier" id="fichier" type="button" title="Changer le fichier de données">
+        <span class="intitule">Fichier de données</span>
+        <span id="nom-fichier">…</span>
+      </button>
+      <span id="session"></span>
+    </div>
+  </aside>
+
+  <main class="principal">
+    <div class="defilement" id="defilement">
+      <div class="contenu">
+        <section id="accueil" class="accueil">
+          <h2>Posez une question sur le fichier patients</h2>
+          <p class="aide">Le fichier décrit des patients suivis pour allergie. La réponse vient en
+            français, avec le chiffre et sa justification — ou un refus motivé quand la donnée n'y est pas.</p>
+          <div class="cartes" id="exemples"></div>
+        </section>
+
+        <section id="courant" hidden>
+          <h2 class="question" id="titre-question"></h2>
+          <div class="reponse">
+            <div class="entete">
+              <span class="etiquette" id="etiquette"></span>
+              <span class="horodatage" id="horodatage"></span>
+            </div>
+            <p class="valeur" id="valeur"></p>
+            <p class="justification" id="justification"></p>
+            <button class="lien" id="details-bascule" type="button">Détails techniques</button>
+            <dl class="details" id="details" hidden>
+              <dt>Répondu par</dt><dd id="d-couche">—</dd>
+              <dt>Coût</dt><dd id="d-cout">—</dd>
+              <dt>Durée</dt><dd id="d-duree">—</dd>
+              <dt>Étapes du modèle</dt><dd id="d-etapes">—</dd>
+              <dt>Jetons</dt><dd id="d-jetons">—</dd>
+            </dl>
+          </div>
+        </section>
+
+        <p id="attente" hidden>Je calcule…</p>
+      </div>
+    </div>
+
+    <form class="composeur" id="poser">
+      <div class="rangee">
+        <input id="q" autocomplete="off" required placeholder="Combien de patients ont moins de 18 ans ?">
+        <button class="bouton" id="envoyer" type="submit">Analyser</button>
+      </div>
+      <p class="note">Une question déjà posée ne coûte rien : la réponse est gardée sur la machine.</p>
+    </form>
+  </main>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const EXEMPLES = [
+  "Combien de patients sont inclus dans le jeu de données ?",
+  "Quel est l'âge médian des patients ?",
+  "Quel est le taux de sensibilisation chez les femmes comparé à celui des hommes ?",
+  "Combien de patients bénéficient d'un traitement contre la rhinite ?"
+];
+let etat = { fichier: "", entrees: [], session: { questions: 0, cout: 0 } };
+let affichee = null;
+let detailsOuverts = false;
+
+const natif = () => (window.pywebview && window.pywebview.api) || null;
+
+async function demander(question) {
+  const n = natif();
+  if (n) return n.poser(question);
+  const r = await fetch("/api/question", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question })
+  });
+  if (!r.ok) throw new Error("serveur " + r.status);
+  return r.json();
+}
+
+async function lireEtat() {
+  const n = natif();
+  if (n) return n.etat();
+  const r = await fetch("/api/etat");
+  return r.json();
+}
+
+async function changerFichier() {
+  const n = natif();
+  if (!n) { alert("Le choix du fichier se fait dans la fenêtre de bureau."); return; }
+  const nouvel = await n.choisir_fichier();
+  if (nouvel && nouvel.fichier) { etat = nouvel; afficherAccueil(); dessiner(); }
+}
+
+function euros(n) {
+  if (!n) return "aucun appel, 0 $";
+  return (n < 0.01 ? n.toFixed(5) : n.toFixed(3)).replace(".", ",") + " $";
+}
+
+function heure(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return isNaN(d) ? "" : d.toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
+function dessinerListe() {
+  const liste = $("liste");
+  liste.innerHTML = "";
+  for (const entree of etat.entrees) {
+    const b = document.createElement("button");
+    b.type = "button";
+    const actif = affichee && affichee.quand === entree.quand && affichee.question === entree.question;
+    b.className = "element" + (actif ? " actif" : "");
+    b.textContent = entree.question;
+    b.title = entree.question;
+    b.addEventListener("click", () => afficher(entree));
+    liste.appendChild(b);
+  }
+}
+
+function dessinerPied() {
+  $("nom-fichier").textContent = etat.fichier || "aucun";
+  const s = etat.session || { questions: 0, cout: 0 };
+  $("session").textContent = s.questions
+    ? s.questions + (s.questions > 1 ? " questions" : " question") + " · " + euros(s.cout)
+    : "";
+}
+
+function dessiner() { dessinerListe(); dessinerPied(); }
+
+function afficher(entree) {
+  affichee = entree;
+  const refus = entree.statut === "abstention";
+  const illisible = entree.statut === "illisible" || entree.statut === "erreur";
+  $("accueil").hidden = true;
+  $("courant").hidden = false;
+  $("titre-question").textContent = entree.question;
+  $("etiquette").textContent = illisible ? "Réponse illisible" : (refus ? "Pas de réponse" : "Réponse");
+  $("etiquette").className = "etiquette" + (refus ? " refus" : illisible ? " illisible" : "");
+  $("horodatage").textContent = heure(entree.quand);
+
+  const valeur = entree.valeur === null || entree.valeur === undefined ? "" : String(entree.valeur);
+  $("valeur").textContent = valeur || (refus ? "Pas de réponse" : "");
+  $("valeur").className = "valeur" + (valeur.length > 60 ? " longue" : "");
+  $("justification").textContent = entree.justification || "";
+
+  $("d-couche").textContent = entree.couche || "—";
+  $("d-cout").textContent = euros(entree.cout);
+  $("d-duree").textContent = entree.duree >= 0.1 ? entree.duree.toFixed(1).replace(".", ",") + " s" : "immédiat";
+  $("d-etapes").textContent = entree.etapes ? entree.etapes : "aucune (calcul direct)";
+  $("d-jetons").textContent = entree.jetons && entree.jetons.entree
+    ? entree.jetons.entree + " en entrée, " + entree.jetons.sortie + " en sortie" : "aucun";
+
+  $("details").hidden = !detailsOuverts;
+  $("details-bascule").textContent = detailsOuverts ? "Masquer les détails" : "Détails techniques";
+  dessinerListe();
+  $("defilement").scrollTop = 0;
+}
+
+function afficherAccueil() {
+  affichee = null;
+  $("courant").hidden = true;
+  $("accueil").hidden = false;
+  $("attente").hidden = true;
+  dessinerListe();
+}
+
+async function poser(question) {
+  $("envoyer").disabled = true;
+  $("attente").hidden = false;
+  $("courant").hidden = true;
+  try {
+    const reponse = await demander(question);
+    etat = await lireEtat();
+    const gardee = (etat.entrees || []).find((e) => e.question === question) ||
+      Object.assign({}, reponse, { question: question });
+    afficher(gardee);
+  } catch (e) {
+    afficher({ question, statut: "erreur", valeur: "", duree: 0, cout: 0,
+      justification: "Je n'ai pas pu obtenir de réponse. Vérifiez que l'agent répond toujours, puis réessayez.",
+      couche: "—", jetons: null, quand: new Date().toISOString() });
+  } finally {
+    $("attente").hidden = true;
+    $("envoyer").disabled = false;
+    $("q").focus();
+  }
+}
+
+$("poser").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const texte = $("q").value.trim();
+  if (texte) { $("q").value = ""; poser(texte); }
+});
+
+$("nouvelle").addEventListener("click", () => { $("q").value = ""; afficherAccueil(); $("q").focus(); });
+$("fichier").addEventListener("click", changerFichier);
+$("details-bascule").addEventListener("click", () => {
+  detailsOuverts = !detailsOuverts;
+  $("details").hidden = !detailsOuverts;
+  $("details-bascule").textContent = detailsOuverts ? "Masquer les détails" : "Détails techniques";
+});
+
+for (const exemple of EXEMPLES) {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "carte"; b.textContent = exemple;
+  b.addEventListener("click", () => poser(exemple));
+  $("exemples").appendChild(b);
+}
+
+async function demarrer() {
+  try { etat = await lireEtat(); } catch (e) { /* premier envoi : l'état viendra ensuite */ }
+  if (!etat.entrees) etat.entrees = [];
+  dessiner();
+  afficherAccueil();
+  $("q").focus();
+}
+
+// La page se charge avant que pywebview n'injecte son pont : on démarre tout de
+// suite pour le navigateur, et on redémarre quand le pont arrive.
+window.addEventListener("pywebviewready", () => demarrer());
+demarrer();
+</script>
+</body>
+</html>

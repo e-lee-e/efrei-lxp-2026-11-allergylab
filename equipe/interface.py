@@ -162,18 +162,22 @@ def choisir_dictionnaire(chemin=None) -> dict:
         return {**etat(), "erreur": str(souci)}
     if not lu:
         return {**etat(), "erreur": f"{Path(chemin).name} ne contient aucun code."}
-    reglages.retenir_dictionnaire(str(chemin))
     utiles = dictionnaire.colonnes_utiles(lu, list(cache.tableau().columns))
     if not utiles:
-        # Le fichier est retenu, mais il ne nomme aucune colonne du tableau : les
-        # codes du dictionnaire d'origine (« Sexe ») ne sont pas ceux du fichier
-        # (« Gender »). Le taire laisserait croire que le modèle a été aidé.
+        # Il n'est pas retenu : ses codes (« Sexe ») ne sont pas ceux du fichier
+        # (« Gender »). Le garder afficherait ses 134 codes dans la barre latérale
+        # comme s'ils servaient, alors que le prompt n'en reçoit rien.
         return {
             **etat(),
-            "erreur": f"{Path(chemin).name} est lu ({len(lu)} variables) mais aucune de ses "
-            "colonnes ne porte un nom du fichier ouvert : il n'apportera rien au modèle. "
-            "Renomme ses entrées comme les colonnes du fichier.",
+            "code": "dictionnaire",
+            "erreur": f"{Path(chemin).name} est lu — {len(lu)} variables, "
+            f"{sum(len(codes) for codes in lu.values())} codes — mais aucune de ses entrées "
+            "ne porte un nom de colonne du fichier ouvert : le modèle ne peut pas s'en servir. "
+            "Ses entrées doivent s'appeler comme les colonnes du fichier (Gender, et non Sexe).",
         }
+    # Rien n'est retenu : un dictionnaire qui ne nomme aucune colonne donne l'illusion
+    # d'aider le modèle, et la barre latérale afficherait ses codes comme s'ils servaient.
+    reglages.retenir_dictionnaire(str(chemin))
     return etat()
 
 

@@ -503,7 +503,7 @@ function afficher(entree) {
   tour.querySelector(".moi span").textContent = entree.question || "";
 
   const ETIQUETTES = { donnees: "Fichier non ouvert", cle: "Clé manquante", delai: "Délai dépassé",
-    panne: "Erreur", suivi: "Question incomplète" };
+    panne: "Erreur", suivi: "Question incomplète", dictionnaire: "Dictionnaire sans correspondance" };
   q(".etiquette").textContent = ETIQUETTES[entree.code] || (illisible ? "Réponse illisible" : (refus ? "Pas de réponse" : "Réponse"));
   q(".etiquette").className = "etiquette" + (refus ? " refus" : illisible ? " illisible" : "");
   q(".horodatage").textContent = heure(entree.quand);
@@ -566,6 +566,11 @@ const ISSUES = {
   donnees: { libelle: "Choisir un autre fichier", note: "Le fichier précédent reste actif.", faire: () => ajouterFichier() },
   delai: { libelle: "Relancer", note: "La question est restée dans la barre.", faire: (q) => poser(q) },
   panne: { libelle: "Relancer", note: "", faire: (q) => poser(q) },
+  dictionnaire: {
+    libelle: "Choisir un autre dictionnaire",
+    note: "Le dictionnaire précédent reste actif.",
+    faire: () => $("dico-choisir").click(),
+  },
 };
 
 function dessinerIssue(entree, bloc) {
@@ -579,7 +584,18 @@ function dessinerIssue(entree, bloc) {
   bloc.querySelector(".issue-note").textContent = issue.note || "";
   bouton.onclick = () => issue.faire(entree.question);
   // La question reste dans la barre : rien n'est perdu, il suffit de renvoyer.
-  if (entree.question && entree.code !== "donnees") $("q").value = entree.question;
+  if (entree.question && entree.code !== "donnees" && entree.code !== "dictionnaire") {
+    $("q").value = entree.question;
+  }
+}
+
+function refusDeDictionnaire(message) {
+  // Le dictionnaire a bien été lu : l'étiquette « fichier non ouvert » serait un
+  // mensonge, et « choisir un autre fichier » enverrait au mauvais sélecteur.
+  afficher({
+    question: "Dictionnaire de codes", statut: "abstention", valeur: "", code: "dictionnaire",
+    justification: message, duree: 0, cout: 0, etapes: 0, quand: new Date().toISOString(),
+  });
 }
 
 function refusDeFichier(message) {
@@ -702,7 +718,7 @@ $("dico-choisir").addEventListener("click", async () => {
     refusDeFichier("Le dictionnaire n'a pas pu être lu. Le précédent reste actif.");
     return;
   }
-  if (etat.erreur) { const message = etat.erreur; delete etat.erreur; refusDeFichier(message); }
+  if (etat.erreur) { const message = etat.erreur; delete etat.erreur; refusDeDictionnaire(message); }
   dessiner();
 });
 

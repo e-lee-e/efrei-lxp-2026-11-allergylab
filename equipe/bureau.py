@@ -97,13 +97,14 @@ def main():
     reglages.ajouter_fichiers([str(cache.fichier())])  # le fichier du kit entre dans la liste connue
 
     webview.create_window(
-        "Datallergy",
+        "DatAllerGy",
         str(interface.PAGE),
         js_api=Api(),
         width=1120,
-        height=760,
+        height=800,
         min_size=(880, 560),
-        background_color="#ffffff",
+        background_color="#f7f5ef",
+        text_select=True,  # sans ça WebKit interdit toute sélection : rien à copier
     )
     webview.start(debug=options.debug)
 

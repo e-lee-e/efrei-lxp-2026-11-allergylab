@@ -16,6 +16,38 @@
     --bord: #e2e0d8;
     --papier: #f7f5ef;
     --ardoise: #5b6470;
+    /* Surfaces : une seule liste, pour que le thème sombre n'ait qu'à la reprendre. */
+    --surface: #ffffff;
+    --surface-2: #fbfaf6;
+    --surface-3: #efede5;
+    --composeur: rgba(251, 250, 246, 0.92);
+    --voile: rgba(21, 24, 26, 0.32);
+    --ombre: rgba(21, 24, 26, 0.16);
+    --motif: rgba(31, 92, 70, 0.13);
+    --sur-vert: #ffffff;
+  }
+
+  /* Thème sombre : mêmes rôles, valeurs inversées. Le vert s'éclaircit pour rester
+     lisible sur l'anthracite ; le reste suit. */
+  :root[data-theme="sombre"] {
+    --vert: #63b393;
+    --vert-sombre: #7cc3a5;
+    --vert-pale: #1d2b25;
+    --texte: #e9e7e1;
+    --gris: #98a19d;
+    --bulle: #262c2a;
+    --gris-fonce: #c6ccc8;
+    --bord: #2d3335;
+    --papier: #121517;
+    --ardoise: #9aa3b0;
+    --surface: #1a1e20;
+    --surface-2: #16191b;
+    --surface-3: #242a2c;
+    --composeur: rgba(22, 25, 27, 0.92);
+    --voile: rgba(0, 0, 0, 0.55);
+    --ombre: rgba(0, 0, 0, 0.45);
+    --motif: rgba(99, 179, 147, 0.10);
+    --sur-vert: #10201a;
   }
   * { box-sizing: border-box; }
   /* Un display: grid plus bas écraserait l'attribut hidden : sans cette règle,
@@ -27,7 +59,7 @@
     font: 15px/1.55 "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
     background-color: var(--papier);
-    background-image: radial-gradient(circle, rgba(31, 92, 70, 0.13) 1px, transparent 1.3px);
+    background-image: radial-gradient(circle, var(--motif) 1px, transparent 1.3px);
     background-size: 24px 24px;
     background-position: 0 0;
   }
@@ -37,7 +69,7 @@
   /* ---------- barre latérale ---------- */
   .barre {
     width: 286px; flex: none; display: flex; flex-direction: column;
-    background: #fbfaf6; border-right: 1px solid var(--bord);
+    background: var(--surface-2); border-right: 1px solid var(--bord);
     transition: width .22s cubic-bezier(.2,.7,.3,1), opacity .16s ease;
     overflow: hidden;
   }
@@ -47,7 +79,7 @@
   .marque { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .sceau {
     width: 30px; height: 30px; flex: none; border-radius: 8px; background: var(--vert);
-    color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 15px;
+    color: var(--sur-vert); display: grid; place-items: center; font-weight: 700; font-size: 15px;
     letter-spacing: -0.02em;
   }
   .titre h1 {
@@ -59,10 +91,10 @@
     border: 0; background: none; color: var(--gris); cursor: pointer; font-size: 15px;
     padding: 3px 5px; border-radius: 5px; line-height: 1;
   }
-  .plier:hover { background: #efede5; color: var(--vert); }
+  .plier:hover { background: var(--surface-3); color: var(--vert); }
 
   .nouvelle {
-    margin: 0 12px 10px; padding: 9px 12px; border: 1px solid var(--bord); background: #fff;
+    margin: 0 12px 10px; padding: 9px 12px; border: 1px solid var(--bord); background: var(--surface);
     border-radius: 7px; text-align: left; font-size: 13.5px; cursor: pointer;
     display: flex; align-items: center; gap: 9px;
     transition: border-color .14s, background .14s, color .14s;
@@ -77,11 +109,11 @@
   }
   .element {
     display: block; width: 100%; text-align: left; border: 0; background: transparent;
-    padding: 8px 10px; border-radius: 6px; font-size: 13.5px; color: #333a37;
+    padding: 8px 10px; border-radius: 6px; font-size: 13.5px; color: var(--gris-fonce);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
     transition: background .13s, color .13s;
   }
-  .element:hover { background: #efede5; }
+  .element:hover { background: var(--surface-3); }
   .element.actif { background: var(--vert-pale); color: var(--vert); font-weight: 500; }
 
   .pied {
@@ -98,13 +130,14 @@
     padding: 6px 7px; border-radius: 6px; font-size: 12.5px; color: var(--gris-fonce);
     cursor: pointer; text-align: left; transition: background .13s;
   }
-  .fichiers button:hover { background: #efede5; }
+  .fichiers button:hover { background: var(--surface-3); }
+  .fichiers button.copie { background: var(--vert-pale); color: var(--vert); }
   .fichiers button.actif { background: var(--vert-pale); color: var(--vert); }
   .fichiers .puce { width: 7px; height: 7px; border-radius: 50%; border: 1px solid currentColor; flex: none; }
   .fichiers button.actif .puce { background: currentColor; }
   .fichiers .nom { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ajouter {
-    width: 100%; border: 1px dashed var(--bord); background: #fff; border-radius: 6px;
+    width: 100%; border: 1px dashed var(--bord); background: var(--surface); border-radius: 6px;
     padding: 7px 8px; font-size: 12.5px; color: var(--gris); cursor: pointer; text-align: left;
     transition: border-color .14s, color .14s;
   }
@@ -112,7 +145,7 @@
 
   select.modele {
     width: 100%; padding: 7px 26px 7px 9px; border: 1px solid var(--bord); border-radius: 6px;
-    background: #fff; font: inherit; font-size: 12.5px; color: var(--texte); cursor: pointer;
+    background: var(--surface); font: inherit; font-size: 12.5px; color: var(--texte); cursor: pointer;
     appearance: none; -webkit-appearance: none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%236b7370' stroke-width='1.6' stroke-linecap='round'/></svg>");
     background-repeat: no-repeat; background-position: right 9px center;
@@ -122,9 +155,27 @@
 
   /* ---------- zone principale ---------- */
   .principal { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
-  .entete-principal { display: flex; align-items: center; height: 44px; padding: 0 12px; gap: 8px; flex: none; }
+  .entete-principal {
+    display: flex; align-items: center; gap: 9px; height: 48px; padding: 0 14px; flex: none;
+    background: var(--surface-2); border-bottom: 1px solid var(--bord);
+  }
+  .point { width: 7px; height: 7px; border-radius: 50%; background: var(--vert); flex: none; }
+  .point.inactif { background: var(--gris); opacity: 0.5; }
+  .entete-nom {
+    font-size: 13px; font-weight: 500; color: var(--texte); min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .entete-detail { font-size: 11.5px; color: var(--gris); white-space: nowrap; }
+  .entete-droite { margin-left: auto; display: flex; align-items: center; gap: 14px; flex: none; }
+  .entete-session { font-size: 11.5px; color: var(--gris); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .theme {
+    width: 30px; height: 30px; border: 1px solid var(--bord); background: var(--surface);
+    color: var(--gris-fonce); border-radius: 7px; display: grid; place-items: center; cursor: pointer;
+    transition: border-color .14s, color .14s;
+  }
+  .theme:hover { border-color: var(--vert); color: var(--vert); }
   .ouvrir {
-    border: 1px solid var(--bord); background: #fff; border-radius: 7px; width: 32px; height: 32px;
+    border: 1px solid var(--bord); background: var(--surface); border-radius: 7px; width: 32px; height: 32px;
     display: grid; place-items: center; cursor: pointer; color: var(--gris-fonce);
     transition: border-color .14s, color .14s;
   }
@@ -137,7 +188,7 @@
   .accueil .aide { margin: 0 0 30px; color: var(--gris); font-size: 14.5px; max-width: 56ch; }
   .cartes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .carte {
-    border: 1px solid var(--bord); background: #fff; border-radius: 9px; padding: 13px 15px;
+    border: 1px solid var(--bord); background: var(--surface); border-radius: 9px; padding: 13px 15px;
     text-align: left; font-size: 13.5px; line-height: 1.4; color: var(--gris-fonce); cursor: pointer;
     transition: background .16s ease, color .16s ease, border-color .16s ease, transform .16s ease;
     display: flex; flex-direction: column; gap: 5px;
@@ -145,10 +196,10 @@
   .carte .carte-gros { font-weight: 500; font-size: 13.5px; }
   .carte .carte-petit { font-size: 11.5px; color: var(--gris); transition: color .16s ease; }
   .carte:hover, .carte:focus-visible {
-    background: var(--vert); color: #fff; border-color: var(--vert); transform: translateY(-1px);
+    background: var(--vert); color: var(--sur-vert); border-color: var(--vert); transform: translateY(-1px);
     outline: none;
   }
-  .carte:hover .carte-petit, .carte:focus-visible .carte-petit { color: rgba(255, 255, 255, 0.78); }
+  .carte:hover .carte-petit, .carte:focus-visible .carte-petit { opacity: 0.78; }
 
   @keyframes apparaitre {
     from { opacity: 0; transform: translateY(8px); }
@@ -192,7 +243,7 @@
     border: 1px solid var(--vert); background: transparent; color: var(--vert);
     cursor: pointer; transition: background 120ms ease, color 120ms ease;
   }
-  .bouton-issue:hover { background: var(--vert); color: #fff; }
+  .bouton-issue:hover { background: var(--vert); color: var(--sur-vert); }
   .issue-note { font-size: 12.5px; color: var(--gris); }
   .lien {
     background: none; border: 0; padding: 0; cursor: pointer; font-size: 12.5px;
@@ -218,37 +269,52 @@
   }
 
   /* ---------- composeur ---------- */
-  .composeur { border-top: 1px solid var(--bord); background: rgba(251, 250, 246, 0.9); padding: 14px 34px 16px; }
+  .composeur { border-top: 1px solid var(--bord); background: var(--composeur); padding: 14px 34px 16px; }
   .rangee { max-width: 740px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
   #q {
     flex: 1; min-width: 0; padding: 13px 16px; border: 1px solid var(--bord); border-radius: 10px;
-    font: inherit; font-size: 14.5px; color: var(--texte); background: #fff;
+    font: inherit; font-size: 14.5px; color: var(--texte); background: var(--surface);
     transition: border-color .14s, box-shadow .14s;
   }
   #q:focus { outline: none; border-color: var(--vert); box-shadow: 0 0 0 3px rgba(31, 92, 70, 0.09); }
   .envoi {
     width: 46px; height: 46px; flex: none; border: 0; border-radius: 10px; background: var(--vert);
-    color: #fff; display: grid; place-items: center; cursor: pointer;
+    color: var(--sur-vert); display: grid; place-items: center; cursor: pointer;
     transition: background .14s, transform .1s;
   }
   .envoi:hover { background: var(--vert-sombre); }
   .envoi:active { transform: scale(0.96); }
   .envoi:disabled { opacity: 0.45; cursor: default; }
   .note { max-width: 740px; margin: 9px auto 0; font-size: 11.5px; color: var(--gris); }
+  #q:disabled { background: var(--surface-3); color: var(--gris); cursor: progress; }
+
+  /* ---------- l'attente : un chat qui remue la queue ---------- */
+  .attente { display: flex; align-items: center; gap: 10px; color: var(--gris); font-size: 13.5px; }
+  .attente svg { flex: none; overflow: visible; color: var(--vert); }
+  .attente .queue { transform-origin: 20.4px 23.2px; animation: queue 1.15s ease-in-out infinite alternate; }
+  @keyframes queue { from { transform: rotate(-15deg); } to { transform: rotate(13deg); } }
+  .attente .oeil { transform-origin: 13.2px 13.1px; animation: cligner 4.2s infinite; }
+  @keyframes cligner { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.15); } }
+  .attente .points span { animation: respirer 1.2s infinite; }
+  .attente .points span:nth-child(2) { animation-delay: 0.16s; }
+  .attente .points span:nth-child(3) { animation-delay: 0.32s; }
+  @keyframes respirer { 0%, 100% { opacity: 0.22; } 50% { opacity: 1; } }
+
+  .actions-tour { display: flex; align-items: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
 
   /* ---------- boîte de dialogue ---------- */
   .voile {
-    position: fixed; inset: 0; background: rgba(21, 24, 26, 0.32);
+    position: fixed; inset: 0; background: var(--voile);
     display: grid; place-items: center; padding: 24px; z-index: 20;
     animation: apparaitre .16s ease both;
   }
   .boite {
-    background: #fff; border-radius: 12px; padding: 24px; width: 100%; max-width: 420px;
-    box-shadow: 0 12px 40px rgba(21, 24, 26, 0.16);
+    background: var(--surface); border-radius: 12px; padding: 24px; width: 100%; max-width: 420px;
+    box-shadow: 0 12px 40px var(--ombre);
   }
   .boite h2 { margin: 0 0 6px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
   .boite p { margin: 0 0 16px; font-size: 13px; color: var(--gris); line-height: 1.5; }
-  .boite code { background: #f2f0e9; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .boite code { background: var(--surface-3); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
   .boite input {
     width: 100%; padding: 11px 13px; border: 1px solid var(--bord); border-radius: 8px;
     font: inherit; font-size: 14px;
@@ -256,7 +322,7 @@
   .boite input:focus { outline: none; border-color: var(--vert); box-shadow: 0 0 0 3px rgba(31, 92, 70, 0.09); }
   .actions { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
   .bouton {
-    border: 0; background: var(--vert); color: #fff; padding: 11px 18px; border-radius: 8px;
+    border: 0; background: var(--vert); color: var(--sur-vert); padding: 11px 18px; border-radius: 8px;
     font-size: 14px; cursor: pointer; transition: background .14s;
   }
   .bouton:hover { background: var(--vert-sombre); }
@@ -310,6 +376,13 @@
       <button class="ouvrir" id="ouvrir" type="button" title="Afficher la barre" aria-label="Afficher la barre" hidden>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
+      <span class="point inactif" id="entete-point" aria-hidden="true"></span>
+      <span class="entete-nom" id="entete-nom">Aucun fichier</span>
+      <span class="entete-detail" id="entete-detail"></span>
+      <div class="entete-droite">
+        <span class="entete-session" id="entete-session"></span>
+        <button class="theme" id="theme" type="button" aria-label="Passer en sombre" title="Clair ou sombre"></button>
+      </div>
     </header>
 
     <div class="defilement" id="defilement">
@@ -365,7 +438,19 @@ const EXEMPLES = [
   { gros: "Combien traités pour une rhinite ?", petit: "traitements",
     q: "Combien de patients bénéficient d'un traitement contre la rhinite ?" }
 ];
+const PLACEHOLDER = "Combien de patients ont moins de 18 ans ?";
+const CHAT_ATTENTE =
+  '<svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path class="queue" d="M20.4 23.2c2.8.6 4.6-.6 4.6-2.5 0-1.7-1.5-2.2-1.5-3.4"/>' +
+  '<path d="M9.4 24.9c-1.9 0-3.1-1.3-3.1-3.2 0-3 2.3-5.2 5.6-5.2h4.2c3.3 0 5.6 2.2 5.6 5.2 0 1.9-1.2 3.2-3.1 3.2z"/>' +
+  '<circle cx="13.2" cy="13.2" r="5.1"/>' +
+  '<path d="M9.8 10.2 10.3 5.8 12.6 7.7M13.8 7.7 16.1 5.8 16.6 10.2"/>' +
+  '<g class="oeil" fill="currentColor" stroke="none"><circle cx="11.5" cy="13.1" r="0.75"/><circle cx="14.9" cy="13.1" r="0.75"/></g>' +
+  '</svg>';
+const ICONE_LUNE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 15.2A8.5 8.5 0 0 1 9 3.6a8.5 8.5 0 1 0 11.5 11.6z"/></svg>';
+const ICONE_SOLEIL = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7"/></svg>';
 let etat = { fichier: "", fichier_actif: "", fichiers: [], dictionnaire: {}, modele: "developpement", modeles: {}, entrees: [], session: { questions: 0, cout: 0 } };
+let enCours = false;
 let affichee = null;
 let detailsOuverts = false;
 
@@ -445,6 +530,14 @@ function dessinerFichiers() {
     b.innerHTML = '<span class="puce"></span><span class="nom"></span>';
     b.querySelector(".nom").textContent = nomCourt(chemin);
     b.addEventListener("click", () => activerFichier(chemin));
+    // Clic droit : le chemin complet part dans le presse-papiers. Le nom affiché
+    // est tronqué, et le chemin sert souvent à retrouver le fichier ailleurs.
+    b.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      copier(chemin, b, true);
+      b.classList.add("copie");
+      setTimeout(() => b.classList.remove("copie"), 900);
+    });
     li.appendChild(b);
     ul.appendChild(li);
   }
@@ -470,7 +563,90 @@ function dessinerPied() {
     : "";
 }
 
-function dessiner() { dessinerListe(); dessinerFichiers(); dessinerDico(); dessinerModele(); dessinerPied(); }
+function dessinerEntete() {
+  const actif = etat.fichier_actif || "";
+  $("entete-nom").textContent = actif ? nomCourt(actif) : "Aucun fichier";
+  $("entete-nom").title = actif;
+  $("entete-point").className = "point" + (actif ? "" : " inactif");
+  const modele = (etat.modeles || {})[etat.modele] || "";
+  $("entete-detail").textContent = modele ? "· " + modele : "";
+  const s = etat.session || { questions: 0, cout: 0 };
+  $("entete-session").textContent = s.questions
+    ? s.questions + (s.questions > 1 ? " questions" : " question") + " · " + euros(s.cout) : "";
+}
+
+function dessiner() {
+  dessinerListe(); dessinerFichiers(); dessinerDico(); dessinerModele(); dessinerPied(); dessinerEntete();
+}
+
+/* ---------- thème ---------- */
+const THEME_CLE = "datallergy.theme";
+
+function appliquerTheme(nom) {
+  const sombre = nom === "sombre";
+  document.documentElement.dataset.theme = sombre ? "sombre" : "clair";
+  // Certains moteurs gardent la couche de la barre latérale en cache et ne la
+  // repeignent qu'au coup suivant : une écriture de style la réveille, dans la
+  // même image, donc sans clignotement.
+  const barre = document.getElementById("barre");
+  if (barre) { barre.style.display = "none"; void barre.offsetHeight; barre.style.display = ""; }
+  $("theme").innerHTML = sombre ? ICONE_SOLEIL : ICONE_LUNE;
+  $("theme").setAttribute("aria-label", sombre ? "Passer en clair" : "Passer en sombre");
+  try { localStorage.setItem(THEME_CLE, sombre ? "sombre" : "clair"); } catch (e) {}
+}
+
+function basculerTheme() {
+  appliquerTheme(document.documentElement.dataset.theme === "sombre" ? "clair" : "sombre");
+}
+
+/* ---------- copier ---------- */
+function texteDuTour(entree) {
+  const valeur = entree.valeur === null || entree.valeur === undefined ? "" : String(entree.valeur);
+  return [entree.question, valeur || "Pas de réponse", entree.justification]
+    .filter((ligne) => ligne && String(ligne).trim()).join("\n");
+}
+
+async function copier(texte, bouton, muet = false) {
+  let fait = false;
+  try { await navigator.clipboard.writeText(texte); fait = true; } catch (e) { fait = false; }
+  if (!fait) {
+    // Le presse-papiers du navigateur peut manquer dans la fenêtre de bureau :
+    // une zone de texte cachée et execCommand font le même travail.
+    const zone = document.createElement("textarea");
+    zone.value = texte;
+    zone.setAttribute("readonly", "");
+    zone.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none";
+    document.body.appendChild(zone);
+    zone.select();
+    try { fait = document.execCommand("copy"); } catch (e) { fait = false; }
+    zone.remove();
+  }
+  if (muet) return;  // un élément de liste garde son libellé : on le fait clignoter
+  bouton.textContent = fait ? "Copié" : "Copie impossible";
+  setTimeout(() => { bouton.textContent = "Copier"; }, 1500);
+}
+
+/* ---------- l'attente ---------- */
+function tourAttente(question) {
+  const tour = document.createElement("div");
+  tour.className = "tour";
+  tour.innerHTML =
+    '<div class="moi"><span></span></div>' +
+    '<div class="agent attente">' + CHAT_ATTENTE +
+    '<span>Je lis le fichier</span><span class="points"><span>.</span><span>.</span><span>.</span></span></div>';
+  tour.querySelector(".moi span").textContent = question;
+  return tour;
+}
+
+function bloquer(oui) {
+  // Tant que la réponse n'est pas arrivée, on n'écrit pas : une seule question
+  // en vol, et la précédente ne se mélange pas à la suivante.
+  $("q").disabled = oui;
+  $("envoyer").disabled = oui;
+  $("charge").hidden = !oui;
+  $("q").placeholder = oui ? "J'attends la réponse…" : PLACEHOLDER;
+  if (!oui) $("q").focus();
+}
 
 function afficher(entree, seule = false) {
   affichee = entree;
@@ -494,7 +670,8 @@ function afficher(entree, seule = false) {
     '<p class="valeur"></p><p class="justification"></p>' +
     '<div class="issue" hidden><button class="bouton-issue" type="button"></button>' +
     '<span class="issue-note"></span></div>' +
-    '<button class="lien bascule" type="button">Détails techniques</button>' +
+    '<div class="actions-tour"><button class="lien bascule" type="button">Détails techniques</button>' +
+    '<button class="lien copier" type="button">Copier</button></div>' +
     '<dl class="details" hidden>' +
     '<dt>Répondu par</dt><dd class="d-couche">—</dd>' +
     '<dt>Coût</dt><dd class="d-cout">—</dd>' +
@@ -529,6 +706,7 @@ function afficher(entree, seule = false) {
     bascule.textContent = details.hidden ? "Détails techniques" : "Masquer les détails";
   });
 
+  bloc.querySelector(".copier").addEventListener("click", (e) => copier(texteDuTour(entree), e.target));
   dessinerIssue(entree, bloc);
   $("fil").appendChild(tour);
   $("defilement").scrollTop = $("defilement").scrollHeight;
@@ -544,23 +722,29 @@ function afficherAccueil() {
 
 /* ---------- actions ---------- */
 async function poser(question) {
-  $("envoyer").disabled = true;
-  $("charge").hidden = false;
+  if (enCours) return;
+  enCours = true;
+  bloquer(true);
+  $("accueil").hidden = true;
+  const attente = tourAttente(question);
+  $("fil").appendChild(attente);
+  $("defilement").scrollTop = $("defilement").scrollHeight;
   try {
     const reponse = await demander(question);
     etat = await lireEtat();
     const gardee = (etat.entrees || []).find((e) => e.question === question) ||
       Object.assign({}, reponse, { question: question });
+    attente.remove();
     afficher(gardee);
   } catch (e) {
+    attente.remove();
     $("q").value = question;  // la question n'est pas perdue : on peut la renvoyer
     afficher({ question, statut: "erreur", valeur: "", duree: 0, cout: 0, code: "panne",
       justification: "Je n'ai pas pu obtenir de réponse. Vérifiez que l'agent répond toujours, puis réessayez.",
       couche: "—", jetons: null, quand: new Date().toISOString() });
   } finally {
-    $("charge").hidden = true;
-    $("envoyer").disabled = false;
-    $("q").focus();
+    enCours = false;
+    bloquer(false);
   }
 }
 
@@ -700,7 +884,8 @@ $("poser").addEventListener("submit", (e) => {
   if (texte) { $("q").value = ""; poser(texte); }
 });
 
-$("nouvelle").addEventListener("click", () => { $("q").value = ""; afficherAccueil(); $("q").focus(); });
+$("nouvelle").addEventListener("click", () => { if (enCours) return; $("q").value = ""; afficherAccueil(); $("q").focus(); });
+$("theme").addEventListener("click", basculerTheme);
 $("plier").addEventListener("click", () => plier(true));
 $("ouvrir").addEventListener("click", () => plier(false));
 $("ajouter").addEventListener("click", ajouterFichier);
@@ -737,11 +922,16 @@ for (const exemple of EXEMPLES) {
   petit.className = "carte-petit";
   petit.textContent = exemple.petit;
   b.append(gros, petit);
-  b.addEventListener("click", () => poser(exemple.q));
+  b.addEventListener("click", () => { if (!enCours) poser(exemple.q); });
   $("exemples").appendChild(b);
 }
 
 async function demarrer() {
+  try {
+    const garde = localStorage.getItem(THEME_CLE);
+    appliquerTheme(garde || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "sombre" : "clair"));
+  } catch (e) { appliquerTheme("clair"); }
+  $("q").placeholder = PLACEHOLDER;
   try { etat = await lireEtat(); } catch (e) { /* premier envoi : l'état viendra ensuite */ }
   if (!etat.entrees) etat.entrees = [];
   try { plier(localStorage.getItem("datallergy.barre") === "repliee"); } catch (e) {}

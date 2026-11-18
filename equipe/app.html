@@ -3,91 +3,165 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Datallergy</title>
+<title>DatAllerGy</title>
 <style>
   :root {
     --vert: #1f5c46;
     --vert-sombre: #174534;
-    --vert-pale: #eef4f0;
-    --texte: #16191a;
-    --gris: #6c7570;
-    --gris-fonce: #4b524e;
-    --bord: #e4e2db;
-    --barre: #faf9f6;
+    --vert-pale: #e9f0eb;
+    --texte: #15181a;
+    --gris: #6b7370;
+    --gris-fonce: #434a47;
+    --bord: #e2e0d8;
+    --papier: #f7f5ef;
     --ardoise: #5b6470;
   }
   * { box-sizing: border-box; }
+  /* Un display: grid plus bas écraserait l'attribut hidden : sans cette règle,
+     la boîte de dialogue de la clé s'ouvre au chargement. */
+  [hidden] { display: none !important; }
   html, body { height: 100%; }
   body {
-    margin: 0; background: #fff; color: var(--texte);
+    margin: 0; color: var(--texte);
     font: 15px/1.55 "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
+    background-color: var(--papier);
+    background-image: radial-gradient(circle, rgba(31, 92, 70, 0.13) 1px, transparent 1.3px);
+    background-size: 24px 24px;
+    background-position: 0 0;
   }
   button { font: inherit; color: inherit; }
   .app { display: flex; height: 100vh; overflow: hidden; }
 
   /* ---------- barre latérale ---------- */
   .barre {
-    width: 268px; flex: none; background: var(--barre); border-right: 1px solid var(--bord);
-    display: flex; flex-direction: column;
+    width: 286px; flex: none; display: flex; flex-direction: column;
+    background: #fbfaf6; border-right: 1px solid var(--bord);
+    transition: width .22s cubic-bezier(.2,.7,.3,1), opacity .16s ease;
+    overflow: hidden;
   }
-  .marque { padding: 20px 18px 14px; }
-  .marque h1 { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
-  .marque span { display: block; font-size: 11.5px; color: var(--gris); letter-spacing: 0.02em; margin-top: 1px; }
+  .app.replie .barre { width: 0; opacity: 0; border-right: 0; }
+
+  .entete-barre { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 14px 14px 18px; }
+  .marque { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .sceau {
+    width: 30px; height: 30px; flex: none; border-radius: 8px; background: var(--vert);
+    color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+  .titre h1 {
+    margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.1;
+    color: var(--texte); white-space: nowrap;
+  }
+  .titre span { display: block; font-size: 11px; color: var(--gris); letter-spacing: 0.03em; margin-top: 2px; white-space: nowrap; }
+  .plier {
+    border: 0; background: none; color: var(--gris); cursor: pointer; font-size: 15px;
+    padding: 3px 5px; border-radius: 5px; line-height: 1;
+  }
+  .plier:hover { background: #efede5; color: var(--vert); }
+
   .nouvelle {
     margin: 0 12px 10px; padding: 9px 12px; border: 1px solid var(--bord); background: #fff;
-    border-radius: 6px; text-align: left; font-size: 13.5px; cursor: pointer;
-    display: flex; align-items: center; gap: 9px; transition: border-color .12s, background .12s;
+    border-radius: 7px; text-align: left; font-size: 13.5px; cursor: pointer;
+    display: flex; align-items: center; gap: 9px;
+    transition: border-color .14s, background .14s, color .14s;
   }
-  .nouvelle:hover { border-color: #cfccc2; background: #fffdf9; }
+  .nouvelle:hover { border-color: var(--vert); color: var(--vert); background: var(--vert-pale); }
   .nouvelle .plus { color: var(--vert); font-size: 15px; line-height: 1; }
-  .liste { flex: 1; overflow-y: auto; padding: 2px 8px 14px; }
+
+  .liste { flex: 1; overflow-y: auto; padding: 2px 8px 12px; }
   .liste:empty::after {
     content: "Vos questions apparaîtront ici."; display: block; padding: 10px;
     font-size: 12.5px; color: var(--gris);
   }
   .element {
     display: block; width: 100%; text-align: left; border: 0; background: transparent;
-    padding: 8px 10px; border-radius: 6px; font-size: 13.5px; color: #39403c;
+    padding: 8px 10px; border-radius: 6px; font-size: 13.5px; color: #333a37;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
-    transition: background .12s, color .12s;
+    transition: background .13s, color .13s;
   }
-  .element:hover { background: #f1efe9; }
-  .element.actif { background: var(--vert-pale); color: var(--vert); }
+  .element:hover { background: #efede5; }
+  .element.actif { background: var(--vert-pale); color: var(--vert); font-weight: 500; }
+
   .pied {
-    border-top: 1px solid var(--bord); padding: 11px 14px 13px;
-    display: flex; flex-direction: column; gap: 7px; font-size: 12px; color: var(--gris);
+    border-top: 1px solid var(--bord); padding: 12px 14px 14px;
+    display: flex; flex-direction: column; gap: 14px;
   }
-  .fichier {
-    text-align: left; background: none; border: 0; padding: 0; cursor: pointer;
-    max-width: 100%; overflow: hidden;
+  .intitule {
+    font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--gris); margin-bottom: 6px;
   }
-  .fichier .intitule {
-    display: block; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--gris);
+  .fichiers { list-style: none; margin: 0 0 6px; padding: 0; max-height: 132px; overflow-y: auto; }
+  .fichiers button {
+    width: 100%; display: flex; align-items: center; gap: 8px; background: none; border: 0;
+    padding: 6px 7px; border-radius: 6px; font-size: 12.5px; color: var(--gris-fonce);
+    cursor: pointer; text-align: left; transition: background .13s;
   }
-  .fichier #nom-fichier {
-    display: block; font-size: 12.5px; color: var(--gris-fonce);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  .fichiers button:hover { background: #efede5; }
+  .fichiers button.actif { background: var(--vert-pale); color: var(--vert); }
+  .fichiers .puce { width: 7px; height: 7px; border-radius: 50%; border: 1px solid currentColor; flex: none; }
+  .fichiers button.actif .puce { background: currentColor; }
+  .fichiers .nom { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ajouter {
+    width: 100%; border: 1px dashed var(--bord); background: #fff; border-radius: 6px;
+    padding: 7px 8px; font-size: 12.5px; color: var(--gris); cursor: pointer; text-align: left;
+    transition: border-color .14s, color .14s;
   }
-  .fichier:hover #nom-fichier { color: var(--vert); text-decoration: underline; text-underline-offset: 2px; }
+  .ajouter:hover { border-color: var(--vert); color: var(--vert); }
+
+  select.modele {
+    width: 100%; padding: 7px 26px 7px 9px; border: 1px solid var(--bord); border-radius: 6px;
+    background: #fff; font: inherit; font-size: 12.5px; color: var(--texte); cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%236b7370' stroke-width='1.6' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat; background-position: right 9px center;
+  }
+  select.modele:hover { border-color: #cfccc2; }
+  .session { font-size: 11.5px; color: var(--gris); min-height: 15px; }
 
   /* ---------- zone principale ---------- */
-  .principal { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .principal { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
+  .entete-principal { display: flex; align-items: center; height: 44px; padding: 0 12px; gap: 8px; flex: none; }
+  .ouvrir {
+    border: 1px solid var(--bord); background: #fff; border-radius: 7px; width: 32px; height: 32px;
+    display: grid; place-items: center; cursor: pointer; color: var(--gris-fonce);
+    transition: border-color .14s, color .14s;
+  }
+  .ouvrir:hover { border-color: var(--vert); color: var(--vert); }
   .defilement { flex: 1; overflow-y: auto; padding: 0 34px; }
-  .contenu { max-width: 740px; margin: 0 auto; padding: 44px 0 28px; }
+  .contenu { max-width: 740px; margin: 0 auto; padding: 10px 0 28px; }
 
-  .accueil h2 { margin: 0 0 6px; font-size: 21px; font-weight: 600; letter-spacing: -0.015em; }
-  .accueil .aide { margin: 0 0 28px; color: var(--gris); font-size: 14px; max-width: 54ch; }
+  .accueil { padding-top: 26px; }
+  .accueil h2 { margin: 0 0 8px; font-size: 25px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.24; }
+  .accueil .aide { margin: 0 0 30px; color: var(--gris); font-size: 14.5px; max-width: 56ch; }
   .cartes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .carte {
-    border: 1px solid var(--bord); background: #fff; border-radius: 8px; padding: 12px 14px;
-    text-align: left; font-size: 13.5px; color: var(--gris-fonce); cursor: pointer;
-    transition: border-color .12s, color .12s;
+    border: 1px solid var(--bord); background: #fff; border-radius: 9px; padding: 13px 15px;
+    text-align: left; font-size: 13.5px; line-height: 1.4; color: var(--gris-fonce); cursor: pointer;
+    transition: background .16s ease, color .16s ease, border-color .16s ease, transform .16s ease;
+    display: flex; flex-direction: column; gap: 5px;
   }
-  .carte:hover { border-color: #b9cfc4; color: var(--vert); }
+  .carte .carte-gros { font-weight: 500; font-size: 13.5px; }
+  .carte .carte-petit { font-size: 11.5px; color: var(--gris); transition: color .16s ease; }
+  .carte:hover, .carte:focus-visible {
+    background: var(--vert); color: #fff; border-color: var(--vert); transform: translateY(-1px);
+    outline: none;
+  }
+  .carte:hover .carte-petit, .carte:focus-visible .carte-petit { color: rgba(255, 255, 255, 0.78); }
 
-  .question { margin: 0 0 20px; font-size: 23px; line-height: 1.32; font-weight: 600; letter-spacing: -0.015em; }
-  .reponse { border: 1px solid var(--bord); border-radius: 10px; padding: 22px 24px 20px; }
+  @keyframes apparaitre {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  .question {
+    margin: 0 0 20px; font-size: 23px; line-height: 1.31; font-weight: 700;
+    letter-spacing: -0.022em; animation: apparaitre .26s cubic-bezier(.2,.7,.3,1) both;
+  }
+  .reponse {
+    border: 1px solid var(--bord); border-radius: 12px; padding: 22px 24px 20px;
+    background: #fff; box-shadow: 0 1px 2px rgba(21, 24, 26, 0.04);
+    animation: apparaitre .32s cubic-bezier(.2,.7,.3,1) both;
+  }
   .entete { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .etiquette {
     font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px;
@@ -96,16 +170,17 @@
   .etiquette.refus, .etiquette.illisible { color: var(--ardoise); }
   .horodatage { font-size: 12px; color: var(--gris); }
   .valeur {
-    font-size: 42px; line-height: 1.14; font-weight: 600; letter-spacing: -0.02em;
+    font-size: 44px; line-height: 1.13; font-weight: 700; letter-spacing: -0.03em;
     margin: 14px 0 8px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
   }
   .valeur.longue { font-size: 17px; line-height: 1.6; font-weight: 500; letter-spacing: 0; }
   .justification { margin: 0; color: var(--gris-fonce); font-size: 14.5px; max-width: 62ch; }
   .lien {
-    background: none; border: 0; padding: 0; margin-top: 18px; cursor: pointer;
-    font-size: 12.5px; color: var(--gris); text-decoration: underline; text-underline-offset: 3px;
+    background: none; border: 0; padding: 0; cursor: pointer; font-size: 12.5px;
+    color: var(--gris); text-decoration: underline; text-underline-offset: 3px;
   }
   .lien:hover { color: var(--vert); }
+  #details-bascule { margin-top: 18px; }
   dl.details {
     margin: 14px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 26px;
     font-size: 12.5px; border-top: 1px solid var(--bord); padding-top: 14px;
@@ -113,44 +188,106 @@
   dl.details dt { color: var(--gris); }
   dl.details dd { margin: 0; color: var(--texte); font-variant-numeric: tabular-nums; }
 
-  /* ---------- composeur ---------- */
-  .composeur { border-top: 1px solid var(--bord); background: #fff; padding: 14px 34px 16px; }
-  .rangee { max-width: 740px; margin: 0 auto; display: flex; gap: 10px; }
-  #q {
-    flex: 1; min-width: 0; padding: 13px 15px; border: 1px solid var(--bord); border-radius: 8px;
-    font: inherit; font-size: 14.5px; color: var(--texte); background: #fff;
-    transition: border-color .12s;
+  .charge { position: absolute; top: 0; left: 0; right: 0; height: 2px; overflow: hidden; }
+  .charge span {
+    display: block; height: 100%; width: 30%; background: var(--vert); border-radius: 2px;
+    animation: glisser 1.4s ease-in-out infinite;
   }
-  #q:focus { outline: none; border-color: var(--vert); box-shadow: 0 0 0 3px rgba(31, 92, 70, 0.08); }
+  @keyframes glisser {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+
+  /* ---------- composeur ---------- */
+  .composeur { border-top: 1px solid var(--bord); background: rgba(251, 250, 246, 0.9); padding: 14px 34px 16px; }
+  .rangee { max-width: 740px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
+  #q {
+    flex: 1; min-width: 0; padding: 13px 16px; border: 1px solid var(--bord); border-radius: 10px;
+    font: inherit; font-size: 14.5px; color: var(--texte); background: #fff;
+    transition: border-color .14s, box-shadow .14s;
+  }
+  #q:focus { outline: none; border-color: var(--vert); box-shadow: 0 0 0 3px rgba(31, 92, 70, 0.09); }
+  .envoi {
+    width: 46px; height: 46px; flex: none; border: 0; border-radius: 10px; background: var(--vert);
+    color: #fff; display: grid; place-items: center; cursor: pointer;
+    transition: background .14s, transform .1s;
+  }
+  .envoi:hover { background: var(--vert-sombre); }
+  .envoi:active { transform: scale(0.96); }
+  .envoi:disabled { opacity: 0.45; cursor: default; }
+  .note { max-width: 740px; margin: 9px auto 0; font-size: 11.5px; color: var(--gris); }
+
+  /* ---------- boîte de dialogue ---------- */
+  .voile {
+    position: fixed; inset: 0; background: rgba(21, 24, 26, 0.32);
+    display: grid; place-items: center; padding: 24px; z-index: 20;
+    animation: apparaitre .16s ease both;
+  }
+  .boite {
+    background: #fff; border-radius: 12px; padding: 24px; width: 100%; max-width: 420px;
+    box-shadow: 0 12px 40px rgba(21, 24, 26, 0.16);
+  }
+  .boite h2 { margin: 0 0 6px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .boite p { margin: 0 0 16px; font-size: 13px; color: var(--gris); line-height: 1.5; }
+  .boite code { background: #f2f0e9; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .boite input {
+    width: 100%; padding: 11px 13px; border: 1px solid var(--bord); border-radius: 8px;
+    font: inherit; font-size: 14px;
+  }
+  .boite input:focus { outline: none; border-color: var(--vert); box-shadow: 0 0 0 3px rgba(31, 92, 70, 0.09); }
+  .actions { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
   .bouton {
-    border: 0; background: var(--vert); color: #fff; padding: 13px 20px; border-radius: 8px;
-    font-size: 14.5px; cursor: pointer; transition: background .12s;
+    border: 0; background: var(--vert); color: #fff; padding: 11px 18px; border-radius: 8px;
+    font-size: 14px; cursor: pointer; transition: background .14s;
   }
   .bouton:hover { background: var(--vert-sombre); }
-  .bouton:disabled { opacity: .55; cursor: default; }
-  .note { max-width: 740px; margin: 9px auto 0; font-size: 11.5px; color: var(--gris); }
-  #attente { color: var(--gris); font-size: 13.5px; margin-top: 26px; }
+  .message { margin: 12px 0 0; font-size: 12.5px; color: var(--ardoise); min-height: 16px; }
+  .message.ok { color: var(--vert); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
 </style>
 </head>
 <body>
-<div class="app">
-  <aside class="barre">
-    <div class="marque">
-      <h1>Datallergy</h1>
-      <span>analyste des données</span>
+<div class="app" id="app">
+  <aside class="barre" id="barre">
+    <div class="entete-barre">
+      <div class="marque">
+        <span class="sceau">D</span>
+        <div class="titre">
+          <h1>DatAllerGy</h1>
+          <span>analyste des données</span>
+        </div>
+      </div>
+      <button class="plier" id="plier" type="button" title="Replier la barre" aria-label="Replier la barre">‹</button>
     </div>
+
     <button class="nouvelle" id="nouvelle" type="button"><span class="plus">+</span> Nouvelle question</button>
     <nav class="liste" id="liste" aria-label="Questions posées"></nav>
+
     <div class="pied">
-      <button class="fichier" id="fichier" type="button" title="Changer le fichier de données">
-        <span class="intitule">Fichier de données</span>
-        <span id="nom-fichier">…</span>
-      </button>
-      <span id="session"></span>
+      <div>
+        <div class="intitule">Fichiers de données</div>
+        <ul class="fichiers" id="fichiers"></ul>
+        <button class="ajouter" id="ajouter" type="button">+ Ajouter un fichier</button>
+      </div>
+      <div>
+        <div class="intitule">Modèle</div>
+        <select class="modele" id="modele" aria-label="Modèle de langage"></select>
+        <button class="lien" id="cle" type="button" style="margin-top: 8px;">Clé d'API…</button>
+      </div>
+      <div class="session" id="session"></div>
     </div>
   </aside>
 
   <main class="principal">
+    <header class="entete-principal">
+      <button class="ouvrir" id="ouvrir" type="button" title="Afficher la barre" aria-label="Afficher la barre" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </header>
+
     <div class="defilement" id="defilement">
       <div class="contenu">
         <section id="accueil" class="accueil">
@@ -179,44 +316,65 @@
             </dl>
           </div>
         </section>
-
-        <p id="attente" hidden>Je calcule…</p>
       </div>
     </div>
 
     <form class="composeur" id="poser">
       <div class="rangee">
         <input id="q" autocomplete="off" required placeholder="Combien de patients ont moins de 18 ans ?">
-        <button class="bouton" id="envoyer" type="submit">Analyser</button>
+        <button class="envoi" id="envoyer" type="submit" aria-label="Envoyer la question" title="Envoyer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+        </button>
       </div>
       <p class="note">Une question déjà posée ne coûte rien : la réponse est gardée sur la machine.</p>
     </form>
+
+    <div class="charge" id="charge" hidden><span></span></div>
   </main>
+</div>
+
+<div class="voile" id="voile" hidden>
+  <div class="boite" role="dialog" aria-modal="true" aria-labelledby="titre-cle">
+    <h2 id="titre-cle">Clé d'API</h2>
+    <p>La clé est rangée dans <code>~/.allergylab/cle</code>, lisible de toi seul. Elle n'est jamais
+      réaffichée, jamais envoyée dans un fichier du projet.</p>
+    <input type="password" id="champ-cle" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
+    <div class="actions">
+      <button class="bouton" id="valider-cle" type="button">Enregistrer</button>
+      <button class="lien" id="fermer-cle" type="button">Annuler</button>
+    </div>
+    <p class="message" id="message-cle"></p>
+  </div>
 </div>
 
 <script>
 const $ = (id) => document.getElementById(id);
 const EXEMPLES = [
-  "Combien de patients sont inclus dans le jeu de données ?",
-  "Quel est l'âge médian des patients ?",
-  "Quel est le taux de sensibilisation chez les femmes comparé à celui des hommes ?",
-  "Combien de patients bénéficient d'un traitement contre la rhinite ?"
+  { gros: "Combien de patients au total ?", petit: "structure du fichier",
+    q: "Combien de patients sont inclus dans le jeu de données ?" },
+  { gros: "Quel est l'âge médian ?", petit: "âge",
+    q: "Quel est l'âge médian des patients ?" },
+  { gros: "Femmes et hommes, même taux ?", petit: "comparaison de groupes",
+    q: "Quel est le taux de sensibilisation chez les femmes comparé à celui des hommes ?" },
+  { gros: "Combien traités pour une rhinite ?", petit: "traitements",
+    q: "Combien de patients bénéficient d'un traitement contre la rhinite ?" }
 ];
-let etat = { fichier: "", entrees: [], session: { questions: 0, cout: 0 } };
+let etat = { fichier: "", fichier_actif: "", fichiers: [], modele: "developpement", modeles: {}, entrees: [], session: { questions: 0, cout: 0 } };
 let affichee = null;
 let detailsOuverts = false;
 
 const natif = () => (window.pywebview && window.pywebview.api) || null;
 
+async function poster(route, corps) {
+  const r = await fetch(route, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corps) });
+  if (!r.ok) throw new Error("serveur " + r.status);
+  return r.json();
+}
+
 async function demander(question) {
   const n = natif();
   if (n) return n.poser(question);
-  const r = await fetch("/api/question", {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question })
-  });
-  if (!r.ok) throw new Error("serveur " + r.status);
-  return r.json();
+  return poster("/api/question", { question });
 }
 
 async function lireEtat() {
@@ -224,13 +382,6 @@ async function lireEtat() {
   if (n) return n.etat();
   const r = await fetch("/api/etat");
   return r.json();
-}
-
-async function changerFichier() {
-  const n = natif();
-  if (!n) { alert("Le choix du fichier se fait dans la fenêtre de bureau."); return; }
-  const nouvel = await n.choisir_fichier();
-  if (nouvel && nouvel.fichier) { etat = nouvel; afficherAccueil(); dessiner(); }
 }
 
 function euros(n) {
@@ -244,10 +395,15 @@ function heure(iso) {
   return isNaN(d) ? "" : d.toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
 }
 
+function nomCourt(chemin) {
+  return String(chemin).split("/").pop();
+}
+
+/* ---------- dessin ---------- */
 function dessinerListe() {
   const liste = $("liste");
   liste.innerHTML = "";
-  for (const entree of etat.entrees) {
+  for (const entree of etat.entrees || []) {
     const b = document.createElement("button");
     b.type = "button";
     const actif = affichee && affichee.quand === entree.quand && affichee.question === entree.question;
@@ -259,15 +415,44 @@ function dessinerListe() {
   }
 }
 
+function dessinerFichiers() {
+  const ul = $("fichiers");
+  ul.innerHTML = "";
+  for (const chemin of etat.fichiers || []) {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = chemin === etat.fichier_actif ? "actif" : "";
+    b.title = chemin;
+    b.innerHTML = '<span class="puce"></span><span class="nom"></span>';
+    b.querySelector(".nom").textContent = nomCourt(chemin);
+    b.addEventListener("click", () => activerFichier(chemin));
+    li.appendChild(b);
+    ul.appendChild(li);
+  }
+}
+
+function dessinerModele() {
+  const select = $("modele");
+  const modeles = etat.modeles || {};
+  select.innerHTML = "";
+  for (const [cle, libelle] of Object.entries(modeles)) {
+    const option = document.createElement("option");
+    option.value = cle;
+    option.textContent = libelle;
+    option.selected = cle === etat.modele;
+    select.appendChild(option);
+  }
+}
+
 function dessinerPied() {
-  $("nom-fichier").textContent = etat.fichier || "aucun";
   const s = etat.session || { questions: 0, cout: 0 };
   $("session").textContent = s.questions
     ? s.questions + (s.questions > 1 ? " questions" : " question") + " · " + euros(s.cout)
     : "";
 }
 
-function dessiner() { dessinerListe(); dessinerPied(); }
+function dessiner() { dessinerListe(); dessinerFichiers(); dessinerModele(); dessinerPied(); }
 
 function afficher(entree) {
   affichee = entree;
@@ -302,13 +487,13 @@ function afficherAccueil() {
   affichee = null;
   $("courant").hidden = true;
   $("accueil").hidden = false;
-  $("attente").hidden = true;
   dessinerListe();
 }
 
+/* ---------- actions ---------- */
 async function poser(question) {
   $("envoyer").disabled = true;
-  $("attente").hidden = false;
+  $("charge").hidden = false;
   $("courant").hidden = true;
   try {
     const reponse = await demander(question);
@@ -321,12 +506,67 @@ async function poser(question) {
       justification: "Je n'ai pas pu obtenir de réponse. Vérifiez que l'agent répond toujours, puis réessayez.",
       couche: "—", jetons: null, quand: new Date().toISOString() });
   } finally {
-    $("attente").hidden = true;
+    $("charge").hidden = true;
     $("envoyer").disabled = false;
     $("q").focus();
   }
 }
 
+async function activerFichier(chemin) {
+  if (chemin === etat.fichier_actif) return;
+  const n = natif();
+  etat = n ? await n.activer_fichier(chemin) : await poster("/api/fichier", { chemin });
+  afficherAccueil();
+  dessiner();
+}
+
+async function ajouterFichier() {
+  const n = natif();
+  if (!n) { alert("Le choix des fichiers se fait dans la fenêtre de bureau."); return; }
+  etat = await n.choisir_fichier();
+  afficherAccueil();
+  dessiner();
+}
+
+async function changerModele(nom) {
+  const n = natif();
+  try {
+    etat = n ? await n.choisir_modele(nom) : await poster("/api/modele", { nom });
+  } catch (e) {
+    alert("Ce modèle n'a pas pu être choisi.");
+  }
+  dessiner();
+}
+
+/* ---------- boîte de dialogue de la clé ---------- */
+function ouvrirCle() {
+  $("message-cle").textContent = "";
+  $("message-cle").className = "message";
+  $("champ-cle").value = "";
+  $("voile").hidden = false;
+  $("champ-cle").focus();
+}
+
+async function enregistrerCle() {
+  const texte = $("champ-cle").value.trim();
+  const message = $("message-cle");
+  if (!texte) { message.textContent = "Colle la clé avant d'enregistrer."; return; }
+  const n = natif();
+  if (!n) { message.textContent = "À faire dans la fenêtre de bureau, ou avec « uv run kit cle »."; return; }
+  const retour = await n.enregistrer_cle(texte);
+  $("champ-cle").value = "";
+  message.textContent = retour.message || (retour.ok ? "Clé enregistrée." : "Enregistrement impossible.");
+  message.className = "message" + (retour.ok ? " ok" : "");
+}
+
+/* ---------- barre repliable ---------- */
+function plier(oui) {
+  $("app").classList.toggle("replie", oui);
+  $("ouvrir").hidden = !oui;
+  try { localStorage.setItem("datallergy.barre", oui ? "repliee" : "ouverte"); } catch (e) {}
+}
+
+/* ---------- démarrage ---------- */
 $("poser").addEventListener("submit", (e) => {
   e.preventDefault();
   const texte = $("q").value.trim();
@@ -334,7 +574,15 @@ $("poser").addEventListener("submit", (e) => {
 });
 
 $("nouvelle").addEventListener("click", () => { $("q").value = ""; afficherAccueil(); $("q").focus(); });
-$("fichier").addEventListener("click", changerFichier);
+$("plier").addEventListener("click", () => plier(true));
+$("ouvrir").addEventListener("click", () => plier(false));
+$("ajouter").addEventListener("click", ajouterFichier);
+$("modele").addEventListener("change", (e) => changerModele(e.target.value));
+$("cle").addEventListener("click", ouvrirCle);
+$("fermer-cle").addEventListener("click", () => { $("voile").hidden = true; });
+$("valider-cle").addEventListener("click", enregistrerCle);
+$("voile").addEventListener("click", (e) => { if (e.target === $("voile")) $("voile").hidden = true; });
+
 $("details-bascule").addEventListener("click", () => {
   detailsOuverts = !detailsOuverts;
   $("details").hidden = !detailsOuverts;
@@ -343,14 +591,23 @@ $("details-bascule").addEventListener("click", () => {
 
 for (const exemple of EXEMPLES) {
   const b = document.createElement("button");
-  b.type = "button"; b.className = "carte"; b.textContent = exemple;
-  b.addEventListener("click", () => poser(exemple));
+  b.type = "button";
+  b.className = "carte";
+  const gros = document.createElement("span");
+  gros.className = "carte-gros";
+  gros.textContent = exemple.gros;
+  const petit = document.createElement("span");
+  petit.className = "carte-petit";
+  petit.textContent = exemple.petit;
+  b.append(gros, petit);
+  b.addEventListener("click", () => poser(exemple.q));
   $("exemples").appendChild(b);
 }
 
 async function demarrer() {
   try { etat = await lireEtat(); } catch (e) { /* premier envoi : l'état viendra ensuite */ }
   if (!etat.entrees) etat.entrees = [];
+  try { plier(localStorage.getItem("datallergy.barre") === "repliee"); } catch (e) {}
   dessiner();
   afficherAccueil();
   $("q").focus();

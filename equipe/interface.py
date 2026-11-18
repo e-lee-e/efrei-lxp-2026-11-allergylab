@@ -33,7 +33,7 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from equipe import agent, cache, historique
+from equipe import agent, cache, historique, reglages
 from kit import modele, traces
 
 PAGE = Path(__file__).with_name("app.html")
@@ -115,11 +115,55 @@ def traiter(question: str) -> dict:
 def etat() -> dict:
     """Tout ce que la barre latérale et le pied de page affichent."""
     nom = cache.fichier().name
+    actifs = [str(cache.fichier())] + reglages.fichiers()
+    connus = list(dict.fromkeys(actifs))  # sans doublon, l'ordre de découverte gardé
     return {
         "fichier": nom,
+        "fichier_actif": str(cache.fichier()),
+        "fichiers": connus,
+        "modele": reglages.modele(),
+        "modeles": reglages.MODELES,
         "entrees": historique.du_fichier(nom),
         "session": {"questions": SESSION["questions"], "cout": round(SESSION["cout"], 6)},
     }
+
+
+def choisir_modele(nom: str) -> dict:
+    """Bascule le modèle du processus et le retient pour la prochaine session."""
+    reglages.choisir_modele(str(nom or "").strip())
+    return etat()
+
+
+def ajouter_fichiers(chemins) -> dict:
+    """Ajoute des fichiers à la liste connue, puis ouvre le premier."""
+    propres = [chemin for chemin in chemins if chemin]
+    reglages.ajouter_fichiers(propres)
+    if propres:
+        cache.choisir_fichier(propres[0])
+        reglages.retenir_fichier(propres[0])
+    return etat()
+
+
+def activer_fichier(chemin=None) -> dict:
+    """Ouvre un fichier déjà connu (None remet celui du kit)."""
+    cache.choisir_fichier(chemin)
+    reglages.retenir_fichier(cache.fichier() if chemin else None)
+    return etat()
+
+
+def enregistrer_cle(texte: str) -> dict:
+    """Range la clé d'API par le kit lui-même : il vérifie sa forme et la refuse dans le dépôt.
+
+    La clé n'est ni journalisée, ni renvoyée, ni gardée en mémoire ici : elle
+    part directement dans ~/.allergylab/cle, en 600.
+    """
+    from kit import cle as cle_du_kit
+
+    try:
+        cle_du_kit.enregistrer(str(texte or ""))
+    except Exception as erreur:  # CleRefusee : la forme ne va pas, le message dit pourquoi
+        return {"ok": False, "message": str(erreur)[:220]}
+    return {"ok": True, "message": "Clé enregistrée."}
 
 
 class Gestion(BaseHTTPRequestHandler):
@@ -166,8 +210,16 @@ class Gestion(BaseHTTPRequestHandler):
             if chemin_voulu and not Path(chemin_voulu).is_file():
                 self._json(400, {"erreur": "fichier introuvable"})
                 return
-            cache.choisir_fichier(chemin_voulu or None)
-            self._json(200, etat())
+            self._json(200, activer_fichier(chemin_voulu or None))
+        elif chemin == "/api/fichiers":
+            self._json(200, ajouter_fichiers([str(c) for c in corps.get("chemins") or []]))
+        elif chemin == "/api/modele":
+            try:
+                self._json(200, choisir_modele(str(corps.get("nom") or "")))
+            except ValueError as erreur:
+                self._json(400, {"erreur": str(erreur)})
+        elif chemin == "/api/cle":
+            self._json(400, {"erreur": "la clé s'enregistre dans la fenêtre de bureau, ou avec uv run kit cle"})
         else:
             self._json(404, {"erreur": "page inconnue"})
 

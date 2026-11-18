@@ -41,7 +41,7 @@ from smolagents import CodeAgent, ToolCallingAgent
 from kit import modele, reponse
 from kit.donnees import charger
 
-from equipe import cache, hors_sujet, routeur, traducteur
+from equipe import reglages, cache, hors_sujet, routeur, traducteur
 from equipe.outils.calculer import calculer
 from equipe.outils.chercher_colonne import chercher_colonne
 from equipe.outils.positives import positifs
@@ -91,6 +91,9 @@ def modele_du_jour():
     remplace modele.ModeleKit remplace aussi la classe de base.
     """
 
+    # `en_cours` est le nom que lit le kit pour choisir ses tarifs et son
+    # identifiant : on ne modifie que la mémoire du processus, jamais son fichier.
+    modele.en_cours = reglages.modele()
     base = modele.ModeleKit()
     generate = base.generate
     debut = time.monotonic()

@@ -14,7 +14,7 @@ import argparse
 
 import webview
 
-from equipe import cache, historique, interface
+from equipe import cache, historique, interface, reglages
 
 
 class Api:
@@ -35,18 +35,28 @@ class Api:
         return interface.traiter(question)
 
     def choisir_fichier(self):
-        """Ouvre le sélecteur du système et pointe le cache sur le fichier choisi."""
-        fenetre = webview.windows[0]
-        choix = fenetre.create_file_dialog(
+        """Ouvre le sélecteur du système : plusieurs fichiers à la fois, le premier devient le fichier lu."""
+        choix = webview.windows[0].create_file_dialog(
             webview.OPEN_DIALOG,
-            allow_multiple=False,
+            allow_multiple=True,
             file_types=("Fichiers de données (*.csv;*.xlsx;*.parquet)", "Tous les fichiers (*.*)"),
         )
         if not choix:
             return interface.etat()  # dialogue annulé : rien ne change
-        chemin = choix[0] if isinstance(choix, (list, tuple)) else choix
-        cache.choisir_fichier(chemin)
-        return interface.etat()
+        chemins = list(choix) if isinstance(choix, (list, tuple)) else [choix]
+        return interface.ajouter_fichiers(chemins)
+
+    def activer_fichier(self, chemin):
+        """Lit un fichier déjà connu, sans repasser par le sélecteur."""
+        return interface.activer_fichier(chemin)
+
+    def choisir_modele(self, nom):
+        """Bascule entre Haiku (développement) et Sonnet (officiel, 20× plus cher)."""
+        return interface.choisir_modele(nom)
+
+    def enregistrer_cle(self, texte):
+        """Range la clé d'API. Elle ne revient jamais vers la page, même en cas d'erreur."""
+        return interface.enregistrer_cle(texte)
 
     def oublier(self):
         """Efface la liste des questions. Les réponses en cache, elles, restent."""
@@ -58,6 +68,15 @@ def main():
     analyseur = argparse.ArgumentParser(description="Datallergy, en fenêtre native")
     analyseur.add_argument("--debug", action="store_true", help="ouvre l'inspecteur WebKit")
     options = analyseur.parse_args()
+
+    # Ce que la fenêtre avait retenu : le modèle et le fichier restent ceux d'hier.
+    retenu = reglages.lire().get("modele")
+    if retenu in reglages.MODELES:
+        reglages.choisir_modele(retenu, garder=False)
+    chemin_retenu = reglages.fichier_retenu()
+    if chemin_retenu:
+        cache.choisir_fichier(chemin_retenu)
+    reglages.ajouter_fichiers([str(cache.fichier())])  # le fichier du kit entre dans la liste connue
 
     webview.create_window(
         "Datallergy",

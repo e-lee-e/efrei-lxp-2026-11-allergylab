@@ -17,6 +17,7 @@ import pickle
 import unicodedata
 from pathlib import Path
 
+from equipe import reglages
 from kit.donnees import FICHIER, charger, colonnes
 
 DOSSIER = Path.home() / ".allergylab" / "cache"
@@ -32,9 +33,13 @@ _dosages = None
 # Le moteur qui a produit la réponse entre dans la clé : sans ça, une réponse
 # obtenue avec Haiku serait resservie à un run local, et inversement.
 def moteur():
-    """Le moteur en cours, tel qu'il entre dans la clé de cache."""
-    local = os.environ.get("ALLERGYLAB_MODELE", "").strip().lower() == "local"
-    return "codeagent-local" if local else "codeagent-anthropic"
+    """Le moteur en cours, tel qu'il entre dans la clé de cache.
+
+    Le modèle choisi en fait partie : une réponse de Haiku resservie à un appel
+    Sonnet serait présentée au mauvais tarif, et l'inverse ferait payer Haiku
+    pour un raisonnement qu'il n'a pas fait.
+    """
+    return f"codeagent-{reglages.modele()}"
 
 
 def actif():

@@ -1,0 +1,250 @@
+# Les quarante questions de la batterie extérieure (GPT), classées par famille.
+#
+#   A  question propre, réponse attendue dans le fichier
+#   B  même intention, question mal écrite ou familière
+#   C  question à filtres multiples, réponse dans le fichier mais composée
+#   D  vocabulaire du domaine, mais hors du fichier : le dictionnaire ne tranche pas
+#   E  hors sujet, sans aucun mot du domaine
+#
+# « attend » dit ce que l'agent doit rendre : "reponse" ou "abstention".
+# Aucun chiffre attendu n'est stocké ici : la réponse se calcule, elle ne se recopie pas.
+
+[[question]]
+id = "A01"
+famille = "A"
+texte = "Combien de patients sont inclus dans le jeu de données ?"
+attend = "reponse"
+
+[[question]]
+id = "A02"
+famille = "A"
+texte = "Quel est l'âge médian des patients ?"
+attend = "reponse"
+
+[[question]]
+id = "A03"
+famille = "A"
+texte = "Quelle est la répartition des patients entre les trois types de puces ?"
+attend = "reponse"
+
+[[question]]
+id = "A04"
+famille = "A"
+texte = "Combien de patients sont des femmes et combien sont des hommes ?"
+attend = "reponse"
+
+[[question]]
+id = "A05"
+famille = "A"
+texte = "Quelle région française compte le plus de patients ?"
+attend = "reponse"
+
+[[question]]
+id = "A06"
+famille = "A"
+texte = "Combien de patients présentent des symptômes cutanés ?"
+attend = "reponse"
+
+[[question]]
+id = "A07"
+famille = "A"
+texte = "Quel est le nombre de patients traités pour une rhinite ?"
+attend = "reponse"
+
+[[question]]
+id = "A08"
+famille = "A"
+texte = "Quelle est la proportion de patients ayant une sensibilisation positive parmi les hommes et les femmes ?"
+attend = "reponse"
+
+[[question]]
+id = "B01"
+famille = "B"
+texte = "Combien ya til de patient dans le fichier ?"
+attend = "reponse"
+
+[[question]]
+id = "B02"
+famille = "B"
+texte = "C'est quoi l'age moyen des patients stp ?"
+attend = "reponse"
+
+[[question]]
+id = "B03"
+famille = "B"
+texte = "Tu peux me dire cb de patients ont eu une puce ALEX ?"
+attend = "reponse"
+
+[[question]]
+id = "B04"
+famille = "B"
+texte = "Combien de femmes et d'hommes on a dans cette base ?"
+attend = "reponse"
+
+[[question]]
+id = "B05"
+famille = "B"
+texte = "Quelle region de france est la plus representee svp ?"
+attend = "reponse"
+
+[[question]]
+id = "B06"
+famille = "B"
+texte = "Ya combien de patients avec des symptomes cutanes ?"
+attend = "reponse"
+
+[[question]]
+id = "B07"
+famille = "B"
+texte = "Combien de patients prennent un traitement contre la rhinite ?"
+attend = "reponse"
+
+[[question]]
+id = "B08"
+famille = "B"
+texte = "Stp tu peux comparer le taux de sensibilisation chez les patients des zones rurales et urbaines ?"
+attend = "reponse"
+
+[[question]]
+id = "C01"
+famille = "C"
+texte = "Parmi les patients âgés de 18 à 30 ans, combien sont des femmes vivant en zone urbaine ?"
+attend = "reponse"
+
+[[question]]
+id = "C02"
+famille = "C"
+texte = "Quel est l'âge moyen des patients sous biothérapie, en excluant ceux dont l'âge est non renseigné ?"
+attend = "reponse"
+
+[[question]]
+id = "C03"
+famille = "C"
+texte = "Chez les patients de moins de 18 ans, quel est le taux de sensibilisation des hommes comparé à celui des femmes ?"
+attend = "reponse"
+
+[[question]]
+id = "C04"
+famille = "C"
+texte = "Combien de patients présentant des symptômes cutanés sont traités pour une rhinite, en excluant ceux dont le traitement est non renseigné ?"
+attend = "reponse"
+
+[[question]]
+id = "C05"
+famille = "C"
+texte = "Quelle est la répartition des trois types de puces chez les patients âgés de plus de 40 ans ?"
+attend = "reponse"
+
+[[question]]
+id = "C06"
+famille = "C"
+texte = "Comparez le taux de sensibilisation des patients ruraux, urbains et des patients dont la zone de résidence n'est pas renseignée."
+attend = "reponse"
+
+[[question]]
+id = "C07"
+famille = "C"
+texte = "Combien de patients de plus de 60 ans sont sous biothérapie, en excluant ceux qui présentent des symptômes cutanés ?"
+attend = "reponse"
+
+[[question]]
+id = "C08"
+famille = "C"
+texte = "Chez les patients âgés de 20 à 50 ans, comparez le nombre de femmes et d'hommes traités pour une rhinite et présentant des symptômes cutanés."
+attend = "reponse"
+
+[[question]]
+id = "D01"
+famille = "D"
+texte = "Quel pourcentage des patients est sensibilisé aux pollens ?"
+attend = "abstention"
+
+[[question]]
+id = "D02"
+famille = "D"
+texte = "Quelle est la concentration moyenne de Bet_v_1 en kUA/L ?"
+attend = "reponse"
+
+[[question]]
+id = "D03"
+famille = "D"
+texte = "À partir de quel seuil en kUA/L considère-t-on un dosage Act_d_1 comme positif ?"
+attend = "abstention"
+
+[[question]]
+id = "D04"
+famille = "D"
+texte = "Les patients ayant un dosage Der_p_1 élevé présentent-ils un risque accru de développer un asthme ?"
+attend = "abstention"
+
+[[question]]
+id = "D05"
+famille = "D"
+texte = "Quel est le taux de sensibilisation aux acariens chez les patients de moins de 18 ans ?"
+attend = "abstention"
+
+[[question]]
+id = "D06"
+famille = "D"
+texte = "Quelle molécule est la plus fortement associée aux allergies alimentaires ?"
+attend = "abstention"
+
+[[question]]
+id = "D07"
+famille = "D"
+texte = "Quel traitement recommanderiez-vous à un patient présentant des symptômes cutanés et une sensibilisation positive ?"
+attend = "abstention"
+
+[[question]]
+id = "D08"
+famille = "D"
+texte = "Peut-on prédire l'apparition d'une anaphylaxie chez les patients sensibilisés à partir de leurs dosages moléculaires ?"
+attend = "abstention"
+
+[[question]]
+id = "E01"
+famille = "E"
+texte = "Combien de joueurs ont participé à la dernière Coupe du monde de football ?"
+attend = "abstention"
+
+[[question]]
+id = "E02"
+famille = "E"
+texte = "Quelle est la capitale du Japon ?"
+attend = "abstention"
+
+[[question]]
+id = "E03"
+famille = "E"
+texte = "Comment calculer la complexité temporelle d'un algorithme de tri fusion ?"
+attend = "abstention"
+
+[[question]]
+id = "E04"
+famille = "E"
+texte = "Quel est le meilleur ordinateur portable gaming à moins de 1 500 euros ?"
+attend = "abstention"
+
+[[question]]
+id = "E05"
+famille = "E"
+texte = "Combien de planètes composent le système solaire ?"
+attend = "abstention"
+
+[[question]]
+id = "E06"
+famille = "E"
+texte = "Comment fonctionne le protocole TCP dans un réseau informatique ?"
+attend = "abstention"
+
+[[question]]
+id = "E07"
+famille = "E"
+texte = "Quel est le meilleur traitement pour améliorer les performances d'une carte graphique ?"
+attend = "abstention"
+
+[[question]]
+id = "E08"
+famille = "E"
+texte = "Combien de calories contient une portion de riz blanc cuit ?"
+attend = "abstention"

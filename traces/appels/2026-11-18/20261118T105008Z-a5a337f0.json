@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T10:50:08Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "63e3f4555df9c3ab",
+  "commit": "a4aa7d61e70f72627c5bcc3c9096f69a4d90ba4b",
+  "modifie": false,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "combien de patients ont  plus de 60 ans?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 222,
+    "justification": "222 patients sur 4210 dont l'âge est renseigné ont plus de 60 ans. Les 61 lignes sans âge sont exclues."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

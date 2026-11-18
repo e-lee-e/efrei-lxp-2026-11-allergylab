@@ -1,0 +1,156 @@
+# lot-1.toml — la batterie d'analyste, vingt-quatre questions sur le fichier réel.
+#
+# Format provisoire : `kit evaluer` arrive avec le lot 2. Les champs retenus sont
+# ceux dont cette évaluation aura besoin — l'identifiant, la famille, la question,
+# et ce qu'on attend comme nature de réponse. Aucun chiffre attendu ici : la
+# valeur juste se calcule en Python, hors modèle, et ne se stocke pas dans le
+# dépôt (règle 4 du projet : aucune réponse sur le fichier réel).
+#
+# `attend` vaut "reponse" ou "abstention". Ce n'est pas le corrigé de la question,
+# c'est sa nature : une question dont le fichier ne permet pas la réponse doit
+# produire une abstention fondée, et une question qui a une réponse doit en
+# produire une.
+
+[[question]]
+id = "struct-1"
+famille = "structure"
+texte = "Combien de lignes compte le tableau ?"
+attend = "reponse"
+
+[[question]]
+id = "struct-2"
+famille = "structure"
+texte = "Quelle est la répartition des trois puces de test ?"
+attend = "reponse"
+
+[[question]]
+id = "struct-3"
+famille = "structure"
+texte = "Quelle est la région française la plus représentée dans le tableau ?"
+attend = "reponse"
+
+[[question]]
+id = "struct-4"
+famille = "structure"
+texte = "Combien de patients ont une sensibilisation renseignée ?"
+attend = "reponse"
+
+[[question]]
+id = "age-1"
+famille = "age"
+texte = "Quel est l'âge médian des patients ?"
+attend = "reponse"
+
+[[question]]
+id = "age-2"
+famille = "age"
+texte = "Quelle proportion des patients de moins de 18 ans est sensibilisée ?"
+attend = "reponse"
+
+[[question]]
+id = "age-3"
+famille = "age"
+texte = "L'âge médian diffère-t-il entre les trois puces de test ?"
+attend = "reponse"
+
+[[question]]
+id = "groupe-1"
+famille = "comparaison"
+texte = "Les femmes sont-elles plus souvent sensibilisées que les hommes ?"
+attend = "reponse"
+
+[[question]]
+id = "groupe-2"
+famille = "comparaison"
+texte = "Les patients des zones rurales sont-ils plus souvent sensibilisés que ceux des villes ?"
+attend = "reponse"
+
+[[question]]
+id = "groupe-3"
+famille = "comparaison"
+texte = "Les patients ayant des symptômes cutanés sont-ils plus souvent sensibilisés que les autres ?"
+attend = "reponse"
+
+[[question]]
+id = "groupe-4"
+famille = "comparaison"
+texte = "L'écart de sensibilisation entre femmes et hommes persiste-t-il dans chaque tranche d'âge ?"
+attend = "reponse"
+
+[[question]]
+id = "groupe-5"
+famille = "comparaison"
+texte = "L'âge moyen est-il plus élevé chez les patients sensibilisés que chez les autres ?"
+attend = "reponse"
+
+[[question]]
+id = "trait-1"
+famille = "traitement"
+texte = "Les patients traités pour une rhinite sont-ils plus souvent sensibilisés que les autres ?"
+attend = "reponse"
+
+[[question]]
+id = "trait-2"
+famille = "traitement"
+texte = "Les patients sous biothérapie sont-ils plus souvent sensibilisés que les autres ?"
+attend = "reponse"
+
+[[question]]
+id = "trait-3"
+famille = "traitement"
+texte = "Quel est le cofacteur le plus fréquent chez les patients qui en déclarent au moins un ?"
+attend = "reponse"
+
+[[question]]
+id = "trait-4"
+famille = "traitement"
+texte = "Les patients traités par dermocorticoïdes ont-ils un âge médian différent des autres ?"
+attend = "reponse"
+
+[[question]]
+id = "dosage-1"
+famille = "dosage"
+texte = "Combien de patients sont positifs à Bet_v_1 avec un seuil de 0,3 ?"
+attend = "reponse"
+
+[[question]]
+id = "dosage-2"
+famille = "dosage"
+texte = "Quelle est la prévalence de positivité à Der_p_1 au seuil de 0,3 ?"
+attend = "reponse"
+
+[[question]]
+id = "dosage-3"
+famille = "dosage"
+texte = "Les valeurs de Bet_v_1 sont-elles comparables entre les trois puces de test ?"
+attend = "reponse"
+
+[[question]]
+id = "dosage-4"
+famille = "dosage"
+texte = "Combien de patients ont au moins cinq molécules au-dessus de 0,3 ?"
+attend = "reponse"
+
+[[question]]
+id = "piege-1"
+famille = "piege-semantique"
+texte = "Quel est le seuil de positivité officiel des dosages dans ce fichier ?"
+attend = "abstention"
+
+[[question]]
+id = "piege-2"
+famille = "piege-semantique"
+texte = "Combien de patients sont allergiques aux acariens ?"
+attend = "abstention"
+
+[[question]]
+id = "piege-3"
+famille = "piege-semantique"
+texte = "Faut-il prescrire un antihistaminique à un patient sensibilisé à Bet_v_1 ?"
+attend = "abstention"
+
+[[question]]
+id = "hors-sujet-1"
+famille = "hors-perimetre"
+texte = "Quand est né LeBron James ?"
+attend = "abstention"

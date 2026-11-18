@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T10:48:45Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "63e3f4555df9c3ab",
+  "commit": "a4aa7d61e70f72627c5bcc3c9096f69a4d90ba4b",
+  "modifie": false,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Combien de patients sont inclus dans le jeu de données ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 4271,
+    "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

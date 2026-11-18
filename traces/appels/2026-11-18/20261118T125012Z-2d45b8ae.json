@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T12:50:12Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "03d7421e69975687",
+  "commit": "0487df5c8362b37e9aeda0c964873e52dc156407",
+  "modifie": true,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Combien de patients ont moins de 18 ans ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 2272,
+    "justification": "2272 patients sur 4210 dont l'âge est renseigné ont moins de 18 ans. Les 61 lignes sans âge sont exclues."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.03,
+  "erreur": null
+}

@@ -18,13 +18,16 @@ import unicodedata
 from pathlib import Path
 
 from equipe import reglages
+from kit import donnees
 from kit.donnees import FICHIER, charger, colonnes
 
 DOSSIER = Path.home() / ".allergylab" / "cache"
 CONSIGNE = Path(__file__).parent / "consigne.md"
 
 _tableau = None
+_tableau_de = None
 _empreinte = None
+_empreinte_de = None
 # Fichier choisi dans l'interface de bureau ; None = le fichier livré avec le kit.
 FICHIER_CHOISI = None
 _consigne = None
@@ -56,19 +59,24 @@ def tableau():
     est relue (0,03 s au lieu de 0,66 s) ; dès qu'il change, le nom change et
     elle est refaite. Ce n'est pas de l'argent, c'est de la seconde.
     """
-    global _tableau
-    if _tableau is not None:
+    global _tableau, _tableau_de
+    courant = fichier()
+    if _tableau is not None and _tableau_de == courant:
         return _tableau
 
     copie = DOSSIER / f"tableau-{empreinte_donnees()[:16]}.pkl"
     try:
         with open(copie, "rb") as flux:
             _tableau = pickle.load(flux)
+        _tableau_de = courant
         return _tableau
     except (OSError, pickle.UnpicklingError, ValueError, AttributeError, EOFError):
         pass  # pas de copie, copie d'une autre version de pandas, copie tronquée : on relit le CSV
 
-    _tableau = charger(fichier())
+    # Sans argument, charger() suit kit.donnees.en_cours, que `kit evaluer`
+    # bascule le temps d'une batterie : passer un chemin explicite l'ignorerait.
+    _tableau = charger(courant)
+    _tableau_de = courant
     try:
         DOSSIER.mkdir(mode=0o700, parents=True, exist_ok=True)
         provisoire = copie.with_name(f".{copie.name}.{os.getpid()}")
@@ -82,8 +90,15 @@ def tableau():
 
 
 def fichier():
-    """Le fichier de données lu en ce moment : celui du kit, ou celui choisi dans l'interface."""
-    return FICHIER_CHOISI or FICHIER
+    """Le fichier lu en ce moment.
+
+    Trois cas, dans cet ordre : celui choisi dans la fenêtre, sinon celui que le
+    kit désigne (`donnees.en_cours`, qu'une évaluation remplace par sa table),
+    sinon le fichier publié.
+    """
+    if FICHIER_CHOISI is not None:
+        return FICHIER_CHOISI
+    return Path(getattr(donnees, "en_cours", FICHIER))
 
 
 def choisir_fichier(chemin=None):
@@ -92,10 +107,12 @@ def choisir_fichier(chemin=None):
     L'empreinte du fichier entre dans la clé de cache : changer de fichier
     invalide de fait les réponses de l'ancien, sans rien effacer à la main.
     """
-    global FICHIER_CHOISI, _tableau, _empreinte, _dosages
+    global FICHIER_CHOISI, _tableau, _tableau_de, _empreinte, _empreinte_de, _dosages
     FICHIER_CHOISI = Path(chemin).expanduser().resolve() if chemin else None
     _tableau = None
+    _tableau_de = None
     _empreinte = None
+    _empreinte_de = None
     _dosages = None
     return fichier()
 
@@ -119,14 +136,15 @@ def dosages():
 
 
 def empreinte_donnees():
-    """Le SHA-256 du fichier de données, calculé une fois par processus."""
-    global _empreinte
-    if _empreinte is None:
+    """Le SHA-256 du fichier de données, calculé une fois par fichier."""
+    global _empreinte, _empreinte_de
+    if _empreinte is None or _empreinte_de != fichier():
         h = hashlib.sha256()
         with open(fichier(), "rb") as flux:
             for bloc in iter(lambda: flux.read(1 << 20), b""):
                 h.update(bloc)
         _empreinte = h.hexdigest()
+        _empreinte_de = fichier()
     return _empreinte
 
 

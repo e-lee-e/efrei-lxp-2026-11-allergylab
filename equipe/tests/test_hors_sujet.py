@@ -60,3 +60,15 @@ def test_une_question_posee_en_aliments_s_abstient():
     assert hors_sujet.examiner("Combien de patients sont sensibilisés à Ara_h_1 ?") is None
     # Et une question sur les patients n'est pas touchée par cette règle.
     assert hors_sujet.examiner("Combien de patients ont plus de 60 ans ?") is None
+
+
+def test_un_comptage_en_aliments_passe_quand_il_ne_demande_pas_de_correspondance():
+    """« Combien déclarent une allergie alimentaire ? » n'est pas une question de taxonomie.
+
+    Refusée à tort sur NHANES, une table réelle qui porte la colonne : le portier ne
+    doit pas confondre un comptage avec une demande de correspondance aliment -> molécule.
+    """
+    from equipe import hors_sujet
+
+    assert hors_sujet.examiner("Combien de patients déclarent une allergie alimentaire ?") is None
+    assert hors_sujet.examiner("Combien de patients sont allergiques à l'arachide ?") is None

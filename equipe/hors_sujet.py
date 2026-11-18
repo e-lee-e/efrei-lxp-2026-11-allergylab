@@ -215,13 +215,20 @@ ALIMENTS = (
     "moutarde", "sesame", "kiwi", "alimentaire", "alimentaires", "aliment", "aliments",
 )
 MOLECULE = ("ara_", "bet_", "act_", "ana_", "ory_", "profiline", "lpt", "pr-10")
+# Ce qui trahit une demande de correspondance, et non un simple comptage : le
+# fichier du kit nomme des molécules sans dire à quel aliment elles correspondent.
+# Mesuré : « combien de patients déclarent une allergie alimentaire ? » était
+# refusée sur une table qui contient la colonne — une abstention à tort.
+MAPPING = ("molecule", "molécule", "famille", "proteine", "protéine", "allergene", "allergène")
 
 
 def examiner(question):
     """Une abstention motivée si la question est hors sujet, sinon None."""
     plat = _normaliser(question)
     mots = set(plat.split())
-    if any(mot in mots for mot in ALIMENTS) and not any(mot in plat for mot in MOLECULE):
+    demande_mapping = any(mot in plat for mot in MAPPING)
+    if (demande_mapping and any(mot in mots for mot in ALIMENTS)
+            and not any(mot in plat for mot in MOLECULE)):
         return _refus_aliment()
     if _contient(plat, FORT):
         return _refus()

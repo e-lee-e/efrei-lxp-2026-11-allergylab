@@ -175,6 +175,17 @@
   }
   .valeur.longue { font-size: 17px; line-height: 1.6; font-weight: 500; letter-spacing: 0; }
   .justification { margin: 0; color: var(--gris-fonce); font-size: 14.5px; max-width: 62ch; }
+  /* Une erreur doit toujours proposer une sortie : un bouton, pas seulement une phrase. */
+  #courant { padding-bottom: 28px; }
+  .issue { display: flex; align-items: center; gap: 12px; margin: 16px 0 0; flex-wrap: wrap; }
+  .issue[hidden] { display: none !important; }
+  .bouton-issue {
+    font: inherit; font-size: 13.5px; padding: 8px 16px; border-radius: 999px;
+    border: 1px solid var(--vert); background: transparent; color: var(--vert);
+    cursor: pointer; transition: background 120ms ease, color 120ms ease;
+  }
+  .bouton-issue:hover { background: var(--vert); color: #fff; }
+  .issue-note { font-size: 12.5px; color: var(--gris); }
   .lien {
     background: none; border: 0; padding: 0; cursor: pointer; font-size: 12.5px;
     color: var(--gris); text-decoration: underline; text-underline-offset: 3px;
@@ -306,6 +317,10 @@
             </div>
             <p class="valeur" id="valeur"></p>
             <p class="justification" id="justification"></p>
+            <div class="issue" id="issue" hidden>
+              <button class="bouton-issue" id="bouton-issue" type="button"></button>
+              <span class="issue-note" id="issue-note"></span>
+            </div>
             <button class="lien" id="details-bascule" type="button">Détails techniques</button>
             <dl class="details" id="details" hidden>
               <dt>Répondu par</dt><dd id="d-couche">—</dd>
@@ -461,7 +476,8 @@ function afficher(entree) {
   $("accueil").hidden = true;
   $("courant").hidden = false;
   $("titre-question").textContent = entree.question;
-  $("etiquette").textContent = illisible ? "Réponse illisible" : (refus ? "Pas de réponse" : "Réponse");
+  const ETIQUETTES = { donnees: "Fichier non ouvert", cle: "Clé manquante", delai: "Délai dépassé", panne: "Erreur" };
+  $("etiquette").textContent = ETIQUETTES[entree.code] || (illisible ? "Réponse illisible" : (refus ? "Pas de réponse" : "Réponse"));
   $("etiquette").className = "etiquette" + (refus ? " refus" : illisible ? " illisible" : "");
   $("horodatage").textContent = heure(entree.quand);
 
@@ -469,6 +485,7 @@ function afficher(entree) {
   $("valeur").textContent = valeur || (refus ? "Pas de réponse" : "");
   $("valeur").className = "valeur" + (valeur.length > 60 ? " longue" : "");
   $("justification").textContent = entree.justification || "";
+  dessinerIssue(entree);
 
   $("d-couche").textContent = entree.couche || "—";
   $("d-cout").textContent = euros(entree.cout);
@@ -502,7 +519,8 @@ async function poser(question) {
       Object.assign({}, reponse, { question: question });
     afficher(gardee);
   } catch (e) {
-    afficher({ question, statut: "erreur", valeur: "", duree: 0, cout: 0,
+    $("q").value = question;  // la question n'est pas perdue : on peut la renvoyer
+    afficher({ question, statut: "erreur", valeur: "", duree: 0, cout: 0, code: "panne",
       justification: "Je n'ai pas pu obtenir de réponse. Vérifiez que l'agent répond toujours, puis réessayez.",
       couche: "—", jetons: null, quand: new Date().toISOString() });
   } finally {
@@ -512,11 +530,30 @@ async function poser(question) {
   }
 }
 
+// Chaque cause connue a sa sortie : enregistrer la clé, changer de fichier, relancer.
+const ISSUES = {
+  cle: { libelle: "Enregistrer la clé", note: "Rien n'a été facturé.", faire: () => ouvrirCle() },
+  donnees: { libelle: "Choisir un autre fichier", note: "Le fichier précédent reste actif.", faire: () => ajouterFichier() },
+  delai: { libelle: "Relancer", note: "La question est restée dans la barre.", faire: (q) => poser(q) },
+  panne: { libelle: "Relancer", note: "", faire: (q) => poser(q) },
+};
+
+function dessinerIssue(entree) {
+  const issue = ISSUES[entree.code];
+  $("issue").hidden = !issue;
+  if (!issue) return;
+  $("bouton-issue").textContent = issue.libelle;
+  $("issue-note").textContent = issue.note || "";
+  $("bouton-issue").onclick = () => issue.faire(entree.question);
+  // La question reste dans la barre : rien n'est perdu, il suffit de renvoyer.
+  if (entree.question && entree.code !== "donnees") $("q").value = entree.question;
+}
+
 function refusDeFichier(message) {
   // Le fichier n'a pas été ouvert : l'ancien reste actif, et on le dit ici plutôt
   // que de laisser croire que le tableau a changé.
   afficher({
-    question: "Changement de fichier", statut: "erreur", valeur: "",
+    question: "Changement de fichier", statut: "erreur", valeur: "", code: "donnees",
     justification: message, duree: 0, cout: 0, etapes: 0, quand: new Date().toISOString(),
   });
 }
@@ -525,7 +562,12 @@ async function activerFichier(chemin) {
   if (chemin === etat.fichier_actif) return;
   const n = natif();
   const avant = etat.fichier_actif;
-  etat = n ? await n.activer_fichier(chemin) : await poster("/api/fichier", { chemin });
+  try {
+    etat = n ? await n.activer_fichier(chemin) : await poster("/api/fichier", { chemin });
+  } catch (e) {
+    refusDeFichier("Ce fichier n'a pas pu être ouvert. Il reste sur le fichier précédent.");
+    return;
+  }
   if (etat.erreur) {
     const message = etat.erreur;
     etat = { ...etat, fichier_actif: avant };
@@ -542,7 +584,12 @@ async function ajouterFichier() {
   const n = natif();
   if (!n) { alert("Le choix des fichiers se fait dans la fenêtre de bureau."); return; }
   const avant = etat.fichier_actif;
-  etat = await n.choisir_fichier();
+  try {
+    etat = await n.choisir_fichier();
+  } catch (e) {
+    refusDeFichier("Ce fichier n'a pas pu être ouvert. Il reste sur le fichier précédent.");
+    return;
+  }
   if (etat.erreur) {
     const message = etat.erreur;
     etat = { ...etat, fichier_actif: avant };

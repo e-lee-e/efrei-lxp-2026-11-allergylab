@@ -61,6 +61,22 @@ def actif():
     return os.environ.get("ALLERGYLAB_SANS_CACHE", "").strip().lower() not in ("1", "vrai", "oui", "true")
 
 
+def _pourquoi_illisible(chemin, souci):
+    """La raison en français, jamais le nom d'une exception.
+
+    « UnicodeDecodeError » ne dit rien à qui veut analyser des patients ; « ce
+    n'est pas un fichier texte » se comprend et se corrige.
+    """
+    nom = type(souci).__name__
+    if "Unicode" in nom or "decode" in str(souci).lower():
+        return f"{chemin.name} n'est pas un fichier texte : ce n'est pas un tableau de patients."
+    if "Empty" in nom:
+        return f"{chemin.name} ne contient aucune ligne."
+    if "Parser" in nom or "Tokeniz" in nom:
+        return f"{chemin.name} n'a pas une forme de CSV lisible."
+    return f"{chemin.name} ne se lit pas comme un tableau de patients."
+
+
 def _lire_generique(chemin):
     """Lit un fichier de patients quelconque : rien n'est supposé du format.
 
@@ -95,7 +111,7 @@ def _lire_generique(chemin):
             on_bad_lines="skip",  # une ligne cassée ne doit pas faire perdre le fichier
         )
     except Exception as souci:
-        raise DonneeIllisible(f"{chemin.name} ne se lit pas comme un CSV ({type(souci).__name__})") from souci
+        raise DonneeIllisible(_pourquoi_illisible(chemin, souci)) from souci
 
     tableau.columns = [str(nom).strip() for nom in tableau.columns]
     if tableau.shape[1] < 2:

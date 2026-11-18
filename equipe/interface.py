@@ -47,6 +47,9 @@ COUCHES = {
     "traducteur": "un calcul direct, sans modèle",
     "smolagents": "le modèle de langage",
     "delai": "délai dépassé",
+    "cle": "clé d'API manquante",
+    "erreur": "panne",
+    "donnees-illisibles": "fichier illisible",
 }
 
 # Le journal du kit est un état de module : deux questions en parallèle
@@ -106,6 +109,9 @@ def traiter(question: str) -> dict:
         "jetons": jetons,
         "etapes": etapes,
         "fichier": cache.fichier().name,
+        # La cause, quand elle a une sortie connue : la page s'en sert pour
+        # proposer l'action juste au lieu d'un message sans issue.
+        "code": modele.journal.get("cause"),
         "quand": datetime.now().isoformat(timespec="seconds"),
     }
     historique.enregistrer(entree)

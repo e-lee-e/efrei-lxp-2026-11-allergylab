@@ -62,6 +62,19 @@ ETAPES_MAX = int(os.environ.get("ALLERGYLAB_ETAPES_MAX", "5"))
 # mesurée est de 8,6 s, et au-delà d'une demi-minute le chercheur est parti.
 DELAI_MAX = float(os.environ.get("ALLERGYLAB_DELAI_MAX", "35"))
 
+
+def _abstention(message, cause=None):
+    """Une abstention motivée, avec sa cause notée à part.
+
+    La cause ne peut pas voyager dans la réponse : le contrat du kit veut
+    exactement trois champs, et un quatrième fait rejeter la réponse. Elle va donc
+    dans le journal, que la fenêtre lit pour proposer l'action juste — enregistrer
+    la clé, choisir un autre fichier, ou relancer.
+    """
+    if cause:
+        modele.journal["cause"] = cause
+    return {"statut": "abstention", "valeur": None, "justification": message}
+
 # Deux outils, pas cinq : chaque description est repayée à chaque étape (1 127
 # caractères pour cinq outils). Les taux par groupe, par présence de codes et les
 # positifs au-dessus d'un seuil sont des cas de `calculer` (voir outils/calculer.py).
@@ -183,21 +196,25 @@ def repondre(question):
         return _repondre(question)
     except cache.DonneeIllisible as souci:
         modele.journal["moteur"] = "donnees-illisibles"
-        return {
-            "statut": "abstention",
-            "valeur": None,
-            "justification": f"Le fichier de données ne se lit pas : {souci}. Aucun chiffre n'est donné plutôt qu'un chiffre faux.",
-        }
+        return _abstention(
+            f"Le fichier de données ne se lit pas : {souci}. Aucun chiffre n'est donné plutôt qu'un chiffre faux.",
+            cause="donnees",
+        )
     except Exception as souci:  # panne d'API, colonne inattendue, outil cassé
+        nom = type(souci).__name__
+        if nom in ("CleAbsente", "CleRefusee"):
+            modele.journal["moteur"] = "cle"
+            return _abstention(
+                "Aucune clé d'API utilisable : enregistre-la pour que le modèle puisse répondre. "
+                "Rien n'a été facturé.",
+                cause="cle",
+            )
         modele.journal["moteur"] = "erreur"
-        return {
-            "statut": "abstention",
-            "valeur": None,
-            "justification": (
-                f"Le calcul a échoué ({type(souci).__name__} : {str(souci)[:140]}). "
-                "Aucun chiffre n'est donné plutôt qu'un chiffre faux."
-            ),
-        }
+        return _abstention(
+            f"Le calcul a échoué ({nom} : {str(souci)[:140]}). "
+            "Aucun chiffre n'est donné plutôt qu'un chiffre faux.",
+            cause="panne",
+        )
 
 
 def _repondre(question):
@@ -256,11 +273,10 @@ def _repondre(question):
         sortie = construire(VARIANTE).run(question, additional_args=arguments or None)
     except DelaiDepasse:
         modele.journal["moteur"] = "delai"
-        return {
-            "statut": "abstention",
-            "valeur": None,
-            "justification": f"Le calcul n'a pas abouti dans le délai de {DELAI_MAX:.0f} secondes.",
-        }
+        return _abstention(
+            f"Le calcul n'a pas abouti dans le délai de {DELAI_MAX:.0f} secondes.",
+            cause="delai",
+        )
     # On ne garde qu'une réponse qui respecte le contrat : une réponse
     # illisible doit être reproposée au modèle, pas resservie depuis le cache.
     try:

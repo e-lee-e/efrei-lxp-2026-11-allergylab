@@ -73,6 +73,36 @@ def actif():
     return os.environ.get("ALLERGYLAB_SANS_CACHE", "").strip().lower() not in ("1", "vrai", "oui", "true")
 
 
+# Ce qu'un fichier est vraiment, d'après ses premiers octets. Un .xls s'annonce par
+# la signature OLE2, un .xlsx par une archive zip, un PDF par « %PDF ». Les lire
+# comme du texte donne « ce n'est pas un fichier texte », ce qui est vrai mais
+# inutile : mieux vaut nommer le format et dire quoi en faire.
+SIGNATURES = (
+    (b"\xd0\xcf\x11\xe0", "un classeur Excel ancien (.xls)"),
+    (b"PK\x03\x04", "un classeur Excel (.xlsx) ou une archive compressée"),
+    (b"%PDF", "un document PDF"),
+    (b"\x89PNG", "une image PNG"),
+    (b"\xff\xd8\xff", "une image JPEG"),
+)
+
+
+def _format_non_textuel(chemin):
+    """Le format réel du fichier, quand ce n'est pas du texte.
+
+    Nommée autrement que `_signature`, qui désigne déjà l'empreinte (chemin, date,
+    taille) du fichier : deux fonctions du même nom, et la seconde écrasait celle-ci.
+    """
+    try:
+        with open(chemin, "rb") as flux:
+            debut = flux.read(8)
+    except OSError:
+        return None
+    for marque, description in SIGNATURES:
+        if debut.startswith(marque):
+            return description
+    return None
+
+
 def _pourquoi_illisible(chemin, souci):
     """La raison en français, jamais le nom d'une exception.
 
@@ -100,6 +130,14 @@ def _lire_generique(chemin):
     se classe par ce qu'elle contient.
     """
     import pandas as pd
+
+    format_reel = _format_non_textuel(chemin)
+    if format_reel:
+        raise DonneeIllisible(
+            f"{chemin.name} est {format_reel}, pas un tableau de patients : "
+            "l'agent ne lit que du texte séparé par des virgules, des points-virgules "
+            "ou des tabulations. Convertis-le en CSV pour l'analyser."
+        )
 
     try:
         with open(chemin, "r", encoding="utf-8-sig", errors="replace") as flux:

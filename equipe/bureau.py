@@ -39,7 +39,9 @@ class Api:
         choix = webview.windows[0].create_file_dialog(
             webview.OPEN_DIALOG,
             allow_multiple=True,
-            file_types=("Fichiers de données (*.csv;*.xlsx;*.parquet)", "Tous les fichiers (*.*)"),
+            # Ce que le lecteur sait ouvrir, et rien de plus : la liste précédente
+            # annonçait .xlsx et .parquet, qu'aucun lecteur du projet ne sait lire.
+            file_types=("Tableaux de patients (*.csv;*.tsv;*.txt)", "Tous les fichiers (*.*)"),
         )
         if not choix:
             return interface.etat()  # dialogue annulé : rien ne change

@@ -146,3 +146,27 @@ def test_une_cellule_a_deux_codes_ne_devient_pas_un_nombre(tmp_path):
     assert table["dosage"].tolist() == [85.74, 0.0, 12.4, 7.25], (
         "les dosages à deux décimales restent des nombres"
     )
+
+
+def test_un_classeur_excel_est_refuse_en_le_nommant(tmp_path):
+    """L'app ne lit pas les classeurs : elle doit le dire, pas parler de texte.
+
+    Le fichier `donnees/acc-dictionnaire-final.xls` est un classeur : le refus
+    « ce n'est pas un fichier texte » était exact mais sans issue.
+    """
+    import pytest
+
+    from equipe import cache
+
+    ancien = tmp_path / "dictionnaire.xls"
+    ancien.write_bytes(b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1" + b"\x00" * 400)
+    with pytest.raises(cache.DonneeIllisible) as refus:
+        cache.choisir_fichier(str(ancien))
+    assert "classeur Excel ancien" in str(refus.value)
+    assert "CSV" in str(refus.value)
+
+    recent = tmp_path / "classeur.xlsx"
+    recent.write_bytes(b"PK\x03\x04" + b"\x00" * 200)
+    with pytest.raises(cache.DonneeIllisible) as refus:
+        cache.choisir_fichier(str(recent))
+    assert "classeur Excel" in str(refus.value)

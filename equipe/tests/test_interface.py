@@ -36,7 +36,7 @@ def test_une_reponse_normale_arrive_telle_quelle(monkeypatch):
     monkeypatch.setattr(
         interface.agent,
         "repondre",
-        lambda question: {"statut": "reponse", "valeur": 4271, "justification": "4 271 lignes dans le fichier."},
+        lambda question, precedente=None: {"statut": "reponse", "valeur": 4271, "justification": "4 271 lignes dans le fichier."},
     )
     sortie = interface.traiter("Combien de patients ?")
 
@@ -54,7 +54,7 @@ def test_une_abstention_n_est_pas_une_panne(monkeypatch):
     monkeypatch.setattr(
         interface.agent,
         "repondre",
-        lambda question: {
+        lambda question, precedente=None: {
             "statut": "abstention",
             "valeur": None,
             "justification": "Le fichier ne donne pas les seuils de positivité.",
@@ -68,7 +68,7 @@ def test_une_abstention_n_est_pas_une_panne(monkeypatch):
 
 
 def test_une_reponse_hors_contrat_devient_illisible(monkeypatch):
-    monkeypatch.setattr(interface.agent, "repondre", lambda question: "un objet brut")
+    monkeypatch.setattr(interface.agent, "repondre", lambda question, precedente=None: "un objet brut")
     sortie = interface.traiter("Combien de patients ?")
 
     assert sortie["statut"] == "illisible"
@@ -77,7 +77,7 @@ def test_une_reponse_hors_contrat_devient_illisible(monkeypatch):
 
 
 def test_une_panne_du_moteur_ne_casse_pas_la_page(monkeypatch):
-    def boum(question):
+    def boum(question, precedente=None):
         raise RuntimeError("réseau indisponible")
 
     monkeypatch.setattr(interface.agent, "repondre", boum)

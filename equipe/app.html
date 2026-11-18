@@ -11,6 +11,7 @@
     --vert-pale: #e9f0eb;
     --texte: #15181a;
     --gris: #6b7370;
+    --bulle: #edebe5;
     --gris-fonce: #434a47;
     --bord: #e2e0d8;
     --papier: #f7f5ef;
@@ -157,11 +158,7 @@
     margin: 0 0 20px; font-size: 23px; line-height: 1.31; font-weight: 700;
     letter-spacing: -0.022em; animation: apparaitre .26s cubic-bezier(.2,.7,.3,1) both;
   }
-  .reponse {
-    border: 1px solid var(--bord); border-radius: 12px; padding: 22px 24px 20px;
-    background: #fff; box-shadow: 0 1px 2px rgba(21, 24, 26, 0.04);
-    animation: apparaitre .32s cubic-bezier(.2,.7,.3,1) both;
-  }
+  .reponse { padding: 0; }
   .entete { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .etiquette {
     font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px;
@@ -176,7 +173,18 @@
   .valeur.longue { font-size: 17px; line-height: 1.6; font-weight: 500; letter-spacing: 0; }
   .justification { margin: 0; color: var(--gris-fonce); font-size: 14.5px; max-width: 62ch; }
   /* Une erreur doit toujours proposer une sortie : un bouton, pas seulement une phrase. */
-  #courant { padding-bottom: 28px; }
+  /* La conversation : question à droite, réponse à gauche, comme une messagerie.
+     Aucun dégradé, aucune ombre : la mise en page fait le travail. */
+  .fil { display: flex; flex-direction: column; gap: 30px; padding-bottom: 32px; }
+  .tour { display: flex; flex-direction: column; gap: 14px; animation: apparaitre .3s cubic-bezier(.2,.7,.3,1) both; }
+  .moi { display: flex; justify-content: flex-end; }
+  .moi span {
+    background: var(--bulle); border-radius: 20px; padding: 11px 18px;
+    max-width: 76%; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere;
+  }
+  .agent { max-width: 100%; }
+  .dico { font-size: 13px; color: var(--gris-fonce); margin: 0 0 8px; overflow-wrap: anywhere; }
+  .dico.sans { color: var(--gris); }
   .issue { display: flex; align-items: center; gap: 12px; margin: 16px 0 0; flex-wrap: wrap; }
   .issue[hidden] { display: none !important; }
   .bouton-issue {
@@ -284,6 +292,11 @@
         <button class="ajouter" id="ajouter" type="button">+ Ajouter un fichier</button>
       </div>
       <div>
+        <div class="intitule">Dictionnaire de codes</div>
+        <div class="dico" id="dico-etat">Aucun</div>
+        <button class="ajouter" id="dico-choisir" type="button">+ Attacher un dictionnaire</button>
+      </div>
+      <div>
         <div class="intitule">Modèle</div>
         <select class="modele" id="modele" aria-label="Modèle de langage"></select>
         <button class="lien" id="cle" type="button" style="margin-top: 8px;">Clé d'API…</button>
@@ -308,29 +321,7 @@
           <div class="cartes" id="exemples"></div>
         </section>
 
-        <section id="courant" hidden>
-          <h2 class="question" id="titre-question"></h2>
-          <div class="reponse">
-            <div class="entete">
-              <span class="etiquette" id="etiquette"></span>
-              <span class="horodatage" id="horodatage"></span>
-            </div>
-            <p class="valeur" id="valeur"></p>
-            <p class="justification" id="justification"></p>
-            <div class="issue" id="issue" hidden>
-              <button class="bouton-issue" id="bouton-issue" type="button"></button>
-              <span class="issue-note" id="issue-note"></span>
-            </div>
-            <button class="lien" id="details-bascule" type="button">Détails techniques</button>
-            <dl class="details" id="details" hidden>
-              <dt>Répondu par</dt><dd id="d-couche">—</dd>
-              <dt>Coût</dt><dd id="d-cout">—</dd>
-              <dt>Durée</dt><dd id="d-duree">—</dd>
-              <dt>Étapes du modèle</dt><dd id="d-etapes">—</dd>
-              <dt>Jetons</dt><dd id="d-jetons">—</dd>
-            </dl>
-          </div>
-        </section>
+        <div class="fil" id="fil"></div>
       </div>
     </div>
 
@@ -374,7 +365,7 @@ const EXEMPLES = [
   { gros: "Combien traités pour une rhinite ?", petit: "traitements",
     q: "Combien de patients bénéficient d'un traitement contre la rhinite ?" }
 ];
-let etat = { fichier: "", fichier_actif: "", fichiers: [], modele: "developpement", modeles: {}, entrees: [], session: { questions: 0, cout: 0 } };
+let etat = { fichier: "", fichier_actif: "", fichiers: [], dictionnaire: {}, modele: "developpement", modeles: {}, entrees: [], session: { questions: 0, cout: 0 } };
 let affichee = null;
 let detailsOuverts = false;
 
@@ -430,6 +421,18 @@ function dessinerListe() {
   }
 }
 
+function dessinerDico() {
+  const dico = etat.dictionnaire || {};
+  const el = $("dico-etat");
+  if (dico.nom) {
+    el.textContent = dico.nom + " · " + (dico.codes || 0) + " codes";
+    el.className = "dico";
+  } else {
+    el.textContent = "Aucun : le codebook du projet fait foi";
+    el.className = "dico sans";
+  }
+}
+
 function dessinerFichiers() {
   const ul = $("fichiers");
   ul.innerHTML = "";
@@ -467,42 +470,70 @@ function dessinerPied() {
     : "";
 }
 
-function dessiner() { dessinerListe(); dessinerFichiers(); dessinerModele(); dessinerPied(); }
+function dessiner() { dessinerListe(); dessinerFichiers(); dessinerDico(); dessinerModele(); dessinerPied(); }
 
 function afficher(entree) {
   affichee = entree;
+  $("accueil").hidden = true;
   const refus = entree.statut === "abstention";
   const illisible = entree.statut === "illisible" || entree.statut === "erreur";
-  $("accueil").hidden = true;
-  $("courant").hidden = false;
-  $("titre-question").textContent = entree.question;
-  const ETIQUETTES = { donnees: "Fichier non ouvert", cle: "Clé manquante", delai: "Délai dépassé", panne: "Erreur" };
-  $("etiquette").textContent = ETIQUETTES[entree.code] || (illisible ? "Réponse illisible" : (refus ? "Pas de réponse" : "Réponse"));
-  $("etiquette").className = "etiquette" + (refus ? " refus" : illisible ? " illisible" : "");
-  $("horodatage").textContent = heure(entree.quand);
+
+  // Un tour : la question à droite, la réponse à gauche. Le gabarit est écrit une
+  // fois ici plutôt que dupliqué dans le document : chaque tour garde ses propres
+  // éléments, sans identifiant partagé.
+  const tour = document.createElement("div");
+  tour.className = "tour";
+  tour.innerHTML =
+    '<div class="moi"><span></span></div>' +
+    '<div class="agent"><div class="reponse">' +
+    '<div class="entete"><span class="etiquette"></span><span class="horodatage"></span></div>' +
+    '<p class="valeur"></p><p class="justification"></p>' +
+    '<div class="issue" hidden><button class="bouton-issue" type="button"></button>' +
+    '<span class="issue-note"></span></div>' +
+    '<button class="lien bascule" type="button">Détails techniques</button>' +
+    '<dl class="details" hidden>' +
+    '<dt>Répondu par</dt><dd class="d-couche">—</dd>' +
+    '<dt>Coût</dt><dd class="d-cout">—</dd>' +
+    '<dt>Durée</dt><dd class="d-duree">—</dd>' +
+    '<dt>Étapes du modèle</dt><dd class="d-etapes">—</dd>' +
+    '<dt>Jetons</dt><dd class="d-jetons">—</dd></dl>' +
+    '</div></div>';
+  const bloc = tour.querySelector(".reponse");
+  const q = (selecteur) => bloc.querySelector(selecteur);
+  tour.querySelector(".moi span").textContent = entree.question || "";
+
+  const ETIQUETTES = { donnees: "Fichier non ouvert", cle: "Clé manquante", delai: "Délai dépassé",
+    panne: "Erreur", suivi: "Question incomplète" };
+  q(".etiquette").textContent = ETIQUETTES[entree.code] || (illisible ? "Réponse illisible" : (refus ? "Pas de réponse" : "Réponse"));
+  q(".etiquette").className = "etiquette" + (refus ? " refus" : illisible ? " illisible" : "");
+  q(".horodatage").textContent = heure(entree.quand);
 
   const valeur = entree.valeur === null || entree.valeur === undefined ? "" : String(entree.valeur);
-  $("valeur").textContent = valeur || (refus ? "Pas de réponse" : "");
-  $("valeur").className = "valeur" + (valeur.length > 60 ? " longue" : "");
-  $("justification").textContent = entree.justification || "";
-  dessinerIssue(entree);
-
-  $("d-couche").textContent = entree.couche || "—";
-  $("d-cout").textContent = euros(entree.cout);
-  $("d-duree").textContent = entree.duree >= 0.1 ? entree.duree.toFixed(1).replace(".", ",") + " s" : "immédiat";
-  $("d-etapes").textContent = entree.etapes ? entree.etapes : "aucune (calcul direct)";
-  $("d-jetons").textContent = entree.jetons && entree.jetons.entree
+  q(".valeur").textContent = valeur || (refus ? "Pas de réponse" : "");
+  q(".valeur").className = "valeur" + (valeur.length > 60 ? " longue" : "");
+  q(".justification").textContent = entree.justification || "";
+  q(".d-couche").textContent = entree.couche || "—";
+  q(".d-cout").textContent = euros(entree.cout);
+  q(".d-duree").textContent = entree.duree >= 0.1 ? entree.duree.toFixed(1).replace(".", ",") + " s" : "immédiat";
+  q(".d-etapes").textContent = entree.etapes ? entree.etapes : "aucune (calcul direct)";
+  q(".d-jetons").textContent = entree.jetons && entree.jetons.entree
     ? entree.jetons.entree + " en entrée, " + entree.jetons.sortie + " en sortie" : "aucun";
 
-  $("details").hidden = !detailsOuverts;
-  $("details-bascule").textContent = detailsOuverts ? "Masquer les détails" : "Détails techniques";
-  dessiner();
-  $("defilement").scrollTop = 0;
+  const details = q(".details"), bascule = q(".bascule");
+  bascule.addEventListener("click", () => {
+    details.hidden = !details.hidden;
+    bascule.textContent = details.hidden ? "Détails techniques" : "Masquer les détails";
+  });
+
+  dessinerIssue(entree, bloc);
+  $("fil").appendChild(tour);
+  $("defilement").scrollTop = $("defilement").scrollHeight;
+  dessinerListe();
 }
 
 function afficherAccueil() {
   affichee = null;
-  $("courant").hidden = true;
+  $("fil").innerHTML = "";
   $("accueil").hidden = false;
   dessinerListe();
 }
@@ -511,7 +542,6 @@ function afficherAccueil() {
 async function poser(question) {
   $("envoyer").disabled = true;
   $("charge").hidden = false;
-  $("courant").hidden = true;
   try {
     const reponse = await demander(question);
     etat = await lireEtat();
@@ -538,13 +568,16 @@ const ISSUES = {
   panne: { libelle: "Relancer", note: "", faire: (q) => poser(q) },
 };
 
-function dessinerIssue(entree) {
+function dessinerIssue(entree, bloc) {
+  if (!bloc) return;
   const issue = ISSUES[entree.code];
-  $("issue").hidden = !issue;
+  const boite = bloc.querySelector(".issue");
+  boite.hidden = !issue;
   if (!issue) return;
-  $("bouton-issue").textContent = issue.libelle;
-  $("issue-note").textContent = issue.note || "";
-  $("bouton-issue").onclick = () => issue.faire(entree.question);
+  const bouton = bloc.querySelector(".bouton-issue");
+  bouton.textContent = issue.libelle;
+  bloc.querySelector(".issue-note").textContent = issue.note || "";
+  bouton.onclick = () => issue.faire(entree.question);
   // La question reste dans la barre : rien n'est perdu, il suffit de renvoyer.
   if (entree.question && entree.code !== "donnees") $("q").value = entree.question;
 }
@@ -657,10 +690,20 @@ $("fermer-cle").addEventListener("click", () => { $("voile").hidden = true; });
 $("valider-cle").addEventListener("click", enregistrerCle);
 $("voile").addEventListener("click", (e) => { if (e.target === $("voile")) $("voile").hidden = true; });
 
-$("details-bascule").addEventListener("click", () => {
-  detailsOuverts = !detailsOuverts;
-  $("details").hidden = !detailsOuverts;
-  $("details-bascule").textContent = detailsOuverts ? "Masquer les détails" : "Détails techniques";
+$("dico-choisir").addEventListener("click", async () => {
+  const n = natif();
+  if (!n || !n.choisir_dictionnaire) {
+    alert("Le choix du dictionnaire se fait dans la fenêtre de bureau.");
+    return;
+  }
+  try {
+    etat = await n.choisir_dictionnaire();
+  } catch (e) {
+    refusDeFichier("Le dictionnaire n'a pas pu être lu. Le précédent reste actif.");
+    return;
+  }
+  if (etat.erreur) { const message = etat.erreur; delete etat.erreur; refusDeFichier(message); }
+  dessiner();
 });
 
 for (const exemple of EXEMPLES) {

@@ -33,7 +33,7 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from equipe import agent, cache, historique, reglages
+from equipe import agent, cache, dictionnaire, historique, reglages
 from kit import modele, traces
 
 PAGE = Path(__file__).with_name("app.html")
@@ -64,7 +64,12 @@ def traiter(question: str) -> dict:
     debut = time.time()
     with VERROU, traces.appel(question, None, None) as trace:
         try:
-            sortie = agent.repondre(question)
+            # La question précédente du même fichier sert aux suivis (« et de femmes ? »).
+            # L'historique range la plus récente en tête : la précédente est la
+            # première, pas la dernière. Mesuré : [-1] donnait la plus vieille
+            # question du fichier, et le suivi ne se résolvait jamais.
+            precedentes = [entree.get("question") for entree in historique.du_fichier(cache.fichier().name)]
+            sortie = agent.repondre(question, precedentes[0] if precedentes else None)
         except Exception as erreur:  # une panne ne doit pas casser la page
             sortie = {
                 "statut": "erreur",
@@ -121,17 +126,44 @@ def traiter(question: str) -> dict:
 def etat() -> dict:
     """Tout ce que la barre latérale et le pied de page affichent."""
     nom = cache.fichier().name
+    _dico = reglages.dictionnaire()
+    dico = {"chemin": _dico, "nom": Path(_dico).name if _dico else None, "codes": 0}
+    if _dico:
+        try:
+            dico["codes"] = sum(len(codes) for codes in dictionnaire.lire(_dico).values())
+        except ValueError:
+            dico["codes"] = 0
     actifs = [str(cache.fichier())] + reglages.fichiers()
     connus = list(dict.fromkeys(actifs))  # sans doublon, l'ordre de découverte gardé
     return {
         "fichier": nom,
         "fichier_actif": str(cache.fichier()),
         "fichiers": connus,
+        "dictionnaire": dico,
         "modele": reglages.modele(),
         "modeles": reglages.MODELES,
         "entrees": historique.du_fichier(nom),
         "session": {"questions": SESSION["questions"], "cout": round(SESSION["cout"], 6)},
     }
+
+
+def choisir_dictionnaire(chemin=None) -> dict:
+    """Attache ou retire le dictionnaire du fichier actif.
+
+    Un dictionnaire illisible est refusé avec sa raison : la page garde le
+    précédent, comme pour un fichier de données qu'on n'arrive pas à ouvrir.
+    """
+    if not chemin:
+        reglages.retenir_dictionnaire(None)
+        return etat()
+    try:
+        lu = dictionnaire.lire(chemin)
+    except ValueError as souci:
+        return {**etat(), "erreur": str(souci)}
+    if not lu:
+        return {**etat(), "erreur": f"{Path(chemin).name} ne contient aucun code."}
+    reglages.retenir_dictionnaire(str(chemin))
+    return etat()
 
 
 def choisir_modele(nom: str) -> dict:
@@ -231,6 +263,8 @@ class Gestion(BaseHTTPRequestHandler):
             self._json(200, activer_fichier(chemin_voulu or None))
         elif chemin == "/api/fichiers":
             self._json(200, ajouter_fichiers([str(c) for c in corps.get("chemins") or []]))
+        elif chemin == "/api/dictionnaire":
+            self._json(200, choisir_dictionnaire(str(corps.get("chemin") or "") or None))
         elif chemin == "/api/modele":
             try:
                 self._json(200, choisir_modele(str(corps.get("nom") or "")))

@@ -218,7 +218,31 @@ GROUPES_CLINIQUES = {
 }
 
 
-def _rappeler_les_groupes(question, requete):
+def _bloc_dico(dico):
+    """Le dictionnaire de l'utilisateur, limité aux colonnes du tableau actif."""
+    if not dico:
+        return ""
+    from equipe import dictionnaire as module
+
+    return module.bloc(dico, list(_tableau().columns))
+
+
+def _groupes(dico=None):
+    """Les groupes du projet, complétés par ceux que le dictionnaire nomme.
+
+    « biothérapie » cesse d'être une constante : si le dictionnaire de
+    l'utilisateur dit quels codes portent ce mot, ce sont les siens qui valent.
+    """
+    groupes = dict(GROUPES_CLINIQUES)
+    if dico:
+        from equipe import dictionnaire as module
+
+        for concept, (colonne, codes) in module.groupes(dico).items():
+            groupes[(normaliser(concept), colonne)] = codes
+    return groupes
+
+
+def _rappeler_les_groupes(question, requete, dico=None):
     """Remet les codes exacts d'un groupe nommé, quand la question le nomme.
 
     Le groupe se cache à deux endroits selon l'opération : dans `codes` pour un
@@ -226,7 +250,7 @@ def _rappeler_les_groupes(question, requete):
     dans 6,7 »). Les deux sont corrigés, sinon la moitié des questions passait.
     """
     texte = normaliser(question)
-    for (mot, colonne), codes in GROUPES_CLINIQUES.items():
+    for (mot, colonne), codes in _groupes(dico).items():
         if mot not in texte:
             continue
         if requete.get("colonne") == colonne and requete.get("codes"):
@@ -266,15 +290,19 @@ def _retirer_conditions_fautives(filtre):
     return reste or None
 
 
-def traduire(question, modele_local=None):
-    """La requête canonique, vérifiée, ou None si le modèle n'a pas su la produire."""
+def traduire(question, modele_local=None, dico=None):
+    """La requête canonique, vérifiée, ou None si le modèle n'a pas su la produire.
+
+    `dico` est le dictionnaire de l'utilisateur : il nomme les codes de son fichier,
+    et le prompt le reçoit tel quel. Sans lui, seuls les groupes du projet existent.
+    """
     from smolagents.models import ChatMessage
 
     modele_local = modele_local or modele.ModeleKit()
     reponse = modele_local.generate(
         [
             ChatMessage(role="system", content=CONSIGNE),
-            ChatMessage(role="user", content=question),
+            ChatMessage(role="user", content=question + _bloc_dico(dico)),
         ],
         # 700 et non 400 : le raisonnement interne du modèle mange la sortie, et à
         # 400 le JSON arrivait coupé, ce qui faisait escalader des questions traduisibles.
@@ -286,7 +314,7 @@ def traduire(question, modele_local=None):
     requete = _valider(requete, _tableau())
     if requete is None:
         return None
-    requete = _rappeler_les_groupes(question, requete)
+    requete = _rappeler_les_groupes(question, requete, dico)
     if requete.get("filtre"):
         requete["filtre"] = _retirer_conditions_fautives(requete["filtre"])
     return requete

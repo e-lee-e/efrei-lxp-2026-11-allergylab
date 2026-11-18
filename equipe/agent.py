@@ -42,7 +42,7 @@ from smolagents import CodeAgent, ToolCallingAgent
 
 from kit import modele, reponse
 
-from equipe import reglages, cache, hors_sujet, routeur, traducteur
+from equipe import reglages, cache, dictionnaire, hors_sujet, routeur, suivi, traducteur
 from equipe.outils.calculer import calculer
 from equipe.outils.chercher_colonne import chercher_colonne
 
@@ -141,7 +141,7 @@ def construire(variante):
     options = dict(
         model=modele_du_jour(),  # Haiku 5.5, le modèle de développement du kit
         tools=OUTILS,
-        instructions=reponse.consigne(CONSIGNE + NOTE_OUTILS),  # la consigne, puis le format du kit
+        instructions=reponse.consigne(CONSIGNE + _dictionnaire()[1] + NOTE_OUTILS),
         max_steps=ETAPES_MAX,
     )
     if variante == "outils":
@@ -188,12 +188,50 @@ def _essayer(fonction, *arguments):
         return None
 
 
-def repondre(question):
-    """La réponse, ou une abstention motivée. Ne lève jamais pour une question."""
+_DICO = {"lu": None, "de": None, "bloc": ""}
+
+
+def _dictionnaire():
+    """Le dictionnaire du fichier actif, lu une fois par processus.
+
+    Rien n'est codé en dur : c'est le fichier de l'utilisateur qui fait foi, et un
+    dictionnaire absent rend un dictionnaire vide, pas une erreur.
+    """
+    chemin = reglages.dictionnaire()
+    if not chemin:
+        return {}, ""
+    if _DICO["de"] != chemin:
+        try:
+            table = dictionnaire.lire(chemin)
+        except ValueError:
+            table = {}
+        colonnes = list(cache.tableau().columns)
+        _DICO.update(lu=table, de=chemin, bloc=dictionnaire.bloc(table, colonnes))
+    return _DICO["lu"], _DICO["bloc"]
+
+
+def repondre(question, precedente=None):
+    """La réponse, ou une abstention motivée. Ne lève jamais pour une question.
+
+    `precedente` sert aux questions de suivi (« et de femmes ? ») : la question est
+    reconstruite localement, gratuitement, à partir de la précédente. Sans elle, un
+    suivi ne se tient pas debout et le modèle répond à côté — mesuré.
+    """
     if VARIANTE not in ("ouvert", "ferme", "outils"):
         raise ValueError(
             f'VARIANTE vaut « {VARIANTE} » ; elle doit valoir "ouvert", "ferme" ou "outils" (equipe/agent.py).'
         )
+    question = str(question or "").strip()
+    if suivi.est_suivi(question):
+        entiere = suivi.resoudre(question, precedente)
+        if not entiere:
+            return _abstention(
+                "Cette question de suivi ne se comprend pas seule : écris-la en entier, "
+                "par exemple « combien de femmes compte le tableau ? ».",
+                cause="suivi",
+            )
+        modele.journal["question_resolue"] = entiere
+        question = entiere
     try:
         return _repondre(question)
     except cache.DonneeIllisible as souci:
@@ -259,7 +297,7 @@ def _repondre(question):
         # Traduction en requête canonique : le modèle ne calcule rien, il choisit une
         # opération et ses paramètres dans une liste fermée ; le code exécute. Dix fois
         # moins cher qu'une analyse complète, et le calcul est déterministe.
-        requete = _essayer(traducteur.traduire, question)
+        requete = _essayer(traducteur.traduire, question, None, _dictionnaire()[0])
         if requete is not None:
             calculee = _essayer(traducteur.executer, requete, cache.tableau())
             if calculee is not None:

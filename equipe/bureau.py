@@ -48,6 +48,22 @@ class Api:
         chemins = list(choix) if isinstance(choix, (list, tuple)) else [choix]
         return interface.ajouter_fichiers(chemins)
 
+    def choisir_dictionnaire(self):
+        """Ouvre le sélecteur pour un dictionnaire de codes (CSV ou JSON)."""
+        choix = webview.windows[0].create_file_dialog(
+            webview.OPEN_DIALOG,
+            allow_multiple=False,
+            file_types=("Dictionnaire de codes (*.csv;*.json)", "Tous les fichiers (*.*)"),
+        )
+        if not choix:
+            return interface.etat()
+        chemin = choix[0] if isinstance(choix, (list, tuple)) else choix
+        return interface.choisir_dictionnaire(chemin)
+
+    def retirer_dictionnaire(self):
+        """Détache le dictionnaire du fichier actif."""
+        return interface.choisir_dictionnaire(None)
+
     def activer_fichier(self, chemin):
         """Lit un fichier déjà connu, sans repasser par le sélecteur."""
         return interface.activer_fichier(chemin)

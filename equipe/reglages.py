@@ -108,3 +108,13 @@ def fichier_retenu():
     """Le fichier ouvert la dernière fois, s'il existe encore."""
     chemin = lire().get("fichier")
     return chemin if isinstance(chemin, str) and chemin and Path(chemin).is_file() else None
+
+
+def dictionnaire():
+    """Le dictionnaire choisi pour le fichier actif, ou None."""
+    return lire().get("dictionnaire") or None
+
+
+def retenir_dictionnaire(chemin):
+    """Retient un dictionnaire (None l'oublie)."""
+    return ecrire(dictionnaire=chemin or None)

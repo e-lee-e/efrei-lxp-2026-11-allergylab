@@ -18,7 +18,7 @@ import unicodedata
 from pathlib import Path
 
 from equipe import reglages
-from kit import donnees
+from kit import donnees, modele as modele_du_kit
 from kit.donnees import FICHIER, charger, colonnes
 
 DOSSIER = Path.home() / ".allergylab" / "cache"
@@ -42,7 +42,10 @@ def moteur():
     Sonnet serait présentée au mauvais tarif, et l'inverse ferait payer Haiku
     pour un raisonnement qu'il n'a pas fait.
     """
-    return f"codeagent-{reglages.modele()}"
+    # `kit evaluer --modele officiel` bascule modele.en_cours le temps de la
+    # batterie. Lire notre propre réglage ici servait les réponses de Haiku à une
+    # passe Sonnet : mesuré sur trois questions à 0 jeton et 0 $.
+    return f"codeagent-{getattr(modele_du_kit, 'en_cours', 'developpement')}"
 
 
 def actif():

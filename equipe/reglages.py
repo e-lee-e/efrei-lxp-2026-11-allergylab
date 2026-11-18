@@ -59,6 +59,14 @@ def choisir_modele(nom, garder=True):
     if nom not in MODELES:
         raise ValueError(f"modèle inconnu : {nom}")
     MODELE_EN_COURS = nom
+    # Le kit lit `modele.en_cours` pour choisir identifiant et tarifs : c'est la
+    # seule source de vérité, celle que `kit evaluer --modele` bascule aussi.
+    try:
+        from kit import modele as modele_du_kit
+
+        modele_du_kit.en_cours = nom
+    except Exception:  # sans litellm installé, on ne casse pas le choix pour autant
+        pass
     if garder:
         ecrire(modele=nom)
     return nom

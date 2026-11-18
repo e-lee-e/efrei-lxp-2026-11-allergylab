@@ -92,9 +92,9 @@ def modele_du_jour():
     remplace modele.ModeleKit remplace aussi la classe de base.
     """
 
-    # `en_cours` est le nom que lit le kit pour choisir ses tarifs et son
-    # identifiant : on ne modifie que la mémoire du processus, jamais son fichier.
-    modele.en_cours = reglages.modele()
+    # On ne touche pas à modele.en_cours ici : `kit evaluer --modele officiel` le
+    # bascule pour toute la batterie, et le réécrire ferait tourner la passe
+    # officielle sur le modèle de développement.
     base = modele.ModeleKit()
     generate = base.generate
     debut = time.monotonic()

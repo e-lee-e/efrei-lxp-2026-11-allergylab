@@ -1,0 +1,164 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T11:40:44Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "92f9b25ca6a79906",
+  "commit": "2a5246d8acbf4f307610eb36398a74922c1e265d",
+  "modifie": true,
+  "officielle": false,
+  "modele": "claude-sonnet-5-5",
+  "batterie": {
+    "chemin": "~/.allergylab/benchmark/sonnet.toml",
+    "empreinte": "cf151814e0f198ab",
+    "questions": 6
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 4,
+    "sur": 4
+  },
+  "abstention": {
+    "fondees": 2,
+    "sur": 2
+  },
+  "verdicts": {
+    "juste": 4,
+    "faux": 0,
+    "abstention-fondee": 2,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 6,
+    "total": {
+      "jetons": {
+        "entree": 4293,
+        "sortie": 447
+      },
+      "cout_estime": 0.013056,
+      "duree_s": 5.19
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 715.5,
+        "sortie": 74.5
+      },
+      "cout_estime": 0.002176,
+      "duree_s": 0.87
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "A01",
+      "texte": "Combien de patients sont inclus dans le jeu de données ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4271,
+        "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.02,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A07",
+      "texte": "Combien de patients bénéficient d'un traitement contre la rhinite ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 430,
+        "justification": "430 patients sont traités pour une rhinite. 3841 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1430,
+        "sortie": 163
+      },
+      "cout_estime": 0.00449,
+      "duree_s": 2.49,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C04",
+      "texte": "Combien de patients présentant des symptômes cutanés sont traités pour une rhinite ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 211,
+        "justification": "211 patients portent les codes 1 de Skin_Symptoms. 219 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1435,
+        "sortie": 235
+      },
+      "cout_estime": 0.00522,
+      "duree_s": 1.78,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B13",
+      "texte": "Cb de patients prennent une biotherapie pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 27,
+        "justification": "27 patients sont sous biothérapie. 4244 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1428,
+        "sortie": 49
+      },
+      "cout_estime": 0.003346,
+      "duree_s": 0.9,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "D02",
+      "texte": "Quelle est la concentration moyenne de Bet_v_1 en kUA/L ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question impose l'unité kUA/L, que le fichier ne précise pas pour Bet_v_1 et qu'aucune conversion ne permet de déduire. La moyenne brute calculée sur 4271 patients (0 manquant) ne peut donc pas être rendue en kUA/L. Une réponse exige la fiche d'unité du dosage."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D13",
+      "texte": "Quel est le risque de développer une allergie alimentaire chez un patient présentant des symptômes cutanés ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question demande un risque de développer une allergie alimentaire, ce qui est un pronostic. Le fichier décrit des patients à un instant donné (coupe transversale) et ne permet pas de prédire un risque futur. Les symptômes cutanés (Skin_Symptoms) peuvent être décrits, mais pas leur valeur prédictive."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    }
+  ]
+}

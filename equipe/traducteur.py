@@ -50,7 +50,8 @@ Opérations possibles :
 - repartition : la répartition des patients selon une colonne.
 - mediane / moyenne : d'une colonne numérique (Age).
 - valeur_dominante : la valeur la plus fréquente d'une colonne (région la plus
-  représentée, puce la plus utilisée).
+  représentée, puce la plus utilisée), ou la moins fréquente si la question dit
+  « la moins », « le moins » : ajoute alors "cible": "min".
 - effectifs_deux : le nombre de patients de deux groupes d'une même colonne
   (combien de femmes et combien d'hommes).
 
@@ -69,9 +70,11 @@ Champ facultatif « filtre » : des conditions sur des colonnes, reliées par
 « et », appliquées AVANT l'opération. Exemple : "Age>=18 et Age<=30 et Gender=0".
 Comparaisons permises : <, <=, >, >=, = sur les nombres ; = et != sur les codes ;
 « dans 1,2,3 » pour plusieurs codes ("Treatment_of_athsma dans 6,7,8" = biothérapie).
-Pour exclure un groupe (« en excluant ceux qui… »), écris « colonne!=code » et
-jamais « colonne=0 » : le code 9 veut dire non renseigné, et « =0 » le jetterait
-avec le groupe exclu. Un âge non renseigné est déjà écarté d'une moyenne ou d'une
+Pour exclure une valeur (« en excluant ceux qui… », « sans présenter… », « hors »,
+« à l'exclusion de »), écris « colonne!=code » et jamais « colonne=0 » : le code 9
+veut dire non renseigné, et « =0 » le jetterait avec le groupe exclu.
+Exemple : « sensibilisés sans symptôme cutané » = effectif_groupe sur Sensitization
+codes ["1"], filtre "Skin_Symptoms!=1" — jamais "Skin_Symptoms=0". Un âge non renseigné est déjà écarté d'une moyenne ou d'une
 médiane : n'ajoute aucune condition pour l'exclure — jamais Age>0 ni Age!=9, un
 âge peut valoir 0 ou 9.
 
@@ -115,6 +118,16 @@ def _filtrer(tableau, filtre):
         return tableau
     simples = []
     for condition in filter(None, re.split(r"\s+et\s+", str(filtre).strip(), flags=re.IGNORECASE)):
+        # « colonne != code » se traite ici aussi : le parseur d'A écarte d'abord le
+        # code 9, si bien que « Skin_Symptoms!=1 » y valait « =0 » et jetait les
+        # 2 445 patients dont l'état n'est pas renseigné. Mesuré : 500 au lieu de
+        # 2 545 sur « sensibilisés sans symptôme cutané ».
+        nié = re.fullmatch(r"\s*(\w+)\s*!=\s*(\d+)\s*", condition)
+        if nié is not None:
+            nom, valeur = nié.groups()
+            colonne = colonne_connue(tableau, nom)
+            tableau = tableau[~colonne.map(_codes).map(lambda portes: str(valeur) in portes)]
+            continue
         lue = re.fullmatch(r"\s*(\w+)\s+dans\s+(.+?)\s*", condition, re.IGNORECASE)
         if lue is None:
             simples.append(condition)
@@ -441,10 +454,15 @@ def executer(requete, tableau):
         if valeurs.empty:
             return None
         compte = valeurs.value_counts()
-        nom, nombre = str(compte.index[0]), int(compte.iloc[0])
+        # « cible » = min pour « la moins représentée » : sans ce champ, une question
+        # au superlatif négatif recevait une répartition entière au lieu d'une valeur.
+        cherche_le_min = str(requete.get("cible") or "").strip().lower() == "min"
+        nom = str(compte.index[-1] if cherche_le_min else compte.index[0])
+        nombre = int(compte.iloc[-1] if cherche_le_min else compte.iloc[0])
+        superlatif = "la moins fréquente" if cherche_le_min else "la plus fréquente"
         return _reponse(
             nom,
-            f"{nom} est la valeur la plus fréquente de {colonne}, avec {nombre} patients sur "
+            f"{nom} est la valeur {superlatif} de {colonne}, avec {nombre} patients sur "
             f"{len(valeurs)} renseignés. Les {len(tableau) - len(valeurs)} lignes sans valeur sont exclues.",
         )
 

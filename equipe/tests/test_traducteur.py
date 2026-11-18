@@ -159,3 +159,14 @@ def test_les_conditions_qui_jettent_un_age_reel_disparaissent():
     assert _retirer_conditions_fautives("Treatment_of_athsma dans 6,7,8 et Age>0") == "Treatment_of_athsma dans 6,7,8"
     assert _retirer_conditions_fautives("Age!=9") is None
     assert _retirer_conditions_fautives("Age>=18 et Age<=30") == "Age>=18 et Age<=30"
+
+
+def test_exclure_une_valeur_garde_les_non_renseignes():
+    """« Skin_Symptoms!=1 » doit garder les 2 445 patients au code 9 : ils ne présentent pas le symptôme."""
+    import pandas as pd
+
+    from equipe.traducteur import _filtrer
+
+    table = pd.DataFrame({"Skin_Symptoms": ["1", "0", "9", "1,0"]})
+    restants = _filtrer(table, "Skin_Symptoms!=1")
+    assert sorted(restants["Skin_Symptoms"].tolist()) == ["0", "9"]

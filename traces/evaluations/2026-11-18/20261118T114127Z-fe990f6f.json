@@ -1,0 +1,174 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T11:41:27Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "1b76ad4763f3a7c6",
+  "commit": "2a5246d8acbf4f307610eb36398a74922c1e265d",
+  "modifie": true,
+  "officielle": false,
+  "modele": "claude-sonnet-5-5",
+  "batterie": {
+    "chemin": "~/.allergylab/benchmark/sonnet.toml",
+    "empreinte": "cf151814e0f198ab",
+    "questions": 6
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 4,
+    "sur": 4
+  },
+  "abstention": {
+    "fondees": 2,
+    "sur": 2
+  },
+  "verdicts": {
+    "juste": 4,
+    "faux": 0,
+    "abstention-fondee": 2,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 6,
+    "total": {
+      "jetons": {
+        "entree": 22095,
+        "sortie": 1034
+      },
+      "cout_estime": 0.05453,
+      "duree_s": 16.27
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 3682.5,
+        "sortie": 172.3
+      },
+      "cout_estime": 0.00908833,
+      "duree_s": 2.71
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "A01",
+      "texte": "Combien de patients sont inclus dans le jeu de données ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4271,
+        "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.02,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "A07",
+      "texte": "Combien de patients bénéficient d'un traitement contre la rhinite ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 430,
+        "justification": "430 patients sont traités pour une rhinite. 3841 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1430,
+        "sortie": 161
+      },
+      "cout_estime": 0.00447,
+      "duree_s": 2.6,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "C04",
+      "texte": "Combien de patients présentant des symptômes cutanés sont traités pour une rhinite ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 211,
+        "justification": "211 patients portent les codes 1 de Skin_Symptoms. 219 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1435,
+        "sortie": 238
+      },
+      "cout_estime": 0.00525,
+      "duree_s": 1.86,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "B13",
+      "texte": "Cb de patients prennent une biotherapie pour l'asthme ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 27,
+        "justification": "27 patients sont sous biothérapie. 4244 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1428,
+        "sortie": 49
+      },
+      "cout_estime": 0.003346,
+      "duree_s": 0.91,
+      "erreur": null,
+      "verdict": "juste"
+    },
+    {
+      "id": "D02",
+      "texte": "Quelle est la concentration moyenne de Bet_v_1 en kUA/L ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question impose une unité (kUA/L), or les dosages de Bet_v_1 n'ont aucune unité précisée dans le fichier. Une moyenne exprimée en kUA/L ne peut donc pas être affirmée, et une conversion serait une invention."
+      },
+      "etapes": [
+        {
+          "code": "# La question impose l'unité (kUA/L) ; le fichier ne précise aucune unité pour les dosages.\n# Une conversion serait une invention : abstention motivée.\nfinal_answer({\n    \"statut\": \"abstention\",\n    \"valeur\": None,\n    \"justification\": \"La question impose une unité (kUA/L), or les dosages de Bet_v_1 n'ont aucune unité précisée dans le fichier. Une moyenne exprimée en kUA/L ne peut donc pas être affirmée, et une conversion serait une invention.\"\n})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"La question impose une unité (kUA/L), or les dosages de Bet_v_1 n'ont aucune unité précisée dans le fichier. Une moyenne exprimée en kUA/L ne peut donc pas être affirmée, et une conversion serait une invention.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 8893,
+        "sortie": 289
+      },
+      "cout_estime": 0.020676,
+      "duree_s": 6.11,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "D13",
+      "texte": "Quel est le risque de développer une allergie alimentaire chez un patient présentant des symptômes cutanés ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "La question porte sur un risque de développer une allergie alimentaire, c'est-à-dire un pronostic ; le fichier décrit des patients à un instant donné et ne permet pas de prédire. De plus, aucune colonne ne définit directement une « allergie alimentaire » (Age_of_onsets ne concerne que l'anaphylaxie alimentaire)."
+      },
+      "etapes": [
+        {
+          "code": "# La question demande un \"risque de développer\" : pronostic, hors périmètre du fichier (description à un instant).\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"La question porte sur un risque de développer une allergie alimentaire, c'est-à-dire un pronostic ; le fichier décrit des patients à un instant donné et ne permet pas de prédire. De plus, aucune colonne ne définit directement une « allergie alimentaire » (Age_of_onsets ne concerne que l'anaphylaxie alimentaire).\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"La question porte sur un risque de développer une allergie alimentaire, c'est-à-dire un pronostic ; le fichier décrit des patients à un instant donné et ne permet pas de prédire. De plus, aucune colonne ne définit directement une « allergie alimentaire » (Age_of_onsets ne concerne que l'anaphylaxie alimentaire).\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 8909,
+        "sortie": 297
+      },
+      "cout_estime": 0.020787999999999997,
+      "duree_s": 4.77,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    }
+  ]
+}

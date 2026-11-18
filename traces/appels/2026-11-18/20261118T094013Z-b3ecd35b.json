@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-18T09:40:13Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "fe6fa488fae0c41f",
+  "commit": "5c5dfb24eb34bf7fd6445360e51aac80ce1a1249",
+  "modifie": false,
+  "moteur": "traducteur",
+  "modele": "claude-haiku-5-5",
+  "question": "Parmi les patients âgés de 18 à 30 ans, combien sont des femmes vivant en zone urbaine ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 78,
+    "justification": "78 patients réunissent ces conditions : âgés de 18 à 30 ans, de sexe féminin, résidant en zone urbaine."
+  },
+  "etapes": null,
+  "jetons": {
+    "entree": 1132,
+    "sortie": 208
+  },
+  "cout_estime": 0.0002172,
+  "duree_s": 2.2,
+  "erreur": null
+}

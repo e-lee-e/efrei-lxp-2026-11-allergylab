@@ -188,7 +188,7 @@ def _essayer(fonction, *arguments):
         return None
 
 
-_DICO = {"lu": None, "de": None, "bloc": ""}
+_DICO = {"cle": None, "lu": None, "bloc": ""}
 
 
 def _dictionnaire():
@@ -196,17 +196,23 @@ def _dictionnaire():
 
     Rien n'est codé en dur : c'est le fichier de l'utilisateur qui fait foi, et un
     dictionnaire absent rend un dictionnaire vide, pas une erreur.
+
+    La marque porte sur le chemin **et** les colonnes du tableau : changer de
+    fichier sans changer de dictionnaire doit refaire le bloc, sinon le prompt
+    nomme une colonne qui n'existe plus (mesuré : « Poids » restait décrit sur
+    une table qui ne l'a pas).
     """
     chemin = reglages.dictionnaire()
     if not chemin:
         return {}, ""
-    if _DICO["de"] != chemin:
+    colonnes = tuple(cache.tableau().columns)
+    marque = (chemin, colonnes)
+    if _DICO["cle"] != marque:
         try:
             table = dictionnaire.lire(chemin)
         except ValueError:
             table = {}
-        colonnes = list(cache.tableau().columns)
-        _DICO.update(lu=table, de=chemin, bloc=dictionnaire.bloc(table, colonnes))
+        _DICO.update(cle=marque, lu=table, bloc=dictionnaire.bloc(table, list(colonnes)))
     return _DICO["lu"], _DICO["bloc"]
 
 
@@ -258,8 +264,14 @@ def repondre(question, precedente=None):
 
 
 def _contexte():
-    """Ce qui change la réponse de l'agent complet sans changer la question : entre dans la clé du cache."""
-    return f"{VARIANTE}|{ETAPES_MAX}|{SORTIE_MAX}"
+    """Ce qui change la réponse de l'agent complet sans changer la question : entre dans la clé du cache.
+
+    Le bloc du dictionnaire en fait partie : l'attacher après coup change le
+    prompt, donc il doit invalider les réponses gardées avant lui. Sans ça, la
+    question déjà posée recevait l'ancienne réponse et le dictionnaire semblait
+    ne servir à rien.
+    """
+    return f"{VARIANTE}|{ETAPES_MAX}|{SORTIE_MAX}|{_dictionnaire()[1]}"
 
 
 def _repondre(question):

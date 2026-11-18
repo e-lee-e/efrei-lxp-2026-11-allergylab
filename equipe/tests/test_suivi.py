@@ -31,6 +31,18 @@ def test_un_groupe_inconnu_ne_se_devine_pas():
     assert suivi.resoudre("combien de femmes ?", "Combien d'hommes ?") is None
 
 
+def test_une_question_precedente_a_deux_groupes_ne_se_reconstruit_pas():
+    """« et des hommes ? » après une comparaison femmes/hommes : on ne devine pas.
+
+    Le choix du groupe à remplacer dépendait de l'ordre d'un set, donc de
+    PYTHONHASHSEED : la même demande rendait une question absurde (« les hommes
+    … que les hommes ? ») ou une abstention, selon le processus.
+    """
+    precedente = "Les femmes sont-elles plus souvent sensibilisées que les hommes ?"
+    assert suivi.resoudre("et des hommes ?", precedente) is None
+    assert suivi.resoudre("et de femmes ?", precedente) is None
+
+
 def test_un_suivi_non_resolu_rend_une_abstention_sans_appel(monkeypatch):
     """Aucune question ne part au modèle si elle ne se tient pas debout."""
 

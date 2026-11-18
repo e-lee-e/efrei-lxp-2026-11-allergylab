@@ -23,6 +23,16 @@ def test_l_historique_ne_melange_pas_deux_fichiers(tmp_path):
     assert [e["question"] for e in historique.du_fichier("jeu-1.csv", fichier)] == ["Première ?"]
 
 
+def test_la_meme_question_sur_deux_fichiers_donne_deux_entrees(tmp_path):
+    """La déduplication porte sur (fichier, question) : la seconde n'efface pas la première."""
+    fichier = tmp_path / "questions.json"
+    historique.enregistrer({"question": "Combien de patients ?", "fichier": "a.csv", "valeur": 1}, fichier)
+    historique.enregistrer({"question": "Combien de patients ?", "fichier": "b.csv", "valeur": 2}, fichier)
+
+    assert historique.du_fichier("a.csv", fichier)[0]["valeur"] == 1
+    assert historique.du_fichier("b.csv", fichier)[0]["valeur"] == 2
+
+
 def test_un_fichier_abime_ne_casse_rien(tmp_path):
     fichier = tmp_path / "questions.json"
     fichier.write_text("{ ceci n'est pas du json", encoding="utf-8")

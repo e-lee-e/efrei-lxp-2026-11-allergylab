@@ -6,10 +6,11 @@ portent sur ce qui l'empêche. Aucun réseau, aucun modèle, aucun jeton.
 
 import json
 
+import pandas as pd
 import pytest
 
-from equipe import agent, cache
-from garde_fous import sans_fichier_reel, sans_reseau, sans_vrai_cache, sans_vraie_cle  # noqa: F401  (actifs d'office)
+from equipe import agent, cache, reglages
+from garde_fous import sans_dictionnaire_reel, sans_fichier_reel, sans_reseau, sans_vrai_cache, sans_vraie_cle  # noqa: F401  (actifs d'office)
 from kit import modele
 
 QUESTION = "Quel est l'âge moyen des patients ?"
@@ -96,3 +97,33 @@ def test_le_cache_sert_quand_aucune_couche_locale_ne_repond(monkeypatch):
     monkeypatch.setattr(agent.hors_sujet, "examiner", lambda question: None)
     modele.journal_neuf()
     assert agent.repondre(QUESTION) == REPONSE and modele.journal["moteur"] == "cache"
+
+
+def test_la_cle_suit_le_dictionnaire_attache(monkeypatch, tmp_path):
+    """Attacher un dictionnaire change le prompt : la clé doit changer avec lui."""
+    dico = tmp_path / "dico.csv"
+    dico.write_text("Gender;0;Féminin\nGender;1;Masculin\n", encoding="utf-8")
+    monkeypatch.setattr(reglages, "dictionnaire", lambda: dico)
+    monkeypatch.setattr(agent.cache, "tableau", lambda: pd.DataFrame({"Gender": [0, 1]}))
+    monkeypatch.setattr(agent, "_DICO", {"cle": None, "lu": None, "bloc": ""})
+
+    avant = agent._contexte()
+    dico.write_text("Gender;0;HOMME\nGender;1;FEMME\n", encoding="utf-8")
+    monkeypatch.setattr(agent, "_DICO", {"cle": None, "lu": None, "bloc": ""})
+
+    assert agent._contexte() != avant
+
+
+def test_le_bloc_du_dictionnaire_suit_les_colonnes_du_fichier(monkeypatch, tmp_path):
+    """Changer de fichier sans changer de dictionnaire ne doit pas garder ses colonnes."""
+    dico = tmp_path / "dico.csv"
+    dico.write_text("Genre;0;F\nPoids;1;léger\n", encoding="utf-8")
+    monkeypatch.setattr(reglages, "dictionnaire", lambda: dico)
+    monkeypatch.setattr(agent, "_DICO", {"cle": None, "lu": None, "bloc": ""})
+    monkeypatch.setattr(agent.cache, "tableau", lambda: pd.DataFrame({"Genre": [0], "Poids": [1]}))
+    avec_poids = agent._dictionnaire()[1]
+
+    monkeypatch.setattr(agent.cache, "tableau", lambda: pd.DataFrame({"Genre": [0], "Taille": [1]}))
+    sans_poids = agent._dictionnaire()[1]
+
+    assert "Poids" in avec_poids and "Poids" not in sans_poids

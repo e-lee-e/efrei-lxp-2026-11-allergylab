@@ -60,15 +60,21 @@ SESSION = {"questions": 0, "cout": 0.0, "duree": 0.0}
 
 def traiter(question: str) -> dict:
     """Répond à une question, l'enregistre dans l'historique et rend ce que la page affiche."""
-    modele.journal_neuf()
+    # Le chemin complet identifie le jeu : deux fichiers du même nom dans deux
+    # dossiers ne doivent pas partager leur historique ni leur question précédente.
+    fichier_actif = str(cache.fichier())
     debut = time.time()
     with VERROU, traces.appel(question, None, None) as trace:
+        # Le journal est un état de module : le remettre à zéro doit se faire dans
+        # le verrou. Avant lui, une seconde question effaçait le coût de la
+        # première pendant qu'elle tournait, et sa trace annonçait 0 $.
+        modele.journal_neuf()
         try:
             # La question précédente du même fichier sert aux suivis (« et de femmes ? »).
             # L'historique range la plus récente en tête : la précédente est la
             # première, pas la dernière. Mesuré : [-1] donnait la plus vieille
             # question du fichier, et le suivi ne se résolvait jamais.
-            precedentes = [entree.get("question") for entree in historique.du_fichier(cache.fichier().name)]
+            precedentes = [entree.get("question") for entree in historique.du_fichier(fichier_actif)]
             sortie = agent.repondre(question, precedentes[0] if precedentes else None)
         except Exception as erreur:  # une panne ne doit pas casser la page
             sortie = {
@@ -113,7 +119,7 @@ def traiter(question: str) -> dict:
         "duree": round(duree, 1),
         "jetons": jetons,
         "etapes": etapes,
-        "fichier": cache.fichier().name,
+        "fichier": fichier_actif,
         # La cause, quand elle a une sortie connue : la page s'en sert pour
         # proposer l'action juste au lieu d'un message sans issue.
         "code": modele.journal.get("cause"),
@@ -142,7 +148,7 @@ def etat() -> dict:
         "dictionnaire": dico,
         "modele": reglages.modele(),
         "modeles": reglages.MODELES,
-        "entrees": historique.du_fichier(nom),
+        "entrees": historique.du_fichier(str(cache.fichier())),
         "session": {"questions": SESSION["questions"], "cout": round(SESSION["cout"], 6)},
     }
 

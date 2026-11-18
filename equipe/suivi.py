@@ -22,6 +22,11 @@ from equipe.routeur import LEXIQUE
 # le tableau, et le remplacer n'aurait pas de sens.
 SUJETS = {nom for noms, _, _ in LEXIQUE for nom in noms}
 
+# L'identité d'un groupe : deux mots du lexique peuvent nommer le même groupe
+# (« zones rurales » et « rurales »). Compter les mots plutôt que les groupes
+# faisait refuser un suivi qui ne nommait pourtant qu'un seul groupe.
+GROUPES = {nom: (colonne, frozenset(codes)) for noms, colonne, codes in LEXIQUE for nom in noms}
+
 AMORCES = ("et ", "idem", "pareil", "même chose", "meme chose", "et alors", "et pour", "et de", "et des")
 
 
@@ -54,13 +59,33 @@ def _sujet(question):
     return None
 
 
+def _groupes_nommes(texte):
+    """Les groupes du lexique présents dans un texte, par identité (colonne, codes).
+
+    Compter les noms ne suffit pas : « les zones rurales » contient aussi
+    « rurales », deux entrées du lexique pour le même groupe. Ce qui compte est
+    le nombre de groupes distincts, pas le nombre de mots qui les nomment.
+    """
+    trouves = set()
+    for nom in SUJETS:
+        if re.search(rf"\b{re.escape(nom)}\b", texte, re.IGNORECASE):
+            groupe = GROUPES.get(nom)
+            if groupe:
+                trouves.add(groupe)
+    return trouves
+
+
 def _accord(precedente, sujet):
     """Remplace le groupe de la question précédente par le nouveau, accordé.
 
     La question d'origine est reprise telle quelle, accents et majuscules compris :
     la normaliser pour la reconstruire donnait « quel est l' ge m dian des hommes ».
     """
-    for ancien in sorted(SUJETS, key=len, reverse=True):
+    # Ordre déterministe : `SUJETS` est un set, et l'ordre d'itération dépend de
+    # PYTHONHASHSEED. Deux groupes de même longueur étaient donc remplacés au
+    # hasard du processus (« et des hommes ? » rendait tantôt une question
+    # absurde, tantôt une abstention).
+    for ancien in sorted(SUJETS, key=lambda nom: (-len(nom), nom)):
         motif = re.compile(rf"\b{re.escape(ancien)}\b", re.IGNORECASE)
         trouve = motif.search(precedente)
         if not trouve:
@@ -84,6 +109,12 @@ def resoudre(question, precedente):
         return None
     sujet = _sujet(question)
     if not sujet:
+        return None
+    if len(_groupes_nommes(precedente)) > 1:
+        # La question précédente nomme deux groupes : on ne sait pas lequel le
+        # suivi remplace. Choisir le premier trouvé rendait le résultat dépendant
+        # du processus, et parfois une question absurde (« les hommes … que les
+        # hommes ? »). On demande la question entière, sans appel.
         return None
     reconstruite = _accord(precedente, sujet)
     if not reconstruite or reconstruite == _plat(precedente):

@@ -59,3 +59,17 @@ def sans_vrai_cache(tmp_path, monkeypatch):
     from equipe import cache
 
     monkeypatch.setattr(cache, "DOSSIER", tmp_path / "cache")
+
+
+@pytest.fixture(autouse=True)
+def sans_dictionnaire_reel(monkeypatch):
+    """Aucun test ne dépend du dictionnaire attaché dans ~/.allergylab/reglages.json.
+
+    `agent._contexte()` lit le dictionnaire (il fait partie de la clé de cache) :
+    sans ce garde-fou, un dictionnaire laissé par une session de la fenêtre
+    changeait le comportement des tests, et faisait lire le vrai fichier de
+    données à ceux qui n'en ont pas besoin.
+    """
+    from equipe import reglages
+
+    monkeypatch.setattr(reglages, "dictionnaire", lambda: None)

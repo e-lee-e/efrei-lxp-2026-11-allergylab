@@ -52,6 +52,7 @@ _empreinte_de = None
 FICHIER_CHOISI = None
 _consigne = None
 _dosages = None
+_dosages_de = None
 
 # Le moteur qui a produit la réponse entre dans la clé : sans ça, une réponse
 # obtenue avec Haiku serait resservie à un run local, et inversement.
@@ -226,15 +227,17 @@ def tableau():
             _tableau = pickle.load(flux)
         _tableau_de = marque
         return _tableau
-    except (OSError, pickle.UnpicklingError, ValueError, AttributeError, EOFError):
+    except (OSError, pickle.UnpicklingError, ValueError, AttributeError, EOFError, ImportError):
         pass  # pas de copie, copie d'une autre version de pandas, copie tronquée : on relit le CSV
 
     # Sans argument, charger() suit kit.donnees.en_cours, que `kit evaluer`
     # bascule le temps d'une batterie : passer un chemin explicite l'ignorerait.
     try:
         # Le fichier publié se lit avec les règles du kit, à la lettre ; tout autre
-        # fichier passe par le lecteur générique, qui ne suppose rien.
-        if FICHIER_CHOISI is None and Path(courant) == Path(FICHIER):
+        # fichier passe par le lecteur générique, qui ne suppose rien. Le test porte
+        # sur le chemin, pas sur la façon dont il a été choisi : rouvrir le fichier
+        # du kit par la fenêtre doit garder la lecture du kit.
+        if Path(courant) == Path(FICHIER):
             _tableau = charger(courant)
         else:
             _tableau = _lire_generique(courant)
@@ -277,14 +280,14 @@ def choisir_fichier(chemin=None):
     L'empreinte du fichier entre dans la clé de cache : changer de fichier
     invalide de fait les réponses de l'ancien, sans rien effacer à la main.
     """
-    global FICHIER_CHOISI, _tableau, _tableau_de, _empreinte, _empreinte_de, _dosages
+    global FICHIER_CHOISI, _tableau, _tableau_de, _empreinte, _empreinte_de, _dosages, _dosages_de
     ancien = FICHIER_CHOISI
     FICHIER_CHOISI = Path(chemin).expanduser().resolve() if chemin else None
     _tableau = None
     _tableau_de = None
     _empreinte = None
     _empreinte_de = None
-    _dosages = None
+    _dosages = _dosages_de = None
     # On essaie tout de suite : un fichier qui ne se lit pas doit se dire à
     # l'ouverture, pas au milieu d'une question ni par une trace d'exception.
     try:
@@ -292,7 +295,7 @@ def choisir_fichier(chemin=None):
             tableau()
     except DonneeIllisible:
         FICHIER_CHOISI = ancien
-        _tableau = _tableau_de = _empreinte = _empreinte_de = _dosages = None
+        _tableau = _tableau_de = _empreinte = _empreinte_de = _dosages = _dosages_de = None
         raise
     return fichier()
 
@@ -302,16 +305,23 @@ def dosages():
 
     Source unique : compter sur la position des colonnes ne vaut que pour le
     fichier livré, et casse dès qu'on passe une table inventée.
+
+    Le choix se fait sur le fichier réellement lu (`fichier()`), pas sur
+    `FICHIER_CHOISI` : pendant `kit evaluer --exemple`, `donnees.en_cours` désigne
+    la table inventée alors que `FICHIER_CHOISI` est vide, et le kit rendait ses
+    241 colonnes de dosage pour une table qui en a 21.
     """
-    global _dosages
-    if _dosages is None:
-        if FICHIER_CHOISI is None:
+    global _dosages, _dosages_de
+    courant = fichier()
+    if _dosages is None or _dosages_de != str(courant):
+        if Path(courant) == Path(FICHIER):
             dico = colonnes()
             _dosages = set(dico.loc[dico["bloc"] == "dosage", "colonne"])
         else:
             # Le dictionnaire du kit décrit le fichier du kit : sur un autre fichier,
             # on se rabat sur la forme des noms de colonnes de dosage.
             _dosages = {c for c in tableau().columns if c.lower().startswith(("act_d", "bet_v"))}
+        _dosages_de = str(courant)
     return _dosages
 
 

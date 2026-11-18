@@ -102,6 +102,9 @@ def passer(lot, plafond=0.30):
 
 
 def resume(resultats, depense):
+    if not resultats:
+        print("\nAucune question traitée.")
+        return
     familles = sorted({r["famille"] for r in resultats})
     print()
     print(f"{'famille':<8}{'traitées':>9}{'justes':>8}{'gratuit':>9}{'coût':>12}")

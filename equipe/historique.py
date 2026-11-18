@@ -42,7 +42,15 @@ def enregistrer(entree, chemin=FICHIER):
 
     propre = dict(entree)
     propre.setdefault("quand", datetime.now().isoformat(timespec="seconds"))
-    reste = [autre for autre in charger(chemin) if normaliser(str(autre.get("question") or "")) != question]
+    # La déduplication porte sur le couple (fichier, question) : la même question
+    # posée sur deux jeux est deux entrées. Sur la question seule, la seconde
+    # effaçait la première de la barre latérale de l'autre fichier.
+    fichier = entree.get("fichier")
+    reste = [
+        autre
+        for autre in charger(chemin)
+        if not (normaliser(str(autre.get("question") or "")) == question and autre.get("fichier") == fichier)
+    ]
     entrees = [propre] + reste
     ecrire(entrees[:GARDEES], chemin)
     return entrees[:GARDEES]

@@ -107,7 +107,7 @@ Deux règles de lecture sont appliquées par l'outil, une fois pour toutes, pour
 - une cellule peut porter plusieurs codes (« 1,3 ») : elle vaut les deux, et « 1 » ne se trouve pas dans « 10 » ;
 - le code 9 veut dire « non renseigné » seulement dans les colonnes de `CODEES` (`_filtre.py`) ; dans `Age`, les mois et les dosages, 9 est une valeur.
 
-Le détail des mesures est dans `equipe/TRAVAIL.md`, le déroulé jour par jour dans `JOURNAL.md`.
+Le détail des mesures est dans `equipe/TRAVAIL.md` et `equipe/analyse/comparatif-couches.md`, la restitution (agent recommandé et démonstration) dans `equipe/RESTITUTION.md`, le déroulé jour par jour dans `JOURNAL.md`.
 
 ## Avant la remise
 

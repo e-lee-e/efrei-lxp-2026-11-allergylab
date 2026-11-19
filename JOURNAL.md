@@ -22,12 +22,6 @@ Une phrase par jour au moins, signée de l'équipe, jamais d'un prénom. Le nomb
 
 ## Jeudi 19 novembre
 
-Équipe 2. Aucun appel réel tracé à cette heure : journée de relecture.
-
-- Sécurité relue : le filtre de `calculer` vient du modèle, il est lu par deux expressions régulières (`CONDITION`, `DANS`) puis appliqué par des comparaisons pandas, sans `eval`, `exec` ni `query`. Les tests `test_aucun_eval_exec_query` et `test_filtre_malveillant_refuse` le vérifient ; `par` passe par le même chemin et reste limité à dix groupes (`MAX_GROUPES`).
-- Limite assumée : fermer l'accès aux données n'est pas un bac à sable. Les deux lignes d'accès restent visibles dans `agent.py`, gardées par `test_les_deux_lignes_d_acces_restent_visibles`.
-- Ce qui n'a pas pu être relancé ce jour-là : `uv` manquait sur la machine de relecture, donc ni `pytest` ni `kit controle --hors-ligne` n'ont tourné. À refaire avant la remise.
-
 ## Vendredi 20 novembre
 
 ## Demandes de rallonge

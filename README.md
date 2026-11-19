@@ -77,4 +77,41 @@ L'agent livré dans `equipe/agent.py` est un `CodeAgent` de smolagents, **ouvert
 
 Jusqu'où fermer est une décision de ton équipe, qu'elle justifie par ses scores.
 
-**Ce que coûte une question.** Chaque `uv run kit agent` affiche ses jetons et leur coût estimé. Par défaut, l'agent fait huit étapes au plus par question et ses sorties sont tronquées (`kit/reglages.toml`) : ce sont des réglages, pas des verrous. La seule vraie limite est la cagnotte de ton équipe. Quand elle est épuisée, le kit affiche « cagnotte épuisée », écrit la trace et ne retente rien : va voir Adrien.
+Les variantes de notre agent (`ouvert`, `ferme`, `outils`) se choisissent par `ALLERGYLAB_VARIANTE`, voir l'en-tête de `equipe/agent.py`.
+
+**Ce que coûte une question.** Chaque `uv run kit agent` affiche ses jetons et leur coût estimé. Le kit propose huit étapes au plus par question, sorties tronquées (`kit/reglages.toml`) ; notre agent n'en fait que cinq (`ETAPES_MAX` dans `equipe/agent.py`), parce que huit étapes ont coûté jusqu'à 0,008 $ une question. Ce sont des réglages, pas des verrous. La seule vraie limite est la cagnotte de ton équipe. Quand elle est épuisée, le kit affiche « cagnotte épuisée », écrit la trace et ne retente rien : va voir Adrien.
+
+## Nos outils et leur sécurité
+
+L'agent de l'équipe 2 n'offre que deux outils, dans `equipe/outils/` :
+
+| Outil | Ce qu'il fait |
+|---|---|
+| `calculer` | compter, moyenne, médiane, pourcentage, valeurs manquantes, corrélation, avec un filtre et, si besoin, un calcul par groupe (`par`) |
+| `chercher_colonne` | retrouver le nom exact d'une colonne à partir d'un mot |
+
+Il y en a eu cinq. Chaque description d'outil est renvoyée au modèle à chaque étape, donc payée à chaque étape : `taux_par_groupe`, `taux_par_presence` et `positifs` ont été fusionnés dans `calculer` (commit 2c0ad37).
+
+Ce qui touche à la sécurité, à relire en priorité dans `equipe/outils/_filtre.py` :
+
+- Le filtre est un texte écrit par le modèle. Il est lu par deux expressions régulières (`CONDITION` et `DANS`), puis appliqué par des comparaisons pandas. Ni `eval`, ni `exec`, ni `query`. Ce qui n'a pas la forme « colonne comparaison valeur » ou « colonne dans valeur,valeur » est refusé.
+- Le paramètre `par` passe par le même chemin, et il est limité à dix groupes (`MAX_GROUPES`).
+- Un outil rend une phrase courte, jamais le tableau.
+- Les tests `test_aucun_eval_exec_query`, `test_filtre_malveillant_refuse` et `test_les_deux_lignes_d_acces_restent_visibles` gardent ces règles.
+- Fermer l'accès aux données réduit ce que l'agent peut faire ; ce n'est pas un bac à sable. Tant que `agent.py` est en variante `ouvert`, le code écrit par le modèle s'exécute sur le portable de la personne qui lance l'agent.
+
+## Comment lire les données
+
+Deux règles de lecture sont appliquées par l'outil, une fois pour toutes, pour que le modèle ne les réécrive pas à la main :
+
+- une cellule peut porter plusieurs codes (« 1,3 ») : elle vaut les deux, et « 1 » ne se trouve pas dans « 10 » ;
+- le code 9 veut dire « non renseigné » seulement dans les colonnes de `CODEES` (`_filtre.py`) ; dans `Age`, les mois et les dosages, 9 est une valeur.
+
+Le détail des mesures est dans `equipe/TRAVAIL.md`, le déroulé jour par jour dans `JOURNAL.md`.
+
+## Avant la remise
+
+- Retirer les questions de contrôle et leurs valeurs attendues (`equipe/questions/`), et la règle d'abstention de `equipe/consigne.md` si l'animateur le demande : CLAUDE.md les interdit dans le dépôt du kit, l'équipe les garde ici comme échafaudage temporaire.
+- Adapter ou supprimer `test_chiffre_attendu` (`equipe/tests/test_outils_agent.py`), qui lit ces valeurs.
+- Décider avec l'animateur du sort de `traces/`, qui est versionné et contient des copies d'états.
+- Relancer `uv run pytest -q` puis `uv run kit controle --hors-ligne` : les deux doivent rendre le code 0.

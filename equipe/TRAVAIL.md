@@ -25,7 +25,7 @@ n'est pas reconnu descend d'un étage.
 | Départ, `CodeAgent` sans outils | 0,001715 $ | référence |
 | Outils offerts mais ignorés par le modèle | 0,002576 $ | **+50 %** |
 | Outils routés dans la consigne, format d'étape corrigé | 0,001594 $ | −7 % |
-| Outil `taux_par_presence` (question de la rhinite) | 0,001665 $ | **−46 %** sur cette question |
+| Outil `taux_par_presence` (question de la rhinite ; fusionné depuis dans `calculer`) | 0,001665 $ | **−46 %** sur cette question |
 | Routeur : questions reconnues | 0 $ | −100 % |
 | Traducteur : requête canonique | 0,0002 $ | ÷ 10 |
 | Cumul mesuré sur 12 questions | 0,000644 $ | **−62,4 %** |
@@ -67,16 +67,40 @@ gros, mais des outils qui lisent les données correctement.
 
 ## 5. Les tests
 
-100 tests, aucun ne touche au réseau ni au modèle.
+Aucun ne touche au réseau ni au modèle ; un faux modèle joue son rôle. Le tableau
+compte les fonctions `test_…` de chaque fichier (`grep -c "^def test_"`), pas les
+cas : un test paramétré en compte plusieurs à l'exécution. Le total exécuté se lit
+dans `uv run pytest -q`.
 
-| Fichier | Tests | Ce qu'il couvre |
+| Fichier | Fonctions | Ce qu'il couvre |
 |---|---|---|
-| `test_outils_agent.py` | 35 | `calculer`, `chercher_colonne`, filtres |
-| `test_routeur.py` | 27 | routes, sac de mots, élisions, refus |
-| `test_hors_sujet.py` | 13 | le portier |
-| `test_agent.py` | 9 | les trois variantes, plafond d'étapes |
-| `test_outils.py` | 9 | taux, présence, positifs |
-| `test_traducteur.py` | 7 | requête canonique et exécution |
+| `test_routeur.py` | 31 | routes, sac de mots, élisions, refus |
+| `test_traducteur.py` | 25 | requête canonique et exécution |
+| `test_outils_agent.py` | 17 | `calculer` et ses filtres : chiffres, abstentions, filtres piégés, absence d'`eval`/`exec`/`query` |
+| `test_outils.py` | 15 | `calculer` par groupe (`par`), `dans`, cellule « 1,3 », code 9, nombre d'outils |
+| `test_agent.py` | 14 | les trois variantes, plafond d'étapes, deux lignes d'accès visibles |
+| `test_cache.py` | 12 | clé de cache, abstentions jamais gardées |
+| `test_donnees.py` | 12 | lecture d'un fichier quelconque |
+| `test_dictionnaire.py` | 9 | lecture du dictionnaire |
+| `test_historique.py`, `test_reglages.py` | 6 + 6 | historique de la fenêtre, réglages |
+| `test_hors_sujet.py`, `test_interface.py`, `test_suivi.py` | 5 + 5 + 5 | portier, fenêtre, questions de suivi |
+
+Il n'y a plus d'outils `taux_par_groupe`, `taux_par_presence` ni `positifs` : le
+commit 2c0ad37 les a fusionnés dans `calculer`, et ses tests donnent les mêmes
+chiffres sur `calculer`.
+
+Les tests de sécurité à connaître :
+
+- `test_aucun_eval_exec_query` : aucun fichier de `equipe/outils/` ne contient
+  `eval(`, `exec(` ni `.query(` (règle de CLAUDE.md). Il ne regarde que ce dossier ;
+  le reste de `equipe/*.py` n'en contient pas non plus, vérifié par `grep`.
+- `test_filtre_malveillant_refuse` : un filtre qui n'a pas la forme
+  « colonne comparaison valeur » ou « colonne dans valeur,valeur » est refusé.
+- `test_les_deux_lignes_d_acces_restent_visibles` : les deux lignes qui ouvrent
+  l'accès aux données restent commentées dans `agent.py`.
+
+Dépendance à lever avant la remise : `test_chiffre_attendu` lit les valeurs
+attendues de `equipe/questions/lot01-base.toml` (voir section 8).
 
 ## 6. Le budget
 
@@ -104,7 +128,25 @@ l'agent ne parle plus qu'à l'API, et le dépôt n'a plus rien à installer.
 
 ## 8. Ce qui reste à faire
 
-Sortir la famille C des mains du modèle : brancher l'exécuteur du traducteur sur
-`calculer`, qui sait déjà lire un filtre, et lui apprendre les cellules à deux
-codes. Les questions à filtres passeraient de 0,00357 $ à environ 0,0002 $ et
-deviendraient reproductibles — ce qu'elles ne sont pas aujourd'hui.
+Fait depuis la première version de ce document : l'exécuteur du traducteur passe
+par `calculer`, qui lit les filtres et les cellules à deux codes (commit 2c0ad37).
+Les cinq outils sont devenus deux.
+
+À mesurer, jamais encore fait avec les deux outils fusionnés :
+
+- rejouer A07, C04, C02 et la question de la rhinite avec `ALLERGYLAB_SANS_CACHE=1` ;
+- peser les descriptions de `calculer` et de `chercher_colonne` au tokenizer
+  (`calculer` a grossi, les trois autres outils ont disparu).
+
+À arbitrer avec l'animateur avant la remise au chercheur :
+
+- La règle 1 de CLAUDE.md interdit les valeurs attendues et les règles
+  d'abstention. `equipe/questions/*.toml` et `equipe/consigne.md` en contiennent ;
+  la décision a été de les garder comme échafaudage temporaire.
+- `traces/` est versionné, avec des copies d'états de `equipe/` (`traces/etats/`).
+- `equipe/tests/test_outils_agent.py` lit les `attendu` des questions de B : retirer
+  ces questions casse `test_chiffre_attendu`.
+
+À faire à la remise : retirer les questions de contrôle et leurs `attendu`, puis
+adapter ou supprimer `test_chiffre_attendu`, et relancer `uv run pytest -q` puis
+`uv run kit controle --hors-ligne`.

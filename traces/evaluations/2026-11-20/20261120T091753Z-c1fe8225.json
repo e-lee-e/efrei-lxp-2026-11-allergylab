@@ -1,0 +1,249 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-20T09:17:53Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "3adf43647820df7c",
+  "commit": "8ea2172200c5430c6f773411204a1b7ae9300d8f",
+  "modifie": false,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "equipe/questions/lot01-base.toml",
+    "empreinte": "7e3ef8a421d2deee",
+    "questions": 8
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 0,
+    "sur": 6
+  },
+  "abstention": {
+    "fondees": 2,
+    "sur": 2
+  },
+  "verdicts": {
+    "juste": 0,
+    "faux": 6,
+    "abstention-fondee": 2,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 8,
+    "total": {
+      "jetons": {
+        "entree": 99168,
+        "sortie": 3156
+      },
+      "cout_estime": 0.0114948,
+      "duree_s": 28.05
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 12396.0,
+        "sortie": 394.5
+      },
+      "cout_estime": 0.00143685,
+      "duree_s": 3.51
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "q01",
+      "texte": "Combien de patients compte le tableau ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 4271,
+        "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.05,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q02",
+      "texte": "Quel est l'âge moyen des patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 23.077434679334917,
+        "justification": "L'âge moyen est de 23.08 ans sur 4210 patients dont l'âge est renseigné. Les 61 lignes sans âge sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.0,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q03",
+      "texte": "Quel est l'âge médian des patients de la puce ISAC_V1 ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 15.0,
+        "justification": "La valeur médiane de Age est 15.00, calculée sur 2351 lignes renseignées ; 0 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1711,
+        "sortie": 114
+      },
+      "cout_estime": 0.00022810000000000001,
+      "duree_s": 1.62,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q04",
+      "texte": "Quelle est la moyenne de Act_d_1 chez les patients de la puce ALEX ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 0.407,
+        "justification": "La moyenne de Act_d_1 chez les patients de la puce ALEX est de 0.407, calculée sur n = 1139 patients, sans valeur manquante ignorée. L'unité n'est pas précisée dans le fichier."
+      },
+      "etapes": [
+        {
+          "code": "# Moyenne de Act_d_1 pour la puce ALEX ; calculer écarte les valeurs manquantes\nresultat = calculer(operation=\"moyenne\", colonne=\"Act_d_1\", filtre=\"Chip_Type=ALEX\", colonne2=\"\", par=\"\")\nprint(resultat)",
+          "resultat": "Execution logs:\nMoyenne de Act_d_1 : 0.407 (calculée sur 1139 patients, 0 sans valeur ignorés ; filtre : Chip_Type=ALEX).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "final_answer({\"statut\": \"reponse\", \"valeur\": 0.407, \"justification\": \"La moyenne de Act_d_1 chez les patients de la puce ALEX est de 0.407, calculée sur n = 1139 patients, sans valeur manquante ignorée. L'unité n'est pas précisée dans le fichier.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 0.407, 'justification': \"La moyenne de Act_d_1 chez les patients de la puce ALEX est de 0.407, calculée sur n = 1139 patients, sans valeur manquante ignorée. L'unité n'est pas précisée dans le fichier.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17807,
+        "sortie": 518
+      },
+      "cout_estime": 0.0020397,
+      "duree_s": 4.7,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q05",
+      "texte": "Combien de patients n'ont pas de région renseignée ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 0,
+        "justification": "0 patient sans valeur dans French_Region, sur 4271 patients (tous les patients ont une région renseignée)."
+      },
+      "etapes": [
+        {
+          "code": "# Colonne clinique nommée dans la consigne : pas besoin de chercher_colonne.\n# « manquants » compte les patients sans valeur dans French_Region.\nresultat = calculer(operation=\"manquants\", colonne=\"French_Region\")\nprint(resultat)",
+          "resultat": "Execution logs:\n0 patients sans valeur dans French_Region, sur 4271 (tous les patients).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Résultat de calculer : 0 patient sans valeur dans French_Region sur 4271.\nfinal_answer({\"statut\": \"reponse\", \"valeur\": 0, \"justification\": \"0 patient sans valeur dans French_Region, sur 4271 patients (tous les patients ont une région renseignée).\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 0, 'justification': '0 patient sans valeur dans French_Region, sur 4271 patients (tous les patients ont une région renseignée).'}"
+        }
+      ],
+      "jetons": {
+        "entree": 17712,
+        "sortie": 573
+      },
+      "cout_estime": 0.0020577,
+      "duree_s": 4.99,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q06",
+      "texte": "Quelle est la moyenne de Act_d_8 sur l'ensemble des patients ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 0.4246,
+        "justification": "Moyenne de Act_d_8 = 0.4246 sur n = 3132 patients renseignés (1139 valeurs manquantes exclues, sur 4271 patients). L'unité n'est pas précisée dans le fichier."
+      },
+      "etapes": [
+        {
+          "code": "# Vérifier le nom exact de la molécule puis calculer la moyenne sur tous les patients\nprint(chercher_colonne(\"Act_d_8\"))\nprint(calculer(operation=\"moyenne\", colonne=\"Act_d_8\", filtre=\"\", colonne2=\"\", par=\"\"))",
+          "resultat": "Execution logs:\n1 colonne(s) : Act_d_8 (dosage, nombre)\nMoyenne de Act_d_8 : 0.4246 (calculée sur 3132 patients, 1139 sans valeur ignorés ; tous les patients).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Moyenne de Act_d_8 : 0.4246 sur n = 3132 patients renseignés ; 1139 valeurs manquantes exclues ; unité non précisée dans le fichier.\nfinal_answer({\"statut\": \"reponse\", \"valeur\": 0.4246, \"justification\": \"Moyenne de Act_d_8 = 0.4246 sur n = 3132 patients renseignés (1139 valeurs manquantes exclues, sur 4271 patients). L'unité n'est pas précisée dans le fichier.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 0.4246, 'justification': \"Moyenne de Act_d_8 = 0.4246 sur n = 3132 patients renseignés (1139 valeurs manquantes exclues, sur 4271 patients). L'unité n'est pas précisée dans le fichier.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17806,
+        "sortie": 675
+      },
+      "cout_estime": 0.0021181000000000004,
+      "duree_s": 5.06,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q07",
+      "texte": "Quelle est la moyenne de Act_d_8 chez les patients de la puce ALEX ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Act_d_8 n'a aucune valeur chez les 1139 patients de la puce ALEX (filtre Chip_Type=ALEX), la molécule n'étant pas mesurée sur cette puce. Aucune moyenne ne peut donc être calculée pour ce groupe."
+      },
+      "etapes": [
+        {
+          "code": "# Vérifier le nom exact de la molécule, puis calculer la moyenne sur la puce ALEX\nprint(chercher_colonne(\"Act_d_8\"))\nresultat = calculer(operation=\"moyenne\", colonne=\"Act_d_8\", filtre=\"Chip_Type=ALEX\", colonne2=\"\", par=\"\")\nprint(resultat)",
+          "resultat": "Execution logs:\n1 colonne(s) : Act_d_8 (dosage, nombre)\nABSTENTION : Act_d_8 n'a aucune valeur chez ces 1139 patients (filtre : Chip_Type=ALEX).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "final_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Act_d_8 n'a aucune valeur chez les 1139 patients de la puce ALEX (filtre Chip_Type=ALEX), la molécule n'étant pas mesurée sur cette puce. Aucune moyenne ne peut donc être calculée pour ce groupe.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Act_d_8 n'a aucune valeur chez les 1139 patients de la puce ALEX (filtre Chip_Type=ALEX), la molécule n'étant pas mesurée sur cette puce. Aucune moyenne ne peut donc être calculée pour ce groupe.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17854,
+        "sortie": 680
+      },
+      "cout_estime": 0.0021254,
+      "duree_s": 5.69,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "q08",
+      "texte": "Quel est le poids moyen des patients ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Aucune colonne de poids n'existe dans le tableau : les recherches « poids », « weight » et « kg » ne donnent aucun résultat. Le fichier ne permet donc pas de calculer un poids moyen."
+      },
+      "etapes": [
+        {
+          "code": null,
+          "resultat": "Erreur : Error in code parsing:\nYour code snippet is invalid, because the regex pattern <code>(.*?)</code> was not found in it.\n            Here is your code snippet:\n            <invoke_block>\n# La consigne ne liste aucune colonne de poids : on vérifie le nom exact dans le tableau.\nprint(chercher_colonne(\"poids\"))\nprint(chercher_colonne(\"weight\"))\nprint(chercher_colonne(\"kg\"))\n</code>\n            Make sure to include code with the correct pattern, for instance:\n            Thoughts: Your thoughts\n            <code>\n            # Your python code here\n            </code>\nMake sure to provide correct code blobs."
+        },
+        {
+          "code": "# Pas de colonne « poids » dans la consigne : on cherche le nom exact dans le tableau.\nprint(chercher_colonne(\"poids\"))\nprint(chercher_colonne(\"weight\"))\nprint(chercher_colonne(\"kg\"))",
+          "resultat": "Execution logs:\nAucune colonne ne contient « poids » dans son nom.\nAucune colonne ne contient « weight » dans son nom.\nAucune colonne ne contient « kg » dans son nom.\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "final_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Aucune colonne de poids n'existe dans le tableau : les recherches « poids », « weight » et « kg » ne donnent aucun résultat. Le fichier ne permet donc pas de calculer un poids moyen.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Aucune colonne de poids n'existe dans le tableau : les recherches « poids », « weight » et « kg » ne donnent aucun résultat. Le fichier ne permet donc pas de calculer un poids moyen.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 26278,
+        "sortie": 596
+      },
+      "cout_estime": 0.0029258000000000005,
+      "duree_s": 5.94,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    }
+  ]
+}

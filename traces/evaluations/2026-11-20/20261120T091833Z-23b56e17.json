@@ -1,0 +1,240 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-20T09:18:33Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "3adf43647820df7c",
+  "commit": "8ea2172200c5430c6f773411204a1b7ae9300d8f",
+  "modifie": false,
+  "officielle": false,
+  "modele": "claude-haiku-5-5",
+  "batterie": {
+    "chemin": "equipe/questions/lot02-clinique.toml",
+    "empreinte": "ce6965e2e7204540",
+    "questions": 8
+  },
+  "table": "donnees/allergenchipchallenge-data-corrected-final-hdh-sfa.csv",
+  "justesse": {
+    "justes": 0,
+    "sur": 6
+  },
+  "abstention": {
+    "fondees": 2,
+    "sur": 2
+  },
+  "verdicts": {
+    "juste": 0,
+    "faux": 6,
+    "abstention-fondee": 2,
+    "abstention-a-tort": 0,
+    "reponse-inventee": 0,
+    "illisible": 0,
+    "erreur": 0
+  },
+  "frugalite": {
+    "questions": 8,
+    "total": {
+      "jetons": {
+        "entree": 84581,
+        "sortie": 3942
+      },
+      "cout_estime": 0.0104291,
+      "duree_s": 30.84
+    },
+    "par_question": {
+      "jetons": {
+        "entree": 10572.6,
+        "sortie": 492.8
+      },
+      "cout_estime": 0.00130364,
+      "duree_s": 3.85
+    }
+  },
+  "erreur": null,
+  "questions": [
+    {
+      "id": "q09",
+      "texte": "Combien de patients ont moins de 18 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 2272,
+        "justification": "2272 patients sur 4210 dont l'âge est renseigné ont moins de 18 ans. Les 61 lignes sans âge sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 0,
+        "sortie": 0
+      },
+      "cout_estime": 0.0,
+      "duree_s": 0.03,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q10",
+      "texte": "Parmi les patients de moins de 18 ans, combien sont sensibilisés (Sensitization = 1) ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 1973,
+        "justification": "1973 patients portent les codes 1 de Sensitization. 299 lignes sont hors du groupe ou non renseignées."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1723,
+        "sortie": 357
+      },
+      "cout_estime": 0.0003508,
+      "duree_s": 2.45,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q11",
+      "texte": "Quel pourcentage des patients est sensibilisé (Sensitization = 1) ? Réponds en pourcentage, par exemple 12,5.",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": "1 : 3579 ; 0 : 692",
+        "justification": "Sur 4271 lignes renseignées : 1 : 3579 ; 0 : 692. 0 lignes sans valeur ou non renseignées sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1734,
+        "sortie": 471
+      },
+      "cout_estime": 0.00040889999999999996,
+      "duree_s": 2.67,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q12",
+      "texte": "Quel est l'âge moyen des patients sensibilisés (Sensitization = 1) ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 22.166526492851137,
+        "justification": "La valeur moyenne de Age est 22.17, calculée sur 3567 lignes renseignées ; 12 lignes sans valeur sont exclues."
+      },
+      "etapes": [],
+      "jetons": {
+        "entree": 1716,
+        "sortie": 95
+      },
+      "cout_estime": 0.0002191,
+      "duree_s": 1.11,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q13",
+      "texte": "Quelle est la corrélation de Pearson entre l'âge et Act_d_1 ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": -0.0854,
+        "justification": "Corrélation de Pearson entre Age et Act_d_1 : r = -0.0854, calculée sur 4210 patients (61 sans valeur d'Act_d_1 ou d'Age ignorés, sur 4271). Cette corrélation est très faible et ne décrit qu'une association linéaire sur ce tableau, sans causalité."
+      },
+      "etapes": [
+        {
+          "code": "# Corrélation de Pearson entre Age et Act_d_1, calculée par l'outil (paires complètes uniquement)\nresultat = calculer(operation=\"correlation\", colonne=\"Age\", filtre=\"\", colonne2=\"Act_d_1\", par=\"\")\nprint(resultat)",
+          "resultat": "Execution logs:\nCorrélation de Pearson entre Age et Act_d_1 : -0.0854 (calculée sur 4210 patients, 61 sans valeur ignorés ; tous les patients).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Résultat de calculer : r = -0.0854 sur 4210 patients, 61 valeurs manquantes ignorées\nfinal_answer({\"statut\": \"reponse\", \"valeur\": -0.0854, \"justification\": \"Corrélation de Pearson entre Age et Act_d_1 : r = -0.0854, calculée sur 4210 patients (61 sans valeur d'Act_d_1 ou d'Age ignorés, sur 4271). Cette corrélation est très faible et ne décrit qu'une association linéaire sur ce tableau, sans causalité.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': -0.0854, 'justification': \"Corrélation de Pearson entre Age et Act_d_1 : r = -0.0854, calculée sur 4210 patients (61 sans valeur d'Act_d_1 ou d'Age ignorés, sur 4271). Cette corrélation est très faible et ne décrit qu'une association linéaire sur ce tableau, sans causalité.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17790,
+        "sortie": 591
+      },
+      "cout_estime": 0.0020745,
+      "duree_s": 5.19,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q14",
+      "texte": "Quelle est la moyenne de Act_d_1 chez les patients de moins de 10 ans ?",
+      "reponse": {
+        "statut": "reponse",
+        "valeur": 0.8771,
+        "justification": "Moyenne de Act_d_1 calculée sur 1157 patients de moins de 10 ans (filtre Age<10), sans valeur manquante ignorée. L'unité de Act_d_1 n'est pas précisée dans le fichier."
+      },
+      "etapes": [
+        {
+          "code": "# Moyenne de Act_d_1 pour Age<10 ; calculer exclut seul les valeurs manquantes\nresultat = calculer(operation=\"moyenne\", colonne=\"Act_d_1\", filtre=\"Age<10\", colonne2=\"\", par=\"\")\nprint(resultat)",
+          "resultat": "Execution logs:\nMoyenne de Act_d_1 : 0.8771 (calculée sur 1157 patients, 0 sans valeur ignorés ; filtre : Age<10).\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "final_answer({\"statut\": \"reponse\", \"valeur\": 0.8771, \"justification\": \"Moyenne de Act_d_1 calculée sur 1157 patients de moins de 10 ans (filtre Age<10), sans valeur manquante ignorée. L'unité de Act_d_1 n'est pas précisée dans le fichier.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'reponse', 'valeur': 0.8771, 'justification': \"Moyenne de Act_d_1 calculée sur 1157 patients de moins de 10 ans (filtre Age<10), sans valeur manquante ignorée. L'unité de Act_d_1 n'est pas précisée dans le fichier.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17790,
+        "sortie": 553
+      },
+      "cout_estime": 0.0020555,
+      "duree_s": 5.03,
+      "erreur": null,
+      "verdict": "faux"
+    },
+    {
+      "id": "q15",
+      "texte": "Combien de patients ont une allergie alimentaire confirmée par un test de provocation ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Le fichier ne contient aucune colonne de test de provocation alimentaire ; la recherche « provoc » ne trouve rien. La seule colonne alimentaire, Age_of_onsets, décrit l'âge d'apparition de l'anaphylaxie alimentaire et ne permet pas de conclure à une confirmation par provocation."
+      },
+      "etapes": [
+        {
+          "code": "print(chercher_colonne(mot=\"provoc\"))\nprint(chercher_colonne(mot=\"alimen\"))",
+          "resultat": "Execution logs:\nAucune colonne ne contient « provoc » dans son nom.\nAucune colonne ne contient « alimen » dans son nom.\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Pas de colonne de test de provocation dans le fichier (recherche « provoc » vide).\n# Age_of_onsets décrit l'âge d'apparition de l'anaphylaxie alimentaire, pas une confirmation par provocation.\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Le fichier ne contient aucune colonne de test de provocation alimentaire ; la recherche « provoc » ne trouve rien. La seule colonne alimentaire, Age_of_onsets, décrit l'âge d'apparition de l'anaphylaxie alimentaire et ne permet pas de conclure à une confirmation par provocation.\"})",
+          "resultat": "Execution logs:\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Le fichier ne contient aucune colonne de test de provocation alimentaire ; la recherche « provoc » ne trouve rien. La seule colonne alimentaire, Age_of_onsets, décrit l'âge d'apparition de l'anaphylaxie alimentaire et ne permet pas de conclure à une confirmation par provocation.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 17723,
+        "sortie": 891
+      },
+      "cout_estime": 0.0022178,
+      "duree_s": 6.24,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    },
+    {
+      "id": "q16",
+      "texte": "Quel est le taux moyen d'IgE totales des patients ?",
+      "reponse": {
+        "statut": "abstention",
+        "valeur": null,
+        "justification": "Aucune colonne d'IgE totales n'existe dans le tableau : les recherches « IgE », « total » et « tot » ne donnent rien, et les colonnes cliniques décrites ne comportent pas ce dosage. Le fichier ne nomme que des molécules spécifiques (Act_d_1, Bet_v_1…), donc le taux moyen d'IgE totales ne peut pas être calculé."
+      },
+      "etapes": [
+        {
+          "code": "# Les IgE totales ne sont pas une colonne clinique nommée : on cherche le nom exact.\nresultat_colonnes = chercher_colonne(\"IgE\")\nprint(resultat_colonnes)",
+          "resultat": "Execution logs:\nAucune colonne ne contient « ige » dans son nom.\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Recherche élargie : l'IgE totale peut porter un autre libellé.\nr1 = chercher_colonne(\"total\")\nr2 = chercher_colonne(\"tot\")\nprint(r1)\nprint(r2)",
+          "resultat": "Execution logs:\nAucune colonne ne contient « total » dans son nom.\nAucune colonne ne contient « tot » dans son nom.\nLast output from code snippet:\nNone"
+        },
+        {
+          "code": "# Dernière vérification directe du tableau, sans passer par l'outil de recherche.\ncolonnes_ige = [c for c in tableau.columns if 'ige' in str(c).lower()]\nprint(colonnes_ige)\nfinal_answer({\"statut\": \"abstention\", \"valeur\": None, \"justification\": \"Aucune colonne d'IgE totales n'existe dans le tableau : les recherches « IgE », « total » et « tot » ne donnent rien, et les colonnes cliniques décrites ne comportent pas ce dosage. Le fichier ne nomme que des molécules spécifiques (Act_d_1, Bet_v_1…), donc le taux moyen d'IgE totales ne peut pas être calculé.\"})",
+          "resultat": "Execution logs:\n[]\nLast output from code snippet:\n{'statut': 'abstention', 'valeur': None, 'justification': \"Aucune colonne d'IgE totales n'existe dans le tableau : les recherches « IgE », « total » et « tot » ne donnent rien, et les colonnes cliniques décrites ne comportent pas ce dosage. Le fichier ne nomme que des molécules spécifiques (Act_d_1, Bet_v_1…), donc le taux moyen d'IgE totales ne peut pas être calculé.\"}"
+        }
+      ],
+      "jetons": {
+        "entree": 26105,
+        "sortie": 984
+      },
+      "cout_estime": 0.0031025000000000002,
+      "duree_s": 8.12,
+      "erreur": null,
+      "verdict": "abstention-fondee"
+    }
+  ]
+}

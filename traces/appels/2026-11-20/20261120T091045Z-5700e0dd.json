@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "horodatage": "2026-11-20T09:10:45Z",
+  "equipe": "equipe-2",
+  "kit": "0.1.0",
+  "etat": "3adf43647820df7c",
+  "commit": "8ea2172200c5430c6f773411204a1b7ae9300d8f",
+  "modifie": false,
+  "moteur": "routeur",
+  "modele": "local",
+  "question": "Combien de lignes compte le tableau ?",
+  "reponse": {
+    "statut": "reponse",
+    "valeur": 4271,
+    "justification": "Le tableau compte 4271 lignes au total, sans filtrage."
+  },
+  "etapes": [],
+  "jetons": {
+    "entree": 0,
+    "sortie": 0
+  },
+  "cout_estime": 0.0,
+  "duree_s": 0.24,
+  "erreur": null
+}

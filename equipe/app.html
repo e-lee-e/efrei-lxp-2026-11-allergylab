@@ -251,12 +251,14 @@
   }
   .lien:hover { color: var(--vert); }
   #details-bascule { margin-top: 18px; }
-  dl.details {
-    margin: 14px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 26px;
-    font-size: 12.5px; border-top: 1px solid var(--bord); padding-top: 14px;
-  }
-  dl.details dt { color: var(--gris); }
-  dl.details dd { margin: 0; color: var(--texte); font-variant-numeric: tabular-nums; }
+  .details { margin: 14px 0 0; border-top: 1px solid var(--bord); padding-top: 14px; }
+  /* Le compte rendu du calcul tient ici, en clair : la réponse à l'écran reste le
+     chiffre, et le raisonnement se lit sur demande. Une abstention, elle, garde sa
+     justification visible — c'est elle, la réponse. */
+  .compte-rendu { margin: 0 0 12px; font-size: 13.5px; color: var(--gris-fonce); max-width: 68ch; }
+  dl.mesures { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 26px; font-size: 12.5px; }
+  dl.mesures dt { color: var(--gris); }
+  dl.mesures dd { margin: 0; color: var(--texte); font-variant-numeric: tabular-nums; }
 
   .charge { position: absolute; top: 0; left: 0; right: 0; height: 2px; overflow: hidden; }
   .charge span {
@@ -672,12 +674,12 @@ function afficher(entree, seule = false) {
     '<span class="issue-note"></span></div>' +
     '<div class="actions-tour"><button class="lien bascule" type="button">Détails techniques</button>' +
     '<button class="lien copier" type="button">Copier</button></div>' +
-    '<dl class="details" hidden>' +
+    '<div class="details" hidden><p class="compte-rendu"></p><dl class="mesures">' +
     '<dt>Répondu par</dt><dd class="d-couche">—</dd>' +
     '<dt>Coût</dt><dd class="d-cout">—</dd>' +
     '<dt>Durée</dt><dd class="d-duree">—</dd>' +
     '<dt>Étapes du modèle</dt><dd class="d-etapes">—</dd>' +
-    '<dt>Jetons</dt><dd class="d-jetons">—</dd></dl>' +
+    '<dt>Jetons</dt><dd class="d-jetons">—</dd></dl></div>' +
     '</div></div>';
   const bloc = tour.querySelector(".reponse");
   const q = (selecteur) => bloc.querySelector(selecteur);
@@ -692,7 +694,11 @@ function afficher(entree, seule = false) {
   const valeur = entree.valeur === null || entree.valeur === undefined ? "" : String(entree.valeur);
   q(".valeur").textContent = valeur || (refus ? "Pas de réponse" : "");
   q(".valeur").className = "valeur" + (valeur.length > 60 ? " longue" : "");
-  q(".justification").textContent = entree.justification || "";
+  const justification = entree.justification || "";
+  const ilFautLaVoir = refus || illisible;
+  q(".justification").textContent = ilFautLaVoir ? justification : "";
+  q(".justification").hidden = !ilFautLaVoir || !justification;
+  q(".compte-rendu").textContent = justification;
   q(".d-couche").textContent = entree.couche || "—";
   q(".d-cout").textContent = euros(entree.cout);
   q(".d-duree").textContent = entree.duree >= 0.1 ? entree.duree.toFixed(1).replace(".", ",") + " s" : "immédiat";

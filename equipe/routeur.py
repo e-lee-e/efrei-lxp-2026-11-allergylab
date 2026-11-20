@@ -557,6 +557,15 @@ def _sac_effectifs(question, tableau):
     effectifs = [(nom, _effectif(tableau, groupe[0], groupe[1])) for nom, groupe in groupes]
     if any(nombre is None for _nom, nombre in effectifs):
         return None
+    # Un seul groupe : la valeur est un nombre, pas « 2070 femmes ». Le nom du
+    # groupe va dans la justification — le contrat du harnais l'exige (§ 5.3).
+    if len(effectifs) == 1:
+        nom, nombre = effectifs[0]
+        return _reponse(
+            nombre,
+            f"{nombre} {nom}, sur {len(tableau)} lignes au total. "
+            "Les lignes sans groupe renseigné sont exclues.",
+        )
     texte = " ; ".join(f"{nombre} {nom}" for nom, nombre in effectifs)
     return _reponse(
         texte,

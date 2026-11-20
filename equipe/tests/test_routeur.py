@@ -205,3 +205,12 @@ def test_effectifs_de_deux_groupes():
     assert router("Combien de patients sont des femmes et combien sont des hommes ?", _tableau_comparaison())[
         "valeur"
     ] == "40 femmes ; 40 hommes"
+
+
+def test_effectif_d_un_seul_groupe_est_un_nombre():
+    """Le contrat du harnais veut un nombre, pas « 40 femmes » : le nom du groupe
+    va dans la justification. Sinon la valeur n'est plus comparable."""
+    reponse = router("Combien de patients sont des femmes ?", _tableau_comparaison())
+    assert reponse["valeur"] == 40
+    assert isinstance(reponse["valeur"], int)
+    assert "femmes" in reponse["justification"]
